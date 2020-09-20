@@ -23,6 +23,7 @@
         <hibernate-validator>6.0.18.Final</hibernate-validator>
         <fastjson>1.2.51</fastjson>
         <validation-api>2.0.1.Final</validation-api>
+        <commons-io>2.6</commons-io>
     </properties>
 
     <dependencies>
@@ -92,6 +93,11 @@
             <groupId>javax.validation</groupId>
             <artifactId>validation-api</artifactId>
             <version>${validation-api}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>${commons-io}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

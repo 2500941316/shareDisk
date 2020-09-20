@@ -34,7 +34,7 @@ public class JsonUtil {
      * @return true-合法 ，false-非法
      */
     public boolean validate(String input) {
-        if(StringUtils.isBlank(input)){
+        if (StringUtils.isBlank(input)) {
             return false;
         }
         input = input.trim();
@@ -193,9 +193,14 @@ public class JsonUtil {
             return error("escape sequence  \\\",\\\\,\\/,\\b,\\f,\\n,\\r,\\t  or  \\uxxxx ", start);
         }
         if (c == 'u') {
-            if (!ishex(nextCharacter()) || !ishex(nextCharacter()) || !ishex(nextCharacter())
-                    || !ishex(nextCharacter())) {
-                return error("unicode escape sequence  \\uxxxx ", start);
+//            if (!ishex(nextCharacter()) || !ishex(nextCharacter()) || !ishex(nextCharacter())
+//                    || !ishex(nextCharacter())) {
+//                return error("unicode escape sequence  \\uxxxx ", start);
+//            }
+            for (int i = 0; i < 4; i++) {
+                if (!ishex(nextCharacter())) {
+                    return error("unicode escape sequence  \\uxxxx ", start);
+                }
             }
         }
         return true;

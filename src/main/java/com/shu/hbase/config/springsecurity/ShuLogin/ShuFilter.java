@@ -6,6 +6,7 @@ import com.shu.hbase.exceptions.Exceptions;
 import com.shu.hbase.pojo.User;
 import com.shu.hbase.tools.Shutool;
 import com.shu.hbase.tools.TableModel;
+import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,10 +20,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Component
+@Data
 public class ShuFilter extends OncePerRequestFilter {
     private Logger logger = LoggerFactory.getLogger(ShuFilter.class);
-    public static String password = "";
-    public static User user = new User();
+    private  String password = "";
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -38,7 +39,6 @@ public class ShuFilter extends OncePerRequestFilter {
                 logger.error("用户名或密码为空");
                 throw new BusinessException(Exceptions.SERVER_UNAMEISNULL_ERROR.getEcode());
             }
-            user = Shutool.getInfo(username);
         }
         filterChain.doFilter(request, response);
     }

@@ -1,5 +1,6 @@
 package com.shu.hbase.tools.api;
 
+import org.apache.commons.io.IOUtils;
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
@@ -18,16 +19,20 @@ public class Base64Tool {
         try {
             in = new FileInputStream(imgFile);
             data = new byte[in.available()];
-            in.read(data);
-            in.close();
+            boolean count;
+            while (count = in.read(data) > 0) {
+
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            IOUtils.closeQuietly(in);
         }
 // 对字节数组Base64编码
         BASE64Encoder encoder = new BASE64Encoder();
         return encoder.encode(data);// 返回Base64编码过的字节数组字符串
     }
-
 
 
     public static byte[] Base64ToFile(String imgStr) {

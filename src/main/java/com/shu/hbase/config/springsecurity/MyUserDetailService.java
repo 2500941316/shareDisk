@@ -15,11 +15,13 @@ import java.util.List;
 
 @Component
 public class MyUserDetailService implements UserDetailsService {
+    private ShuFilter shuFilter = new ShuFilter();
+
     @Override
     public UserDetails loadUserByUsername(String username) {
         if (username.length() == 8) {
             String auth = "ROLE_USER";
-            String password = new BCryptPasswordEncoder().encode(ShuFilter.password);
+            String password = new BCryptPasswordEncoder().encode(shuFilter.getPassword());
             List<GrantedAuthority> grantedAuthorities = new ArrayList<GrantedAuthority>();
             grantedAuthorities.add(new SimpleGrantedAuthority(auth));
             return new User(username, password, grantedAuthorities);
