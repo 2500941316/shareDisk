@@ -1,6 +1,9 @@
 package com.shu.hbase.tools.api;
 
+import com.shu.hbase.config.springsecurity.TokenLogin.MAPIHttpServletRequestWrapper;
 import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
@@ -9,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class Base64Tool {
+    private static Logger logger = LoggerFactory.getLogger(MAPIHttpServletRequestWrapper.class);
 
     //进行base64编码
     public static String fileToBase64(String fileSrc) {
@@ -21,11 +25,9 @@ public class Base64Tool {
             data = new byte[in.available()];
             boolean count;
             while (count = in.read(data) > 0) {
-
             }
-
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         } finally {
             IOUtils.closeQuietly(in);
         }

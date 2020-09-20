@@ -35,6 +35,7 @@ public class ShuFilter extends OncePerRequestFilter {
                     logger.error("用户名或密码错误");
                     throw new BusinessException(Exceptions.SERVER_AUTH_ERROR.getEcode());
                 }
+                logger.info(username+"登录成功");
             } else {
                 logger.error("用户名或密码为空");
                 throw new BusinessException(Exceptions.SERVER_UNAMEISNULL_ERROR.getEcode());

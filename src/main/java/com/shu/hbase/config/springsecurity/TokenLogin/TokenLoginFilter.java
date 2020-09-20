@@ -5,6 +5,8 @@ import com.shu.hbase.config.springsecurity.MyAuthenticationFailHandler;
 import com.shu.hbase.exceptions.BusinessException;
 import com.shu.hbase.exceptions.Exceptions;
 import com.shu.hbase.tools.api.Md5;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -19,6 +21,7 @@ import java.util.Map;
 
 @Component
 public class TokenLoginFilter extends OncePerRequestFilter {
+    private static Logger logger = LoggerFactory.getLogger(MAPIHttpServletRequestWrapper.class);
     private MyAuthenticationFailHandler myAuthenticationFaiureHandler = new MyAuthenticationFailHandler();
 
     public MyAuthenticationFailHandler getMyAuthenticationFaiureHandler() {
@@ -53,7 +56,7 @@ public class TokenLoginFilter extends OncePerRequestFilter {
                 myAuthenticationFaiureHandler.onAuthenticationFailure(request, response, e);
                 return;
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error(e.getMessage());
             }
         }
         filterChain.doFilter(request, response);

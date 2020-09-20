@@ -1,7 +1,10 @@
 package com.shu.hbase.config.springsecurity.TokenLogin;
 
 import com.alibaba.fastjson.JSONObject;
+import com.shu.hbase.exceptions.ExceptionAdvice;
 import com.shu.hbase.tools.api.JsonUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ReadListener;
 import javax.servlet.ServletInputStream;
@@ -13,7 +16,7 @@ import java.util.Map;
 
 public class MAPIHttpServletRequestWrapper extends HttpServletRequestWrapper {
     private final byte[] body;
-
+    private static Logger logger = LoggerFactory.getLogger(MAPIHttpServletRequestWrapper.class);
     public MAPIHttpServletRequestWrapper(HttpServletRequest request) throws IOException {
         super(request);
         InputStream is = request.getInputStream();
@@ -75,14 +78,13 @@ public class MAPIHttpServletRequestWrapper extends HttpServletRequestWrapper {
             }
             param = jsonObject.toJSONString();
         } catch (Exception e) {
-            e.printStackTrace();
+           logger.error(e.getMessage());
         } finally {
             if (streamReader != null) {
                 try {
                     streamReader.close();
                 } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    logger.error(e.getMessage());
                 }
             }
         }
