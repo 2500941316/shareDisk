@@ -9,7 +9,7 @@ public class TableModel<T> {
     private int code;
     private String msg;
     private int count;
-    private Object data;
+    private T data;
 
 
     public static TableModel success(Object data, int total) {
@@ -79,7 +79,7 @@ public class TableModel<T> {
         return data;
     }
 
-    public void setData(Object data) {
+    public void setData(T data) {
         this.data = data;
     }
 }

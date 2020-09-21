@@ -14,7 +14,7 @@ public class JsonUtil {
     private char c;
     private int col;
     private static JsonUtil instance;
-    private final static String number="number";
+    private static final  String jsonNumber="number";
     /**
      * 获取类的实例
      *
@@ -140,7 +140,7 @@ public class JsonUtil {
             while (Character.isDigit(c))
                 nextCharacter();
         } else {
-            return error(number, start);
+            return error(jsonNumber, start);
         }
         if (c == '.') {
             nextCharacter();
@@ -148,7 +148,7 @@ public class JsonUtil {
                 while (Character.isDigit(c))
                     nextCharacter();
             } else {
-                return error(number, start);
+                return error(jsonNumber, start);
             }
         }
         if (c == 'e' || c == 'E') {
@@ -160,7 +160,7 @@ public class JsonUtil {
                 while (Character.isDigit(c))
                     nextCharacter();
             } else {
-                return error(number, start);
+                return error(jsonNumber, start);
             }
         }
         return true;
