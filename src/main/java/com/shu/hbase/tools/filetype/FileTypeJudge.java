@@ -1,10 +1,15 @@
 package com.shu.hbase.tools.filetype;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.io.InputStream;
 
 //文件类型判断类
 public final class FileTypeJudge {
+    private static Logger logger = LoggerFactory.getLogger(FileTypeJudge.class);
+
     /**
      * Constructor
      */
@@ -45,7 +50,7 @@ public final class FileTypeJudge {
         try {
             is.read(b, 0, 28);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
             throw e;
         }
         return bytesToHexString(b);
@@ -79,7 +84,7 @@ public final class FileTypeJudge {
                 FileType.MDB, FileType.WPS, FileType.WPD, FileType.EPS, FileType.PDF, FileType.QDF, FileType.PWL};
         FileType[] videos = {FileType.AVI, FileType.RAM, FileType.RM, FileType.MPG, FileType.MOV, FileType.ASF, FileType.MP4, FileType.FLV, FileType.MID};
         FileType[] audios = {FileType.WAV, FileType.MP3};
-        FileType[] others = {FileType.JAVA, FileType.CLASS,FileType.ZIP, FileType.RAR, FileType.JSP, FileType.JAR, FileType.MF, FileType.EXE, FileType.CHM, };
+        FileType[] others = {FileType.JAVA, FileType.CLASS, FileType.ZIP, FileType.RAR, FileType.JSP, FileType.JAR, FileType.MF, FileType.EXE, FileType.CHM,};
 
         // 图片
         for (FileType fileType : pics) {

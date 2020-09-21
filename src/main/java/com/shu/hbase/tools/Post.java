@@ -6,7 +6,9 @@ import com.shu.hbase.pojo.api.ApiSearchFileInfo;
 import com.shu.hbase.pojo.api.ApiUploadFileInfo;
 import com.shu.hbase.tools.api.Base64Tool;
 import com.shu.hbase.tools.api.Md5;
-
+import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -17,6 +19,7 @@ import java.net.URL;
 
 public class Post {
     private static ObjectMapper objectMapper = new ObjectMapper();
+    private static Logger logger = LoggerFactory.getLogger(Post.class);
 
     public static void main(String[] args) throws Exception {
         Post();
@@ -95,16 +98,9 @@ public class Post {
         }
         // 使用finally块来关闭输出流、输入流
         finally {
-            try {
-                if (out != null) {
-                    out.close();
-                }
-                if (in != null) {
-                    in.close();
-                }
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
+
+            IOUtils.closeQuietly(out);
+            IOUtils.closeQuietly(in);
         }
         System.out.println(result);
         return result;

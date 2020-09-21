@@ -1,6 +1,5 @@
 package com.shu.hbase.tools.filetype;
 
-
 public enum FileType {
     /**
      * JEPG.
@@ -215,7 +214,7 @@ public enum FileType {
     FLV("464C5601050000000900");
     private String value = "";
 
-    private FileType(String value) {
+    FileType(String value) {
         this.value = value;
     }
 
@@ -223,8 +222,5 @@ public enum FileType {
         return value;
     }
 
-    public void setValue(String value) {
-        this.value = value;
-    }
 
 }

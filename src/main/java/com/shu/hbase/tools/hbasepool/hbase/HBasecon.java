@@ -1,5 +1,7 @@
 package com.shu.hbase.tools.hbasepool.hbase;
+
 import com.shu.hbase.pojo.Static;
+import com.shu.hbase.tools.filetype.FileTypeJudge;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HTableDescriptor;
@@ -8,12 +10,17 @@ import org.apache.hadoop.hbase.client.Admin;
 import org.apache.hadoop.hbase.client.Connection;
 import org.apache.hadoop.hbase.client.ConnectionFactory;
 import org.apache.hadoop.security.UserGroupInformation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
 public class HBasecon {
-    private static Configuration conf=new Configuration();;
+    private static Configuration conf = new Configuration();
+    ;
     private static Connection connection;
+    private static Logger logger = LoggerFactory.getLogger(FileTypeJudge.class);
+
     public static Connection getConnection() {
         System.setProperty("java.security.krb5.conf", Static.kerberosConf);
         conf.set("hbase.zookeeper.quorum", "bdnn2.bdg.shu.edu.cn,server1.bdg.shu.edu.cn,bdnn1.bdg.shu.edu.cn");
@@ -28,7 +35,7 @@ public class HBasecon {
             UserGroupInformation.setLoginUser(ugi);
             connection = ConnectionFactory.createConnection(conf);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
         return connection;
     }
