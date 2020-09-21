@@ -1,4 +1,4 @@
-package com.shu.hbase.config.springsecurity.TokenLogin;
+package com.shu.hbase.config.springsecurity.tokenlogin;
 
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.Authentication;

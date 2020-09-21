@@ -1,4 +1,4 @@
-package com.shu.hbase.config.springsecurity.TokenLogin;
+package com.shu.hbase.config.springsecurity.tokenlogin;
 
 
 import com.shu.hbase.config.springsecurity.MyAuthenticationFailHandler;

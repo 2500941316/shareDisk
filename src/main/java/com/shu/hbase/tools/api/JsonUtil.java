@@ -14,7 +14,7 @@ public class JsonUtil {
     private char c;
     private int col;
     private static JsonUtil instance;
-
+    private final static String number="number";
     /**
      * 获取类的实例
      *
@@ -38,8 +38,8 @@ public class JsonUtil {
             return false;
         }
         input = input.trim();
-        boolean ret = valid(input);
-        return ret;
+        return  valid(input);
+
     }
 
     private boolean valid(String input) {
@@ -140,7 +140,7 @@ public class JsonUtil {
             while (Character.isDigit(c))
                 nextCharacter();
         } else {
-            return error("number", start);
+            return error(number, start);
         }
         if (c == '.') {
             nextCharacter();
@@ -148,7 +148,7 @@ public class JsonUtil {
                 while (Character.isDigit(c))
                     nextCharacter();
             } else {
-                return error("number", start);
+                return error(number, start);
             }
         }
         if (c == 'e' || c == 'E') {
@@ -160,7 +160,7 @@ public class JsonUtil {
                 while (Character.isDigit(c))
                     nextCharacter();
             } else {
-                return error("number", start);
+                return error(number, start);
             }
         }
         return true;
@@ -193,10 +193,6 @@ public class JsonUtil {
             return error("escape sequence  \\\",\\\\,\\/,\\b,\\f,\\n,\\r,\\t  or  \\uxxxx ", start);
         }
         if (c == 'u') {
-//            if (!ishex(nextCharacter()) || !ishex(nextCharacter()) || !ishex(nextCharacter())
-//                    || !ishex(nextCharacter())) {
-//                return error("unicode escape sequence  \\uxxxx ", start);
-//            }
             for (int i = 0; i < 4; i++) {
                 if (!ishex(nextCharacter())) {
                     return error("unicode escape sequence  \\uxxxx ", start);

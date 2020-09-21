@@ -1,4 +1,4 @@
-package com.shu.hbase.config.springsecurity.TokenLogin;
+package com.shu.hbase.config.springsecurity.tokenlogin;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;

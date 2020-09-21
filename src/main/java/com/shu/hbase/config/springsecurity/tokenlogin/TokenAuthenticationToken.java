@@ -1,4 +1,4 @@
-package com.shu.hbase.config.springsecurity.TokenLogin;
+package com.shu.hbase.config.springsecurity.tokenlogin;
 
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -32,7 +32,7 @@ public class TokenAuthenticationToken extends AbstractAuthenticationToken {
         return this.principal;
     }
 
-    public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {
+    public void setAuthenticated(boolean isAuthenticated) {
         if (isAuthenticated) {
             throw new IllegalArgumentException(
                     "Cannot set this token to trusted - use constructor which takes a GrantedAuthority list instead");

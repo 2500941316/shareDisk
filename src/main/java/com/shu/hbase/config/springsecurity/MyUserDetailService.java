@@ -1,6 +1,6 @@
 package com.shu.hbase.config.springsecurity;
 
-import com.shu.hbase.config.springsecurity.ShuLogin.ShuFilter;
+import com.shu.hbase.config.springsecurity.shulogin.ShuFilter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -22,7 +22,7 @@ public class MyUserDetailService implements UserDetailsService {
         if (username.length() == 8) {
             String auth = "ROLE_USER";
             String password = new BCryptPasswordEncoder().encode(shuFilter.getPassword());
-            List<GrantedAuthority> grantedAuthorities = new ArrayList<GrantedAuthority>();
+            List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
             grantedAuthorities.add(new SimpleGrantedAuthority(auth));
             return new User(username, password, grantedAuthorities);
         } else {

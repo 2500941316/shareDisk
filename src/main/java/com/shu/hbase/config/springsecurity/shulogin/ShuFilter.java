@@ -1,11 +1,8 @@
-package com.shu.hbase.config.springsecurity.ShuLogin;
+package com.shu.hbase.config.springsecurity.shulogin;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shu.hbase.exceptions.BusinessException;
 import com.shu.hbase.exceptions.Exceptions;
-import com.shu.hbase.pojo.User;
 import com.shu.hbase.tools.Shutool;
-import com.shu.hbase.tools.TableModel;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;

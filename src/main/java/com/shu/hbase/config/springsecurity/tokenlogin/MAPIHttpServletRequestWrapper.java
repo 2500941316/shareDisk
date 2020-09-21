@@ -1,7 +1,6 @@
-package com.shu.hbase.config.springsecurity.TokenLogin;
+package com.shu.hbase.config.springsecurity.tokenlogin;
 
 import com.alibaba.fastjson.JSONObject;
-import com.shu.hbase.exceptions.ExceptionAdvice;
 import com.shu.hbase.tools.api.JsonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,17 +10,19 @@ import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
 public class MAPIHttpServletRequestWrapper extends HttpServletRequestWrapper {
     private final byte[] body;
     private static Logger logger = LoggerFactory.getLogger(MAPIHttpServletRequestWrapper.class);
+
     public MAPIHttpServletRequestWrapper(HttpServletRequest request) throws IOException {
         super(request);
         InputStream is = request.getInputStream();
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        byte buff[] = new byte[1024];
+        byte[] buff = new byte[1024];
         int read;
         while ((read = is.read(buff)) > 0) {
             baos.write(buff, 0, read);
@@ -51,7 +52,9 @@ public class MAPIHttpServletRequestWrapper extends HttpServletRequestWrapper {
 
             @Override
             public void setReadListener(ReadListener readListener) {
+                // Do nothing
             }
+
             @Override
             public int read() throws IOException {
                 return bais.read();
@@ -64,21 +67,21 @@ public class MAPIHttpServletRequestWrapper extends HttpServletRequestWrapper {
         String param = null;
         BufferedReader streamReader = null;
         try {
-            streamReader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
+            streamReader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
             StringBuilder responseStrBuilder = new StringBuilder();
             String inputStr;
             while ((inputStr = streamReader.readLine()) != null)
                 responseStrBuilder.append(inputStr);
             if (!JsonUtil.getInstance().validate(responseStrBuilder.toString())) {
-                return new HashMap<String, Object>();
+                return new HashMap<>();
             }
             JSONObject jsonObject = JSONObject.parseObject(responseStrBuilder.toString());
             if (jsonObject == null) {
-                return new HashMap<String, Object>();
+                return new HashMap<>();
             }
             param = jsonObject.toJSONString();
         } catch (Exception e) {
-           logger.error(e.getMessage());
+            logger.error(e.getMessage());
         } finally {
             if (streamReader != null) {
                 try {

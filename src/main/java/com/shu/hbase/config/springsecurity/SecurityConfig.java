@@ -1,11 +1,11 @@
 
 package com.shu.hbase.config.springsecurity;
 
-import com.shu.hbase.config.springsecurity.ShuLogin.ShuFilter;
-import com.shu.hbase.config.springsecurity.TokenLogin.TokenAuthenticationFilter;
-import com.shu.hbase.config.springsecurity.TokenLogin.TokenAuthenticationSuccessHandler;
-import com.shu.hbase.config.springsecurity.TokenLogin.TokenAuthticationProvider;
-import com.shu.hbase.config.springsecurity.TokenLogin.TokenLoginFilter;
+import com.shu.hbase.config.springsecurity.shulogin.ShuFilter;
+import com.shu.hbase.config.springsecurity.tokenlogin.TokenAuthenticationFilter;
+import com.shu.hbase.config.springsecurity.tokenlogin.TokenAuthenticationSuccessHandler;
+import com.shu.hbase.config.springsecurity.tokenlogin.TokenAuthticationProvider;
+import com.shu.hbase.config.springsecurity.tokenlogin.TokenLoginFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -46,8 +46,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     //用户名和密码登陆处理
     @Bean
     public TokenAuthticationProvider customAuthenticationProvider() {
-        TokenAuthticationProvider tokenAuthticationProvider = new TokenAuthticationProvider();
-        return tokenAuthticationProvider;
+        return new TokenAuthticationProvider();
     }
 
 

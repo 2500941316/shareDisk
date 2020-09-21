@@ -1,6 +1,6 @@
 package com.shu.hbase.tools.api;
 
-import com.shu.hbase.config.springsecurity.TokenLogin.MAPIHttpServletRequestWrapper;
+import com.shu.hbase.config.springsecurity.tokenlogin.MAPIHttpServletRequestWrapper;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +13,10 @@ import java.io.InputStream;
 
 public class Base64Tool {
     private static Logger logger = LoggerFactory.getLogger(MAPIHttpServletRequestWrapper.class);
+    private Base64Tool() {
+        throw new IllegalStateException("Base64Tool class");
+    }
+
 
     //进行base64编码
     public static String fileToBase64(String fileSrc) {
@@ -37,7 +41,7 @@ public class Base64Tool {
     }
 
 
-    public static byte[] Base64ToFile(String imgStr) {
+    public static byte[] base64ToFile(String imgStr) {
 
         BASE64Decoder decoder = new BASE64Decoder();
         try {
@@ -51,7 +55,7 @@ public class Base64Tool {
 // 生成jpg图片
             return b;
         } catch (Exception e) {
-            return null;
+            return new byte[1];
         }
     }
 }
