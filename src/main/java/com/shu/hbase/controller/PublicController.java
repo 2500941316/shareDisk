@@ -19,13 +19,6 @@ public class PublicController {
     @Autowired
     PublicService publicService;
 
-    @RequestMapping("loginUrl")
-    public String login()
-    {
-        return "/html/login.html";
-    }
-
-
     @GetMapping("getPublicFiles")
     public TableModel getPublicFiles(Principal principal) {
         if (principal != null) {
