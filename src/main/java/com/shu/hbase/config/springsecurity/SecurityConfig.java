@@ -70,7 +70,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilterBefore(shuFilter, CsrfFilter.class)
                 .addFilterBefore(tokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
-
+                .formLogin()
+                .loginPage("/loginUrl")
+                .and()
                 .cors().and().csrf().disable()
                 .exceptionHandling().authenticationEntryPoint(new EntryPoint()).and()
                 .requestMatchers()
@@ -78,9 +80,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
 
                 .authorizeRequests()
+                .antMatchers("/loginUrl").permitAll()
                 .antMatchers("/").permitAll()
                 .antMatchers("/favicon.ico").permitAll()
-                .antMatchers("/uploadToBacken").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin().permitAll()

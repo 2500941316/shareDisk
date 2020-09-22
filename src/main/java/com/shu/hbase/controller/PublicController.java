@@ -7,6 +7,7 @@ import com.shu.hbase.tools.TableModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Principal;
@@ -18,6 +19,13 @@ public class PublicController {
     @Autowired
     PublicService publicService;
 
+    @RequestMapping("loginUrl")
+    public String login()
+    {
+        return "/html/login.html";
+    }
+
+
     @GetMapping("getPublicFiles")
     public TableModel getPublicFiles(Principal principal) {
         if (principal != null) {
@@ -26,6 +34,5 @@ public class PublicController {
             throw new BusinessException(Exceptions.SERVER_AUTH_ERROR.getEcode());
         }
     }
-
 
 }

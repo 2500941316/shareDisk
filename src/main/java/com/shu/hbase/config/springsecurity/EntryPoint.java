@@ -1,6 +1,8 @@
 package com.shu.hbase.config.springsecurity;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.shu.hbase.exceptions.BusinessException;
+import com.shu.hbase.exceptions.Exceptions;
 import com.shu.hbase.tools.TableModel;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -18,8 +20,10 @@ public class EntryPoint implements AuthenticationEntryPoint {
                          AuthenticationException authException) throws IOException {
         TableModel tableModel = new TableModel();
         tableModel.setCode(405);
+        tableModel.setMsg("权限不足，请登录");
         String json = objectMapper.writeValueAsString(tableModel);
         response.setContentType("text/json;charset=utf-8");
         response.getWriter().write(json);
+
     }
 }
