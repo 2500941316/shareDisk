@@ -21,7 +21,6 @@ public class DemoApplication {
             run.exec(cmd);
             logger.debug("启动浏览器打开项目成功");
         } catch (Exception e) {
-            e.printStackTrace();
             logger.error(e.getMessage());
         }
     }
