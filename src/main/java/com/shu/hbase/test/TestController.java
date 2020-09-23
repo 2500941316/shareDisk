@@ -10,12 +10,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class TestController {
     @GetMapping("testPublicFile")
     public String testPublicFile() {
-        String url = "http://localhost:8080/getPublicFiles";
+
 
         for (int i = 0; i < 5; i++) {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
+                    final String url = "http://localhost:8080/getPublicFiles";
                     String string = Get.sendGet(url, "", "");
                     System.out.println(string);
                 }
