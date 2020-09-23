@@ -74,7 +74,7 @@ document.writeln("        <!-- Menu Start -->");
 document.writeln("        <div class=\'container\'>");
 document.writeln("            <!-- Logo container-->");
 document.writeln("            <div>");
-document.writeln("                <a href=\'../html/index.html\' class=\'logo\'>");
+document.writeln("                <a href=\'../index.html\' class=\'logo\'>");
 
 document.writeln("                </a>");
 document.writeln("            </div>                 ");
@@ -99,7 +99,7 @@ document.writeln("    ");
 document.writeln("            <div id=\'navigation\'>");
 document.writeln("                <!-- Navigation Menu-->   ");
 document.writeln("                <ul class=\'navigation-menu\' style=\'margin-left: 120px\'>");
-document.writeln("                    <li><a href=\'../html/index.html\'>主页</a></li>");
+document.writeln("                    <li><a href=\'../index.html\'>主页</a></li>");
 document.writeln("                    <li class=\'has-submenu\'>");
 document.writeln("                        <a href=\'javascript:void(0)\'>我的文件</a>");
 document.writeln("                    </li>");

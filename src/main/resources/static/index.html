@@ -10,7 +10,6 @@
     <!-- javascript -->
     <link rel="stylesheet" href="js/layui/css/layui.css" media="all">
     <script src="js/head.js"></script>
-
     <style type="text/css">
         .layui-table-cell {
             height: 100%;
@@ -105,27 +104,21 @@
                                 </script>
 
                                 <script src="js/layui/layui.js"></script>
-                                <!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
 
                                 <script>
                                     layui.use('table', function () {
                                         var table = layui.table;
                                         table.render({
                                             elem: '#test'
-                                            , url: "/getPublicFiles"
-                                            ,page: {
-                                                layout: ['limit', 'count', 'prev', 'page', 'next', 'skip'] //自定义分页布局
-                                                ,curr: 5 //设定初始在第 1 页
-                                                ,groups: 1 //只显示 1 个连续页码
-                                                ,first: false //不显示首页
-                                                ,last: false //不显示尾页
-
-                                            }
+                                            ,url: "/getPublicFiles"
                                             , cols: [[
-                                                {field:'name',  title: 'name', sort: true},
-                                                {toolbar: '#barDemo'}
+                                                {field: 'id', title: 'ID', width: 80, sort: true}
+                                                , {toolbar: '#barDemo'}
                                             ]]
-
+                                            , even: true
+                                            , page: true //是否显示分页
+                                            , limits: [5, 7, 10]
+                                            , limit: 5 //每页默认显示的数量
                                         });
                                     });
                                 </script>
