@@ -1,10 +1,14 @@
 package com.shu.hbase.tools.hdfspool;
 
+import com.shu.hbase.tools.hbasepool.HbaseConnectionPool;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.apache.hadoop.fs.FileSystem;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class HdfsConnectionPool {
+    private static Logger logger = LoggerFactory.getLogger(HbaseConnectionPool.class);
     private static ConnectionFactory factory;
     private static ConnectionPoolConfig connectionPool;
     private static GenericObjectPoolConfig config;
@@ -23,8 +27,8 @@ public class HdfsConnectionPool {
 
     public static FileSystem getHdfsConnection() throws Exception {
         try {
-           // System.out.println("归还了"+connectionPool.getReturnedCount());
-            //System.out.println("借出了"+connectionPool.getBorrowedCount());
+            logger.info("归还了Hdfs连接"+connectionPool.getReturnedCount());
+            logger.info("借出了Hdfs连接"+connectionPool.getBorrowedCount());
             return  connectionPool.borrowObject();
         } catch (Exception e) {
             throw new Exception(e.getMessage());
@@ -34,6 +38,7 @@ public class HdfsConnectionPool {
 
     public static void releaseConnection(FileSystem fileSystem) throws Exception {
         try {
+            logger.info("归还了Hdfs连接");
         } catch (Exception e) {
             throw new Exception(e.getMessage());
         } finally {
