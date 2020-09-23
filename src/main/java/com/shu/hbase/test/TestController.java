@@ -9,10 +9,11 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin
 public class TestController {
     @GetMapping("testPublicFile")
-    public void testPublicFile() throws Exception {
+    public String testPublicFile() throws Exception {
         String url = "http://localhost:8080/getPublicFiles";
 
-        Get.sendGet(url, null, "");
+        return  Get.sendGet(url, null, "");
+
     }
 
 }
