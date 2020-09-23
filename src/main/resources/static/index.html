@@ -16,14 +16,10 @@
             height: 100%;
             max-width: 100%;
         }
-
     </style>
-
 </head>
 
 <body>
-
-
 <!-- all jobs start -->
 <section class="section bg-light">
     <div class="container">
@@ -106,7 +102,6 @@
                                         </div>
                                     </div>
                                     <!--一个文件端结束-->
-
                                 </script>
 
                                 <script src="js/layui/layui.js"></script>
@@ -115,20 +110,18 @@
                                 <script>
                                     layui.use('table', function () {
                                         var table = layui.table;
-
                                         table.render({
                                             elem: '#test'
-                                            ,url: "/getPublicFiles"
+                                            , url: "/getPublicFiles"
                                             , cols: [[
+                                                {field:'name',  title: 'name', sort: true},
                                                 {toolbar: '#barDemo'}
-
                                             ]]
                                             , page: true
                                         });
                                     });
                                 </script>
                                 <!--table-->
-
 
                             </div>
                         </div>

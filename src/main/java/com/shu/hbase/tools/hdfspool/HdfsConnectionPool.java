@@ -5,8 +5,6 @@ import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.apache.hadoop.fs.FileSystem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-
 public class HdfsConnectionPool {
     private static Logger logger = LoggerFactory.getLogger(HbaseConnectionPool.class);
     private static ConnectionFactory factory;
