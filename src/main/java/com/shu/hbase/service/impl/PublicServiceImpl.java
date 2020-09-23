@@ -53,8 +53,8 @@ public class PublicServiceImpl implements PublicService {
             Scan newScan = new Scan();
             newScan.setReversed(true);
             newScan.setCaching(1);
-           // Filter filter = new PageFilter(200);
-            //filterListNew.addFilter(filter);
+            Filter filter = new PageFilter(8);
+            filterListNew.addFilter(filter);
             filterListNew.addFilter(colFilterNew);
             newScan.setFilter(filterListNew);
             ResultScanner scanner2 = fileTable.getScanner(newScan);
