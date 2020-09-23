@@ -21,7 +21,8 @@ public class MyUserDetailService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) {
         if (username.length() == 8) {
             String auth = "ROLE_USER";
-            String password = new BCryptPasswordEncoder().encode(shuFilter.getPassword());
+           // String password = new BCryptPasswordEncoder().encode(shuFilter.getPassword());
+            String password = new BCryptPasswordEncoder().encode("aaa");
             List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
             grantedAuthorities.add(new SimpleGrantedAuthority(auth));
             return new User(username, password, grantedAuthorities);

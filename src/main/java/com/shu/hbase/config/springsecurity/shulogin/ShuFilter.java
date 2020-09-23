@@ -2,7 +2,7 @@ package com.shu.hbase.config.springsecurity.shulogin;
 
 import com.shu.hbase.exceptions.BusinessException;
 import com.shu.hbase.exceptions.Exceptions;
-import com.shu.hbase.tools.Shutool;
+import com.shu.hbase.tools.ShuTool;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -28,7 +28,7 @@ public class ShuFilter extends OncePerRequestFilter {
             String username = request.getParameter("username").trim();
             password = request.getParameter("password").trim();
             if (StringUtils.isNotEmpty(username) || StringUtils.isNotEmpty(password)) {
-                if (!Shutool.getAuth(username, password)) {
+                if (!ShuTool.getAuth(username, password)) {
                     logger.error("用户名或密码错误");
                     throw new BusinessException(Exceptions.SERVER_AUTH_ERROR.getEcode());
                 }
