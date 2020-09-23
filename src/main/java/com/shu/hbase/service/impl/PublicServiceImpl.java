@@ -67,6 +67,7 @@ public class PublicServiceImpl implements PublicService {
             }
             logger.info("查询成功！");
 
+            tableModel.setCount(fileInfoVOS.size());
             tableModel.setData(200);
             tableModel.setData(fileInfoVOS);
 

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Principal;
 
+
 @RestController
 @CrossOrigin
 public class PublicController {
@@ -24,4 +25,5 @@ public class PublicController {
         }
         return publicService.getPublicFiles(uid);
     }
+
 }
