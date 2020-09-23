@@ -9,15 +9,19 @@ import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.Table;
 import org.apache.hadoop.hbase.util.Bytes;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
 
 public class CrudMethods {
+    private static Logger logger = LoggerFactory.getLogger(CrudMethods.class);
 
     //更新用户存储文件总大小
     public static boolean insertOrUpdateUser(Table userTable, String size, String uid, String type) {
         try {
+            logger.info("开始查询用户的存储大小");
             //先获取当前用户存储的大小
             Get get = new Get(Bytes.toBytes(uid));
             get.addColumn(Bytes.toBytes(Static.USER_TABLE_CF), Bytes.toBytes(Static.USER_TABLE_SIZE));
@@ -50,12 +54,13 @@ public class CrudMethods {
                     }
                 }
             }
+            logger.info("磁盘校验完毕");
             Put put = new Put(Bytes.toBytes(uid));
             put.addColumn(Bytes.toBytes(Static.USER_TABLE_CF), Bytes.toBytes(Static.USER_TABLE_SIZE), Bytes.toBytes(newSize));
             userTable.put(put);
             return true;
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
             return false;
         }
     }

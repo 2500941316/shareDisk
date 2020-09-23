@@ -1,5 +1,8 @@
 package com.shu.hbase.tools;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
@@ -8,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Get {
+    private static Logger logger = LoggerFactory.getLogger(Get.class);
 
     /**
      * 向指定 URL 发送 GET请求
@@ -23,7 +27,7 @@ public class Get {
             String strRequestUrl = "";
             if (!requestParams.isEmpty()) {
                 strRequestUrl = strUrl + "?" + requestParams;
-            }else strRequestUrl = strUrl;
+            } else strRequestUrl = strUrl;
 
             URL url = new URL(strRequestUrl);
             URLConnection urlConnection = url.openConnection();    // 打开与 URL 之间的连接
@@ -45,14 +49,14 @@ public class Get {
                 responseParams += strLine;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         } finally {
             try {
                 if (bufferedReader != null) {
                     bufferedReader.close();
                 }
             } catch (Exception e2) {
-                e2.printStackTrace();
+                logger.error(e2.getMessage());
             }
         }
         return responseParams;

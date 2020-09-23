@@ -1,5 +1,7 @@
 package com.shu.hbase.service.impl;
 
+import com.shu.hbase.exceptions.BusinessException;
+import com.shu.hbase.exceptions.Exceptions;
 import com.shu.hbase.pojo.FileInfoVO;
 import com.shu.hbase.pojo.Static;
 import com.shu.hbase.service.interfaces.PublicService;
@@ -69,7 +71,9 @@ public class PublicServiceImpl implements PublicService {
             tableModel.setData(fileInfoVOS);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
+            throw new BusinessException(Exceptions.SERVER_OTHER_ERROR.getEcode());
+
         } finally {
             try {
                 assert fileTable != null;
