@@ -3,16 +3,17 @@ package com.shu.hbase.tools;
 import lombok.Data;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Data
 public class TableModel<T> {
     private int code;
     private String msg;
     private int count;
-    private T data;
+    private List data;
 
 
-    public static TableModel success(Object data, int total) {
+    public static TableModel success(List data, int total) {
         TableModel tableModel = new TableModel();
 
         tableModel.setCode(200);
@@ -79,7 +80,7 @@ public class TableModel<T> {
         return data;
     }
 
-    public void setData(T data) {
+    public void setData(List data) {
         this.data = data;
     }
 }

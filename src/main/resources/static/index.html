@@ -110,6 +110,7 @@
                                         var table = layui.table;
                                         table.render({
                                             elem: '#test'
+                                            ,height: 600
                                             ,url: "/getPublicFiles"
                                             // ,data: [{
                                             //     "id": "10001"
@@ -204,9 +205,10 @@
                                             , cols: [[
                                                 { toolbar: '#barDemo'}
                                             ]]
-                                            , page: true //是否显示分页
-                                            , limits: [5, 10, 20]
-                                            , limit: 5 //每页默认显示的数量
+                                            ,limit:8//要传向后台的每页显示条数
+                                            ,page: { //支持传入 laypage 组件的所有参数（某些参数除外，如：jump/elem） - 详见文档
+                                                layout: ['count', 'prev', 'page', 'next', 'limit', 'refresh', 'skip']//自定义分页布局
+                                            }
                                         });
                                     });
                                 </script>
