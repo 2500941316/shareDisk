@@ -68,7 +68,9 @@ public class PublicServiceImpl implements PublicService {
             e.printStackTrace();
         } finally {
             try {
+                assert fileTable != null;
                 fileTable.close();
+                assert userTable != null;
                 userTable.close();
                 HbaseConnectionPool.releaseConnection(hBaseConn);
             } catch (Exception e) {

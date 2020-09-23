@@ -15,13 +15,5 @@ public class DemoApplication {
         System.setProperty("javax.net.ssl.trustStorePassword", "shu");
         SpringApplication.run(DemoApplication.class, args);
 
-        String cmd = "C:\\Users\\Administrator\\AppData\\Roaming\\360se6\\Application\\360se.exe http://localhost:8080";
-        Runtime run = Runtime.getRuntime();
-        try {
-            run.exec(cmd);
-            logger.debug("启动浏览器打开项目成功");
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-        }
     }
 }
