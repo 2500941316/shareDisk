@@ -53,9 +53,9 @@ public class PublicServiceImpl implements PublicService {
             Scan newScan = new Scan();
             newScan.setReversed(true);
             newScan.setCaching(1);
-            Filter filter = new PageFilter(8);
+           // Filter filter = new PageFilter(200);
+            //filterListNew.addFilter(filter);
             filterListNew.addFilter(colFilterNew);
-            filterListNew.addFilter(filter);
             newScan.setFilter(filterListNew);
             ResultScanner scanner2 = fileTable.getScanner(newScan);
             logger.info("共享文件查询成功");
