@@ -10,15 +10,17 @@ import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.*;
 import org.apache.hadoop.hbase.filter.*;
 import org.apache.hadoop.hbase.util.Bytes;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 
 @Service
 public class PublicServiceImpl implements PublicService {
+    private Logger logger = LoggerFactory.getLogger(PublicServiceImpl.class);
 
     @Override
     public TableModel getPublicFiles(String uid) {
@@ -39,7 +41,8 @@ public class PublicServiceImpl implements PublicService {
             if (!CrudMethods.insertOrUpdateUser(userTable, "0", uid, "upload")) {
                 return TableModel.error("文件超出存储容量");
             }
-
+            logger.info("容量检测成功");
+            logger.info("开始查询公共共享文件");
             //查询公共文件的信息，并且进行封装
             List<FileInfoVO> fileInfoVOS = new ArrayList<>();
 
@@ -48,18 +51,19 @@ public class PublicServiceImpl implements PublicService {
             Scan newScan = new Scan();
             newScan.setReversed(true);
             newScan.setCaching(1);
-            Filter filter = new PageFilter(7);
+            Filter filter = new PageFilter(20);
             filterListNew.addFilter(colFilterNew);
             filterListNew.addFilter(filter);
             newScan.setFilter(filterListNew);
             ResultScanner scanner2 = fileTable.getScanner(newScan);
-
-            Iterator<Result> res = scanner2.iterator();// 返回查询遍历器
-            while (res.hasNext()) {
-                Result result = res.next();
+            logger.info("共享文件查询成功");
+            logger.info("开始封装查询信息");
+            // 返回查询遍历器
+            for (Result result : scanner2) {
                 FileInfoVO fileInfoVO = CrudMethods.packageCells(result);
                 fileInfoVOS.add(fileInfoVO);
             }
+            logger.info("查询成功！");
 
             tableModel.setData(200);
             tableModel.setData(fileInfoVOS);
@@ -74,6 +78,7 @@ public class PublicServiceImpl implements PublicService {
                 userTable.close();
                 HbaseConnectionPool.releaseConnection(hBaseConn);
             } catch (Exception e) {
+                logger.error(e.getMessage());
             }
         }
         return tableModel;

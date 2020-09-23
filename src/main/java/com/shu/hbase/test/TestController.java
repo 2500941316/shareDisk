@@ -12,7 +12,7 @@ public class TestController {
     public String testPublicFile() throws Exception {
         String url = "http://localhost:8080/getPublicFiles";
 
-        return  Get.sendGet(url, null, "");
+        return  Get.sendGet(url, "", "");
 
     }
 
