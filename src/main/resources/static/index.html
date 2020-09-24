@@ -10,6 +10,7 @@
     <!-- javascript -->
     <link rel="stylesheet" href="js/layui/css/layui.css" media="all">
     <script src="js/head.js"></script>
+    <script src="js/layui/layui.js"></script>
     <style type="text/css">
         .layui-table-cell {
             height: 100%;
@@ -103,189 +104,41 @@
                                     <!--一个文件端结束-->
                                 </script>
 
-                                <script src="js/layui/layui.js"></script>
 
                                 <script>
                                     layui.use('table', function () {
                                         var table = layui.table;
                                         table.render({
                                             elem: '#test'
+                                            , url: "/getPublicFiles"
+                                            , limit: 8
+                                            , page: {
+                                                layout: ['count', 'prev', 'page', 'next', 'skip'] //自定义分页布局
+                                                , groups: 3 //只显示 1 个连续页码
+                                                , first: false //不显示首页
+                                                , last: false //不显示尾页
+                                            }
+                                            , parseData: function (res) { //将原始数据解析成 table 组件所规定的数据，res为从url中get到的数据
+                                                var result;
 
-                                            //    ,data: [{
-                                            //     "name": "上海大学奖学金评选申请2.docx",
-                                            //     "size": null,
-                                            //     "time": 1598076739607,
-                                            //     "type": ".docx",
-                                            //     "path": "/shuwebfs/00000000/上海大学奖学金评选申请2.docx",
-                                            //     "back": "00000000",
-                                            //     "precent": 100.0,
-                                            //     "fileId": "00000000_1598076739607",
-                                            //     "sharer": "00000000",
-                                            //     "dir": false,
-                                            //     "myShare": false,
-                                            //     "new": false
-                                            // }, {
-                                            //     "name": "上海大学奖学金评选申请1.docx",
-                                            //     "size": null,
-                                            //     "time": 1598076739393,
-                                            //     "type": ".docx",
-                                            //     "path": "/shuwebfs/00000000/上海大学奖学金评选申请1.docx",
-                                            //     "back": "00000000",
-                                            //     "precent": 100.0,
-                                            //     "fileId": "00000000_1598076739393",
-                                            //     "sharer": "00000000",
-                                            //     "dir": false,
-                                            //     "myShare": false,
-                                            //     "new": false
-                                            // }, {
-                                            //     "name": "上海大学奖学金评选申请0.docx",
-                                            //     "size": null,
-                                            //     "time": 1598076739203,
-                                            //     "type": ".docx",
-                                            //     "path": "/shuwebfs/00000000/上海大学奖学金评选申请0.docx",
-                                            //     "back": "00000000",
-                                            //     "precent": 100.0,
-                                            //     "fileId": "00000000_1598076739203",
-                                            //     "sharer": "00000000",
-                                            //     "dir": false,
-                                            //     "myShare": false,
-                                            //     "new": false
-                                            // }, {
-                                            //     "name": "上海大学奖学金评选申请2.docx",
-                                            //     "size": null,
-                                            //     "time": 1598076730452,
-                                            //     "type": ".docx",
-                                            //     "path": "/shuwebfs/00000000/上海大学奖学金评选申请2.docx",
-                                            //     "back": "00000000",
-                                            //     "precent": 100.0,
-                                            //     "fileId": "00000000_1598076730452",
-                                            //     "sharer": "00000000",
-                                            //     "dir": false,
-                                            //     "myShare": false,
-                                            //     "new": false
-                                            // }, {
-                                            //     "name": "上海大学奖学金评选申请1.docx",
-                                            //     "size": null,
-                                            //     "time": 1598076730270,
-                                            //     "type": ".docx",
-                                            //     "path": "/shuwebfs/00000000/上海大学奖学金评选申请1.docx",
-                                            //     "back": "00000000",
-                                            //     "precent": 100.0,
-                                            //     "fileId": "00000000_1598076730270",
-                                            //     "sharer": "00000000",
-                                            //     "dir": false,
-                                            //     "myShare": false,
-                                            //     "new": false
-                                            // }, {
-                                            //     "name": "上海大学奖学金评选申请0.docx",
-                                            //     "size": null,
-                                            //     "time": 1598076730091,
-                                            //     "type": ".docx",
-                                            //     "path": "/shuwebfs/00000000/上海大学奖学金评选申请0.docx",
-                                            //     "back": "00000000",
-                                            //     "precent": 100.0,
-                                            //     "fileId": "00000000_1598076730091",
-                                            //     "sharer": "00000000",
-                                            //     "dir": false,
-                                            //     "myShare": false,
-                                            //     "new": false
-                                            // }, {
-                                            //     "name": "上海大学奖学金评选申请2.docx",
-                                            //     "size": null,
-                                            //     "time": 1598076728697,
-                                            //     "type": ".docx",
-                                            //     "path": "/shuwebfs/00000000/上海大学奖学金评选申请2.docx",
-                                            //     "back": "00000000",
-                                            //     "precent": 100.0,
-                                            //     "fileId": "00000000_1598076728696",
-                                            //     "sharer": "00000000",
-                                            //     "dir": false,
-                                            //     "myShare": false,
-                                            //     "new": false
-                                            // }, {
-                                            //     "name": "上海大学奖学金评选申请1.docx",
-                                            //     "size": null,
-                                            //     "time": 1598076728523,
-                                            //     "type": ".docx",
-                                            //     "path": "/shuwebfs/00000000/上海大学奖学金评选申请1.docx",
-                                            //     "back": "00000000",
-                                            //     "precent": 100.0,
-                                            //     "fileId": "00000000_1598076728522",
-                                            //     "sharer": "00000000",
-                                            //     "dir": false,
-                                            //     "myShare": false,
-                                            //     "new": false
-                                            // }, {
-                                            //     "name": "上海大学奖学金评选申请0.docx",
-                                            //     "size": null,
-                                            //     "time": 1598076728332,
-                                            //     "type": ".docx",
-                                            //     "path": "/shuwebfs/00000000/上海大学奖学金评选申请0.docx",
-                                            //     "back": "00000000",
-                                            //     "precent": 100.0,
-                                            //     "fileId": "00000000_1598076728332",
-                                            //     "sharer": "00000000",
-                                            //     "dir": false,
-                                            //     "myShare": false,
-                                            //     "new": false
-                                            // }, {
-                                            //     "name": "上海大学奖学金评选申请2.docx",
-                                            //     "size": null,
-                                            //     "time": 1598076726158,
-                                            //     "type": ".docx",
-                                            //     "path": "/shuwebfs/00000000/上海大学奖学金评选申请2.docx",
-                                            //     "back": "00000000",
-                                            //     "precent": 100.0,
-                                            //     "fileId": "00000000_1598076726158",
-                                            //     "sharer": "00000000",
-                                            //     "dir": false,
-                                            //     "myShare": false,
-                                            //     "new": false
-                                            // }, {
-                                            //     "name": "上海大学奖学金评选申请1.docx",
-                                            //     "size": null,
-                                            //     "time": 1598076725968,
-                                            //     "type": ".docx",
-                                            //     "path": "/shuwebfs/00000000/上海大学奖学金评选申请1.docx",
-                                            //     "back": "00000000",
-                                            //     "precent": 100.0,
-                                            //     "fileId": "00000000_1598076725968",
-                                            //     "sharer": "00000000",
-                                            //     "dir": false,
-                                            //     "myShare": false,
-                                            //     "new": false
-                                            // }, {
-                                            //     "name": "上海大学奖学金评选申请0.docx",
-                                            //     "size": null,
-                                            //     "time": 1598076725421,
-                                            //     "type": ".docx",
-                                            //     "path": "/shuwebfs/00000000/上海大学奖学金评选申请0.docx",
-                                            //     "back": "00000000",
-                                            //     "precent": 100.0,
-                                            //     "fileId": "00000000_1598076725421",
-                                            //     "sharer": "00000000",
-                                            //     "dir": false,
-                                            //     "myShare": false,
-                                            //     "new": false
-                                            // }]
-                                            , cols: [[
-                                                { toolbar: '#barDemo'}
-                                            ]]
-                                            ,limit:8//要传向后台的每页显示条数
-                                            ,page: true
-                                            ,url: "/getPublicFiles"
-                                            ,parseData: function(res){ //将原始数据解析成 table 组件所规定的数据
+                                                if (this.page.curr) {
+                                                    result = res.data.slice(this.limit * (this.page.curr - 1), this.limit * this.page.curr);
+                                                } else {
+                                                    result = res.data.slice(0, this.limit);
+                                                }
                                                 return {
                                                     "code": res.code, //解析接口状态
                                                     "msg": res.msg, //解析提示文本
                                                     "count": res.count, //解析数据长度
-                                                    "data": res.data //解析数据列表
-                                                }
+                                                    "data": result //解析数据列表
+                                                };
                                             }
+                                            , cols: [[
+                                                {toolbar: '#barDemo'}
+                                            ]]
                                         });
                                     });
                                 </script>
-                                <!--table-->
 
                             </div>
                         </div>
