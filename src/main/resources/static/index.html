@@ -69,32 +69,34 @@
                                             <div class="row align-items-center">
                                                 <div class="col-md-2">
                                                     <div class="mo-mb-2">
-                                                        <img src="images/featured-job/img-1.png" alt=""
-                                                             class="img-fluid mx-auto d-block">
+                                                        <svg style="width: 40%;height: 60px;margin-left: 20px">
+                                                            <use xlink:href="#icon-yunpanlogo-14"></use>
+                                                        </svg>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div>
                                                         <h6 class="f-18"><a href="#"
-                                                                            class="text-dark">上海大学奖学金评选方案.zip</a>
+                                                                            class="text-dark">{{d.name}}</a>
                                                         </h6>
 
                                                     </div>
                                                 </div>
-                                                <div class="col-md-1">
-                                                    <div>
-                                                        <p class="text-muted mb-0 mo-mb-2"><span
-                                                                class="text-primary">15.7M</span>
-                                                    </div>
-                                                </div>
+
+                                                <!--                                                <div class="col-md-1">-->
+                                                <!--                                                    <div>-->
+                                                <!--                                                        <p class="text-muted mb-0 mo-mb-2"><span-->
+                                                <!--                                                                class="text-primary">15.7M</span>-->
+                                                <!--                                                    </div>-->
+                                                <!--                                                </div>-->
                                                 <div class="col-md-2" style="text-align: center">
                                                     <div>
-                                                        <p class="text-muted mb-0">2020.08.12</p>
+                                                        <p class="text-muted mb-0">{{d.time}}</p>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-1">
                                                     <div>
-                                                        <a href="#" class="text-primary">下载 <i
+                                                        <a lay-even="downLoad" class="text-primary">下载 <i
                                                                 class="mdi mdi-chevron-double-right"></i></a>
                                                     </div>
                                                 </div>
@@ -104,13 +106,54 @@
                                     <!--一个文件端结束-->
                                 </script>
 
-
                                 <script>
+                                    //文件大小转换
+                                    function bytesToSize(bytes) {
+                                        if (bytes === 0) return "0 B";
+                                        var k = 1024;
+                                        var sizes = ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+                                        var i = Math.floor(Math.log(bytes) / Math.log(k));
+                                        return (bytes / Math.pow(k, i)).toPrecision(3) + " " + sizes[i];
+                                    }
+
+                                    //时间戳转换
+                                    function getDate(number) {
+                                        var now = new Date(number),
+                                            y = now.getFullYear(),
+                                            m = now.getMonth() + 1,
+                                            d = now.getDate();
+                                        return (
+                                            y +
+                                            "-" +
+                                            (m < 10 ? "0" + m : m) +
+                                            "-" +
+                                            (d < 10 ? "0" + d : d) +
+                                            " " +
+                                            now.toTimeString().substr(0, 5)
+                                        );
+                                    }
+
+
+                                    //点击下载按钮的时候
+                                    function downLoad(fileId) {
+                                        //模拟表单提交
+                                        var formHtml =
+                                            "<form action='/downLoad' method='post' >";
+                                        formHtml +=
+                                            "<input type='hidden' name='fileId' value=" + fileId + " />";
+                                        formHtml += "<input type='hidden' name='gId' value='' />";
+                                        formHtml += "</form>";
+                                        var form = $(formHtml);
+                                        $(document.body).append(form);
+                                        form.submit();
+                                    }
+
+
                                     layui.use('table', function () {
                                         var table = layui.table;
                                         table.render({
                                             elem: '#test'
-                                            , url: "/getPublicFiles"
+                                            , url: "/testJson"
                                             , limit: 8
                                             , page: {
                                                 layout: ['count', 'prev', 'page', 'next', 'skip'] //自定义分页布局
@@ -126,6 +169,12 @@
                                                 } else {
                                                     result = res.data.slice(0, this.limit);
                                                 }
+
+                                                //处理result的时间格式
+                                                for (var i = 0; i < result.length; i++) {
+                                                    result[i].time = getDate(result[i].time);
+                                                    result[i].type = peakPic(result[i].type);
+                                                }
                                                 return {
                                                     "code": res.code, //解析接口状态
                                                     "msg": res.msg, //解析提示文本
@@ -137,7 +186,21 @@
                                                 {toolbar: '#barDemo'}
                                             ]]
                                         });
-                                    });
+
+
+                                        table.on('row(test)', function (obj) {
+                                            var data = obj.data;
+                                            layui.use('layer', function () {
+
+                                                layer.confirm('确认下载 ： ' + data.name, {
+                                                    btn: ['确定', '取消']//按钮
+                                                }, function () {
+                                                    downLoad(data.fileId)
+                                                });
+                                            });
+                                        });
+                                    })
+
                                 </script>
 
                             </div>

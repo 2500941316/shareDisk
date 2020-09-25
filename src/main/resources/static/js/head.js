@@ -148,6 +148,8 @@ document.writeln("    <!-- selectize js -->");
 document.writeln("    <script src=\'../js/selectize.min.js\'></script>");
 document.writeln("    <script src=\'../js/jquery.nice-select.min.js\'></script>");
 document.writeln("");
+document.writeln("    <script src=\'../js/PicPeak.js\'></script>");
+document.writeln("    <script src=\'../js/iconfont.js\'></script>");
 document.writeln("    <script src=\'../js/owl.carousel.min.js\'></script>");
 document.writeln("    <script src=\'../js/app.js\'></script>");
 document.writeln("    <script src=\'../js/home.js\'></script>");

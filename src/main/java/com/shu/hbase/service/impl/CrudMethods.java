@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.util.List;
 
 public class CrudMethods {
     private static Logger logger = LoggerFactory.getLogger(CrudMethods.class);
@@ -56,6 +57,7 @@ public class CrudMethods {
             }
             logger.info("磁盘校验完毕");
             Put put = new Put(Bytes.toBytes(uid));
+            assert newSize != null;
             put.addColumn(Bytes.toBytes(Static.USER_TABLE_CF), Bytes.toBytes(Static.USER_TABLE_SIZE), Bytes.toBytes(newSize));
             userTable.put(put);
             return true;
@@ -95,7 +97,7 @@ public class CrudMethods {
                     }
                     break;
                 case "dir":
-                    fileInfoVO.setDir(Bytes.toString(CellUtil.cloneValue(cell)).equals("true") ? true : false);
+                    fileInfoVO.setDir(Bytes.toString(CellUtil.cloneValue(cell)).equals("true"));
                     break;
                 case "time":
                     fileInfoVO.setTime(Long.parseLong(Bytes.toString(CellUtil.cloneValue(cell))));
@@ -127,6 +129,33 @@ public class CrudMethods {
         }
         fileInfoVO.setNew(false);
         return fileInfoVO;
+    }
+
+
+    //根据fileId和用户来校验权限
+    public static boolean verifite(Table fileTable, String authId, String filedId, String gId) throws IOException {
+        //通过fileTable查出该文件的权限信息
+        //如果fileId为8位，则说明在查首页,只有本人能查到
+        if ((filedId.length() == 8) || filedId.substring(0, 8).equals("00000000")) {
+            return true;
+        } else {
+
+            Get get = new Get(Bytes.toBytes(filedId));
+            get.setMaxVersions();
+            get.addColumn(Bytes.toBytes(Static.FILE_TABLE_CF), Bytes.toBytes(Static.FILE_TABLE_Auth));
+            Result result = fileTable.get(get);
+            List<Cell> cells = result.listCells();
+            String newAuthId = null;
+            if (!gId.isEmpty()) {
+                newAuthId = gId + authId;
+            }
+            for (Cell cell : cells) {
+                if (Bytes.toString(CellUtil.cloneValue(cell)).equals(newAuthId) || Bytes.toString(CellUtil.cloneValue(cell)).equals(authId) || Bytes.toString(CellUtil.cloneValue(cell)).equals("公开")) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
 }
