@@ -98,7 +98,7 @@
                         <div class="col-md-1">
                             <div>
                                 <p class="text-muted mb-0 mo-mb-2"><span
-                                        class="text-primary">{{ d.dir == true ? '-' : {{d.size}}} }}</span>
+                                        class="text-primary">{{d.size}}</span>
                             </div>
                         </div>
                         <div class="col-md-2" style="text-align: center">
@@ -138,17 +138,16 @@
                 curr: 1
             },
             done: function (res, curr, count) {
-                alert(res)
-                //如果是异步请求数据方式，res即为你接口返回的信息。
-                console.log(res);
-                //得到当前页码
-                console.log(curr);
-                //得到数据总量
-                console.log(count);
+                //回调方法：如果类型为1，则将backid改成detSer，如果类型为0
+                // ，则读取第一个文件的backid来作为现在的backid
+                if (type === 1) {
+                    localStorage.setItem("backid", detSrc);
+                } else {
+                    var newBack = res.data[0].back;
+                    localStorage.setItem(newBack);
+                }
             }
         })
-        //回调方法：如果类型为1，则将backid改成detSer，如果类型为0，则读取第一个文件的backid来作为现在的backid
-
     }
 
 
@@ -202,6 +201,7 @@
 
     //文件大小转换
     function bytesToSize(bytes) {
+        if (bytes === null || bytes === "") return "-";
         if (bytes === 0) return "0 B";
         var k = 1024;
         var sizes = ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
@@ -244,7 +244,7 @@
     //给查询键绑定回车事件
     document.onkeydown = function (event) {
         var code = event.keyCode;
-        if (code == 13) { //这是键盘的enter监听事件
+        if (code === 13) { //这是键盘的enter监听事件
             //绑定焦点，有可能不成功，需要多试试一些标签
             document.getElementById("submits").focus();
         }
@@ -311,15 +311,13 @@
                         layer.closeAll();
                     });
                 } else { //如果是文件夹就重载表格
-                    selectFile(data.field, "1");
+                    selectFile(data.fileId, "1");
                 }
             });
         });
     })
 
 </script>
-
-
 <script src="../js/foot.js"></script>
 </body>
 </html>
