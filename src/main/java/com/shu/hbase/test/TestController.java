@@ -33,17 +33,15 @@ public class TestController {
     }
 
 
-    @GetMapping("downLoadTest")
+    @GetMapping("searchFile")
     public String downLoadTest() {
-
-
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < 10; i++) {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
                     logger.info("新的线程启动了"+Thread.currentThread().getName());
-                    final String url = "http://localhost:8080/downLoad";
-                    String string = Get.sendGet(url, "", "");
+                    final String url = "http://localhost:8080/searchFile";
+                    String string = Get.sendGet(url, "value=3&type=share", "");
                     System.out.println(string);
                 }
             }).start();

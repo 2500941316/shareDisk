@@ -125,7 +125,7 @@ public class PublicServiceImpl implements PublicService {
             logger.info("关键词查询成功！");
 
             TableModel tableModel = new TableModel();
-            tableModel.setCode(200);
+            tableModel.setCode(0);
             tableModel.setData(list);
             return tableModel;
         } catch (Exception e) {
