@@ -92,4 +92,19 @@ public class PublicController {
     }
 
 
+    /**
+     * 查找对应类型的文件
+     *
+     * @param
+     * @throws IOException
+     */
+    @GetMapping("getFilesByType")
+    public TableModel getFilesByType(@RequestParam String type, Authentication authentication) {
+        if (type.isEmpty()) {
+            return TableModel.error("参数为空");
+        }
+        return userService.getFilesByType(type, username);
+    }
+
+
 }

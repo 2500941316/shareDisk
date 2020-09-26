@@ -18,7 +18,6 @@ document.writeln("    <!--Material Icon -->");
 document.writeln("    <link rel=\'stylesheet\' type=\'text/css\' href=\'../css/materialdesignicons.min.css\' />");
 document.writeln("");
 document.writeln("    <link rel=\'stylesheet\' type=\'text/css\' href=\'../css/fontawesome.css\' />");
-document.writeln("    <link rel=\'stylesheet\' type=\'text/css\' href=\'../layui/css/layui.css\' />");
 document.writeln("");
 document.writeln("    <!-- selectize css -->");
 document.writeln("    <link rel=\'stylesheet\' type=\'text/css\' href=\'../css/selectize.css\' />");

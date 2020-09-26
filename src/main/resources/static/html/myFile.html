@@ -8,7 +8,7 @@
     <meta name="description" content=""/>
     <meta name="keywords" content=""/>
     <meta name="author" content="Themesdesign"/>
-    <link rel="stylesheet" href="js/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="../js/layui/css/layui.css" media="all">
     <script src="../js/head.js"></script>
     <style type="text/css">
         .layui-table-cell {
@@ -30,27 +30,31 @@
                 <ul class="nav nav-pills nav nav-pills bg-white rounded nav-justified flex-column flex-sm-row"
                     id="pills-tab" role="tablist">
                     <li class="nav-item">
-                        <a class="nav-link rounded " id="recent-job-tab" data-toggle="pill" href="#recent-job"
+                        <a class="nav-link rounded " href="#" id="recent-job-tab" data-toggle="pill" onclick="callback()"
                            role="tab" aria-controls="recent-job" aria-selected="true">上一级</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link rounded" id="featured-job-tab" data-toggle="pill" href="#featured-job"
+                        <a class="nav-link rounded" href="#" id="featured-job-tab" data-toggle="pill"
+                           onclick="getFilesByType('doc')"
                            role="tab" aria-controls="featured-job" aria-selected="false">文档</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link rounded" id="part-job-tab" data-toggle="pill" href="#part-job" role="tab"
+                        <a class="nav-link rounded" href="#" id="part-job-tab" data-toggle="pill" onclick="getFilesByType('pic')"
+                           role="tab"
                            aria-controls="part-job" aria-selected="false">图片</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link rounded" id="full-job-tab" data-toggle="pill" href="#full-job" role="tab"
+                        <a class="nav-link rounded" href="#" id="full-job-tab" data-toggle="pill"
+                           onclick="getFilesByType('video')" role="tab"
                            aria-controls="full-job" aria-selected="false">视频</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link rounded" id="full-job-tab2" data-toggle="pill" href="#full-job" role="tab"
+                        <a class="nav-link rounded" href="#" id="full-job-tab2" data-toggle="pill"
+                           onclick="getFilesByType('other')" role="tab"
                            aria-controls="full-job" aria-selected="false">其他</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link rounded active" id="full-job-tab3" data-toggle="pill" href="#full-job"
+                        <a class="nav-link rounded active" href="#" id="full-job-tab3" data-toggle="pill" onclick="getAllFile()"
                            role="tab" aria-controls="full-job" aria-selected="false">全部</a>
                     </li>
                 </ul>
@@ -116,6 +120,30 @@
 <!-- JOB LIST START -->
 
 <script>
+
+    //返回上一级方法
+    function callback() {
+
+    }
+
+    //查询框查询文件名的方法
+    function getFilesByType(type) {
+        var table = layui.table;
+        table.reload('test', {
+            url: '/getFilesByType',
+            where: {
+                type: type
+            },
+            page: {
+                curr: 1
+            }
+        })
+    }
+
+    //查询全部文件
+    function getAllFile() {
+
+    }
 
     //文件大小转换
     function bytesToSize(bytes) {
