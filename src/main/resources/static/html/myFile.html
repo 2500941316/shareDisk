@@ -98,7 +98,7 @@
                         <div class="col-md-1">
                             <div>
                                 <p class="text-muted mb-0 mo-mb-2"><span
-                                        class="text-primary">15.7M</span>
+                                        class="text-primary">{{d.size}}</span>
                             </div>
                         </div>
                         <div class="col-md-2" style="text-align: center">
@@ -108,7 +108,7 @@
                         </div>
                         <div class="col-md-1">
                             <div>
-                                <a lay-even="downLoad" class="text-primary">下载 <i
+                                <a lay-even="downLoad" class="text-primary">{{ d.dir == true ? '进入' : '下载' }} <i
                                         class="mdi mdi-chevron-double-right"></i></a>
                             </div>
                         </div>
@@ -162,7 +162,6 @@
 
     //查询框查询文件名的方法
     function getFilesByType(type) {
-
         var table = layui.table;
         table.reload('test', {
             url: '/getFilesByType',
@@ -296,11 +295,11 @@
                         result = res.data.slice(0, this.limit);
                     }
 
-
                     //处理result的时间格式
                     for (var i = 0; i < result.length; i++) {
                         result[i].time = getDate(result[i].time);
                         result[i].type = peakPic(result[i].type);
+                        result[i].size = bytesToSize(result[i].size);
                     }
                     return {
                         "code": res.code, //解析接口状态
