@@ -93,6 +93,50 @@ public class PublicServiceImpl implements PublicService {
         return tableModel;
     }
 
+    //查找框查找方法
+    public TableModel searchFile(String value, String uId) {
+        Connection hBaseConn = null;
+        Table fileTable = null;
+        try {
+            hBaseConn = HbaseConnectionPool.getHbaseConnection();
+            fileTable = hBaseConn.getTable(TableName.valueOf(Static.FILE_TABLE));
+            List<FileInfoVO> list = new ArrayList<>();
+            logger.info("开始查询相关的公共共享文件");
+            Scan scan = new Scan();
+            FilterList filterList = new FilterList(FilterList.Operator.MUST_PASS_ALL);
+            Filter colFilter = new PrefixFilter(Bytes.toBytes(uId));
+
+            SingleColumnValueFilter singleColumnValueFilter = new SingleColumnValueFilter(
+                    Static.FILE_TABLE_CF.getBytes(),
+                    Static.FILE_TABLE_NAME.getBytes(),
+                    CompareFilter.CompareOp.EQUAL,
+                    new SubstringComparator(value));
+            singleColumnValueFilter.setFilterIfMissing(true);
+            filterList.addFilter(colFilter);
+            filterList.addFilter(singleColumnValueFilter);
+            scan.setFilter(filterList);
+            ResultScanner scanner = fileTable.getScanner(scan);
+            for (Result result : scanner) {
+                if (!result.isEmpty()) {
+                    FileInfoVO fileInfoVO = CrudMethods.packageCells(result);
+                    list.add(fileInfoVO);
+                }
+            }
+            logger.info("关键词查询成功！");
+
+            TableModel tableModel = new TableModel();
+            tableModel.setCode(200);
+            tableModel.setData(list);
+            return tableModel;
+        } catch (Exception e) {
+            logger.info(e.getMessage());
+            return TableModel.error("error");
+        } finally {
+            HbaseConnectionPool.releaseConnection(hBaseConn);
+        }
+    }
+
+
 
     @Override
     public void downLoad(String fileId, String gId, HttpServletResponse response, HttpServletRequest request, String uid) {

@@ -82,7 +82,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authenticated()
                 .and().rememberMe()
                 .tokenValiditySeconds(60 * 60 * 24)
-                .and().logout().logoutSuccessHandler(new MyLogoutSuccessHandler()).deleteCookies("JSESSIONID");
+                .and().logout().deleteCookies("JSESSIONID");
     }
 
     public void configure(AuthenticationManagerBuilder auth) throws Exception {

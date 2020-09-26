@@ -32,4 +32,24 @@ public class TestController {
         return "success";
     }
 
+
+    @GetMapping("downLoadTest")
+    public String downLoadTest() {
+
+
+        for (int i = 0; i < 1; i++) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    logger.info("新的线程启动了"+Thread.currentThread().getName());
+                    final String url = "http://localhost:8080/downLoad";
+                    String string = Get.sendGet(url, "", "");
+                    System.out.println(string);
+                }
+            }).start();
+        }
+
+        return "success";
+    }
+
 }

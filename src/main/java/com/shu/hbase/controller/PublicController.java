@@ -3,6 +3,7 @@ package com.shu.hbase.controller;
 import com.shu.hbase.service.interfaces.PublicService;
 import com.shu.hbase.tools.TableModel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,6 +20,12 @@ public class PublicController {
     @Autowired
     PublicService publicService;
 
+    /**
+     * 首页获得公共共享的文件
+     *
+     * @param principal
+     * @return
+     */
     @GetMapping("getPublicFiles")
     public TableModel getPublicFiles(Principal principal) {
         if (principal != null) {
@@ -29,7 +36,7 @@ public class PublicController {
 
 
     /**
-     * 下载文件
+     * 下载文件api
      *
      * @param
      * @throws IOException
@@ -42,5 +49,23 @@ public class PublicController {
         publicService.downLoad(fileId, gId, response, request, username);
     }
 
+
+    /**
+     * 查找文件
+     *
+     * @param
+     * @throws IOException
+     */
+    @GetMapping("searchFile")
+    public TableModel searchFile(@RequestParam String value, @RequestParam String type, Authentication authentication) {
+
+        if (value.isEmpty()) {
+            return TableModel.error("参数为空");
+        }
+        if (type.equals("private"))
+            return publicService.searchFile(value, authentication.getName());
+        else
+            return publicService.searchFile(value, "00000000");
+    }
 
 }

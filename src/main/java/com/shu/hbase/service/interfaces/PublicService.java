@@ -9,5 +9,7 @@ public interface PublicService {
 
     TableModel getPublicFiles(String uId);
 
+    TableModel searchFile(String value, String name);
+
     void downLoad(String fileId, String gId, HttpServletResponse response, HttpServletRequest request, String username);
 }

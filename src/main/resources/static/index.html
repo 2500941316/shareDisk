@@ -32,7 +32,7 @@
                             <div class="col-lg-12">
                                 <!-- REGISTRATION-FORM START -->
 
-                                <form class="registration-form" style="text-align: center">
+                                <div class="registration-form" style="text-align: center">
                                     <div class="row">
                                         <div class="col-lg-3 col-md-6">
                                             <div class="registration-form-box">
@@ -44,12 +44,14 @@
                                         </div>
                                         <div class="col-lg-3 col-md-6">
                                             <div class="registration-form-box">
-                                                <input type="submit" id="submits" name="send"
-                                                       class="submitBnt btn btn-primary btn-block" value="查询">
+                                                <button id="submits" name="send"
+                                                        class="submitBnt btn btn-primary btn-block" data-type="reload"
+                                                        onclick="searchFileByName()">查询
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
-                                </form>
+                                </div>
                                 <!-- REGISTRATION-FORM END -->
 
 
@@ -149,6 +151,24 @@
                                     }
 
 
+                                    //查询框查询文件名的方法
+                                    function searchFileByName() {
+                                        var content = $("#exampleInputName1").val().trim();
+                                        if (content != "") {
+                                            var table = layui.table;
+                                            table.reload('test', {
+                                                url: '/searchFile',
+                                                where: {
+                                                    content: content
+                                                },
+                                                page: {
+                                                    curr: 1
+                                                }
+                                            })
+                                        }
+                                    }
+
+                                    //表格初始化值
                                     layui.use('table', function () {
                                         var table = layui.table;
                                         table.render({
@@ -187,7 +207,6 @@
                                             ]]
                                         });
 
-
                                         table.on('row(test)', function (obj) {
                                             var data = obj.data;
                                             layui.use('layer', function () {
@@ -195,8 +214,8 @@
                                                 layer.confirm('确认下载 ： ' + data.name, {
                                                     btn: ['确定', '取消']//按钮
                                                 }, function () {
+                                                    downLoad(data.fileId);
                                                     layer.closeAll();
-                                                    downLoad(data.fileId)
                                                 });
                                             });
                                         });
