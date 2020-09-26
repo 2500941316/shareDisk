@@ -42,11 +42,19 @@
                                                        placeholder="输入文件名...">
                                             </div>
                                         </div>
-                                        <div class="col-lg-3 col-md-6">
+                                        <div class="col-lg-2 col-md-6">
                                             <div class="registration-form-box">
                                                 <button id="submits" name="send"
                                                         class="submitBnt btn btn-primary btn-block" data-type="reload"
                                                         onclick="searchFileByName()">查询
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-2 col-md-6">
+                                            <div class="registration-form-box" >
+                                                <button id="submits2" name="send"
+                                                        class="submitBnt btn btn-primary btn-block" data-type="reload"
+                                                        onclick="searchAllFileByName()">全部文件
                                                 </button>
                                             </div>
                                         </div>
@@ -152,6 +160,19 @@
 
 
                                     //查询框查询文件名的方法
+                                    function searchAllFileByName() {
+                                            var table = layui.table;
+                                            table.reload('test', {
+                                                url: '/getPublicFiles',
+                                                where: {
+                                                },
+                                                page: {
+                                                    curr: 1
+                                                }
+                                            })
+                                    }
+
+                                    //查询框查询文件名的方法
                                     function searchFileByName() {
                                         var content = $("#exampleInputName1").val().trim();
                                         if (content != "") {
@@ -166,6 +187,7 @@
                                                     curr: 1
                                                 }
                                             })
+                                            $("#exampleInputName1").val("");
                                         }
                                     }
 
