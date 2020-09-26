@@ -51,7 +51,7 @@
                                             </div>
                                         </div>
                                         <div class="col-lg-2 col-md-6">
-                                            <div class="registration-form-box" >
+                                            <div class="registration-form-box">
                                                 <button id="submits2" name="send"
                                                         class="submitBnt btn btn-primary btn-block" data-type="reload"
                                                         onclick="searchAllFileByName()">全部文件
@@ -80,7 +80,7 @@
                                                 <div class="col-md-2">
                                                     <div class="mo-mb-2">
                                                         <svg style="width: 40%;height: 60px;margin-left: 20px">
-                                                            <use xlink:href="#icon-yunpanlogo-14"></use>
+                                                            <use xlink:href={{d.type}}></use>
                                                         </svg>
                                                     </div>
                                                 </div>
@@ -117,6 +117,8 @@
                                 </script>
 
                                 <script>
+
+
                                     //文件大小转换
                                     function bytesToSize(bytes) {
                                         if (bytes === 0) return "0 B";
@@ -161,15 +163,14 @@
 
                                     //查询框查询文件名的方法
                                     function searchAllFileByName() {
-                                            var table = layui.table;
-                                            table.reload('test', {
-                                                url: '/getPublicFiles',
-                                                where: {
-                                                },
-                                                page: {
-                                                    curr: 1
-                                                }
-                                            })
+                                        var table = layui.table;
+                                        table.reload('test', {
+                                            url: '/getPublicFiles',
+                                            where: {},
+                                            page: {
+                                                curr: 1
+                                            }
+                                        })
                                     }
 
                                     //查询框查询文件名的方法
@@ -190,6 +191,16 @@
                                             $("#exampleInputName1").val("");
                                         }
                                     }
+
+                                    //给查询键绑定回车事件
+                                    document.onkeydown = function (event) {
+                                        var code = event.keyCode;
+                                        if (code == 13) { //这是键盘的enter监听事件
+                                            //绑定焦点，有可能不成功，需要多试试一些标签
+                                            document.getElementById("submits").focus();
+                                        }
+                                    }
+
 
                                     //表格初始化值
                                     layui.use('table', function () {
