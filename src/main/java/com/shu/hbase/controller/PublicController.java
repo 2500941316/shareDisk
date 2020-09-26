@@ -67,5 +67,4 @@ public class PublicController {
         else
             return publicService.searchFile(value, "00000000");
     }
-
 }

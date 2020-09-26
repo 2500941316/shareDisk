@@ -125,6 +125,7 @@ public class PublicServiceImpl implements PublicService {
             logger.info("关键词查询成功！");
 
             TableModel tableModel = new TableModel();
+            tableModel.setCount(list.size());
             tableModel.setCode(0);
             tableModel.setData(list);
             return tableModel;
@@ -135,7 +136,6 @@ public class PublicServiceImpl implements PublicService {
             HbaseConnectionPool.releaseConnection(hBaseConn);
         }
     }
-
 
 
     @Override
