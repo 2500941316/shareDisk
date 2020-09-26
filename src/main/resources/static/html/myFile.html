@@ -9,6 +9,12 @@
     <meta name="keywords" content=""/>
     <meta name="author" content="Themesdesign"/>
     <script src="../js/head.js"></script>
+    <style type="text/css">
+        .layui-table-cell {
+            height: 100%;
+            max-width: 100%;
+        }
+    </style>
 </head>
 
 <body>
@@ -78,7 +84,6 @@
                                 <h6 class="f-18"><a href="#"
                                                     class="text-dark">{{d.name}}</a>
                                 </h6>
-
                             </div>
                         </div>
 
@@ -105,14 +110,11 @@
             <!--一个文件端结束-->
         </script>
 
-
     </div>
 </section>
 <!-- JOB LIST START -->
 
-
 <script>
-
 
     //文件大小转换
     function bytesToSize(bytes) {
@@ -174,10 +176,11 @@
         if (content != "") {
             var table = layui.table;
             table.reload('test', {
-                url: '/searchFile',
+                url: '/selectFile',
                 where: {
-                    value: content,
-                    type: "share"
+                    detSrc: "19721631",
+                    type: "1",
+                    gId: ""
                 },
                 page: {
                     curr: 1
