@@ -195,6 +195,7 @@
                                                 layer.confirm('确认下载 ： ' + data.name, {
                                                     btn: ['确定', '取消']//按钮
                                                 }, function () {
+                                                    layer.closeAll();
                                                     downLoad(data.fileId)
                                                 });
                                             });

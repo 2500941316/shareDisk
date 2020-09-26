@@ -4,7 +4,7 @@ import com.shu.hbase.exceptions.BusinessException;
 import com.shu.hbase.exceptions.Exceptions;
 import com.shu.hbase.pojo.FileInfoVO;
 import com.shu.hbase.pojo.Static;
-import com.shu.hbase.service.downLoad.download.DownLoad;
+import com.shu.hbase.service.impl.downLoad.DownLoad;
 import com.shu.hbase.service.interfaces.PublicService;
 import com.shu.hbase.tools.TableModel;
 import com.shu.hbase.tools.hbasepool.HbaseConnectionPool;

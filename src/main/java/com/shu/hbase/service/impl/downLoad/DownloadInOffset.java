@@ -1,4 +1,4 @@
-package com.shu.hbase.service.downLoad.download;
+package com.shu.hbase.service.impl.downLoad;
 
 import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FileStatus;
@@ -14,7 +14,7 @@ public class DownloadInOffset {
         fsInputStream = fs.open(new Path(srcPath));
     }
 
-    public int download(byte[] ioBuffer, long offset) throws IOException {
+    public int download(byte[] ioBuffer, long offset) {
         try {
             fsInputStream.seek(offset);
             return fsInputStream.read(ioBuffer);

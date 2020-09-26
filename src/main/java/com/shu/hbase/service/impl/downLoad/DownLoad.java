@@ -1,4 +1,4 @@
-package com.shu.hbase.service.downLoad.download;
+package com.shu.hbase.service.impl.downLoad;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hadoop.fs.FileSystem;

@@ -16,11 +16,11 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.List;
 
-public class CrudMethods {
+class CrudMethods {
     private static Logger logger = LoggerFactory.getLogger(CrudMethods.class);
 
     //更新用户存储文件总大小
-    public static boolean insertOrUpdateUser(Table userTable, String size, String uid, String type) {
+    static boolean insertOrUpdateUser(Table userTable, String size, String uid, String type) {
         try {
             logger.info("开始查询用户的存储大小");
             //先获取当前用户存储的大小
@@ -69,7 +69,7 @@ public class CrudMethods {
 
 
     //将查询出来的cell封装为返回list的方法
-    public static FileInfoVO packageCells(Result result) {
+    static FileInfoVO packageCells(Result result) {
         FileInfoVO fileInfoVO = new FileInfoVO();
         String fileId = null;
         for (Cell cell : result.rawCells()) {
@@ -105,8 +105,6 @@ public class CrudMethods {
                 case "back":
                     fileInfoVO.setBack(Bytes.toString(CellUtil.cloneValue(cell)));
                     break;
-                case "auth":
-                    break;
                 default:
                     break;
             }
@@ -133,7 +131,7 @@ public class CrudMethods {
 
 
     //根据fileId和用户来校验权限
-    public static boolean verifite(Table fileTable, String authId, String filedId, String gId) throws IOException {
+    static boolean verifite(Table fileTable, String authId, String filedId, String gId) throws IOException {
         //通过fileTable查出该文件的权限信息
         //如果fileId为8位，则说明在查首页,只有本人能查到
         if ((filedId.length() == 8) || filedId.substring(0, 8).equals("00000000")) {
@@ -147,6 +145,7 @@ public class CrudMethods {
             List<Cell> cells = result.listCells();
             String newAuthId = null;
             if (!gId.isEmpty()) {
+                logger.info("gId不为空，开始组合新的AuthId进行验证");
                 newAuthId = gId + authId;
             }
             for (Cell cell : cells) {
@@ -157,5 +156,4 @@ public class CrudMethods {
         }
         return false;
     }
-
 }
