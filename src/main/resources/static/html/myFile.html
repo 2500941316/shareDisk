@@ -60,6 +60,12 @@
                            onclick="getAllFile()"
                            role="tab" aria-controls="full-job" aria-selected="false">全部</a>
                     </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link rounded active" href="#" id="new" data-toggle="pill"
+                           onclick="buildDir()"
+                           role="tab" aria-controls="full-job" aria-selected="false">新建文件夹</a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -82,12 +88,12 @@
                     <div class="row align-items-center">
                         <div class="col-md-2">
                             <div class="mo-mb-2">
-                                <svg style="width: 40%;height: 60px;margin-left: 20px">
+                                <svg style="width: 35%;height: 50px;margin-left: 25px">
                                     <use xlink:href={{d.type}}></use>
                                 </svg>
                             </div>
                         </div>
-                        <div class="col-md-6" style="text-align: center">
+                        <div class="col-md-6">
                             <div>
                                 <h6 class="f-18"><a href="#"
                                                     class="text-dark">{{d.name}}</a>
@@ -123,6 +129,11 @@
 <!-- JOB LIST START -->
 
 <script>
+
+    //点击新建文件夹按钮
+    function buildDir() {
+        alert("正在开发。。")
+    }
 
     //查询文件夹或者回退的方法
     function selectFile(detSrc, type) {
