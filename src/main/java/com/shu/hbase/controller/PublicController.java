@@ -1,13 +1,16 @@
 package com.shu.hbase.controller;
 
 import com.shu.hbase.service.interfaces.PublicService;
+import com.shu.hbase.service.interfaces.UserService;
 import com.shu.hbase.tools.TableModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.Size;
 import java.io.IOException;
 import java.security.Principal;
 
@@ -19,6 +22,9 @@ public class PublicController {
 
     @Autowired
     PublicService publicService;
+
+    @Autowired
+    UserService userService;
 
     /**
      * 首页获得公共共享的文件
@@ -67,4 +73,23 @@ public class PublicController {
         else
             return publicService.searchFile(value, "00000000");
     }
+
+
+    /**
+     * 查询某个目录下的文件信息
+     *
+     * @param
+     * @throws IOException
+     */
+    @GetMapping("selectFile")
+    public TableModel selectFile(@Validated @Size(min = 8) @RequestParam("detSrc") String detSrc, @RequestParam("type") String type,
+                                 @RequestParam("gId") String gId, Authentication authentication) {
+
+        if (detSrc.isEmpty()) {
+            return TableModel.error("参数为空");
+        }
+        return userService.selectFile(detSrc, type, username, gId);
+    }
+
+
 }
