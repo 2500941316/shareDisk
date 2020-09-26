@@ -33,7 +33,7 @@ public class TestController {
     }
 
 
-    @GetMapping("searchFile")
+    @GetMapping("testSearchFile")
     public String downLoadTest() {
         for (int i = 0; i < 10; i++) {
             new Thread(new Runnable() {
