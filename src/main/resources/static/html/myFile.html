@@ -98,7 +98,7 @@
                         <div class="col-md-1">
                             <div>
                                 <p class="text-muted mb-0 mo-mb-2"><span
-                                        class="text-primary">{{d.size}}</span>
+                                        class="text-primary">{{ d.dir == true ? '-' : {{d.size}}} }}</span>
                             </div>
                         </div>
                         <div class="col-md-2" style="text-align: center">
@@ -124,23 +124,39 @@
 
 <script>
 
+    //查询文件夹或者回退的方法
+    function selectFile(detSrc, type) {
+        var table = layui.table;
+        table.reload('test', {
+            url: '/selectFile',
+            where: {
+                detSrc: detSrc,
+                type: type,
+                gId: ""
+            },
+            page: {
+                curr: 1
+            },
+            done: function (res, curr, count) {
+                alert(res)
+                //如果是异步请求数据方式，res即为你接口返回的信息。
+                console.log(res);
+                //得到当前页码
+                console.log(curr);
+                //得到数据总量
+                console.log(count);
+            }
+        })
+        //回调方法：如果类型为1，则将backid改成detSer，如果类型为0，则读取第一个文件的backid来作为现在的backid
+
+    }
+
 
     //返回上一级方法
     function callback() {
         var backid = localStorage.getItem("backid");
         if (backid.length > 8) {
-            var table = layui.table;
-            table.reload('test', {
-                url: '/selectFile',
-                where: {
-                    detSrc: backid,
-                    type: "0",
-                    gId: ""
-                },
-                page: {
-                    curr: 1
-                }
-            })
+            selectFile(backid, "0");
         } else {
             layui.use('layer', function () {
                 layer.tips('已经是根目录', '#back', {
@@ -179,18 +195,7 @@
 
     //查询全部文件
     function getAllFile() {
-        var table = layui.table;
-        table.reload('test', {
-            url: '/selectFile',
-            where: {
-                detSrc: "19721631",
-                type: "1",
-                gId: ""
-            },
-            page: {
-                curr: 1
-            }
-        })
+        selectFile(localStorage.getItem("userid"), "1");
         removeCur();
         document.getElementById("all").classList.add("active");
     }
@@ -236,27 +241,6 @@
         form.submit();
     }
 
-
-    //查询框查询文件名的方法
-    function searchFileByName() {
-        var content = $("#exampleInputName1").val().trim();
-        if (content != "") {
-            var table = layui.table;
-            table.reload('test', {
-                url: '/selectFile',
-                where: {
-                    detSrc: "19721631",
-                    type: "1",
-                    gId: ""
-                },
-                page: {
-                    curr: 1
-                }
-            })
-            $("#exampleInputName1").val("");
-        }
-    }
-
     //给查询键绑定回车事件
     document.onkeydown = function (event) {
         var code = event.keyCode;
@@ -274,7 +258,7 @@
             elem: '#test'
             , url: "/selectFile"
             , where: {
-                detSrc: "19721631",
+                detSrc: localStorage.getItem("userid"),
                 type: "1",
                 gId: ""
             }
@@ -318,13 +302,17 @@
         table.on('row(test)', function (obj) {
             var data = obj.data;
             layui.use('layer', function () {
-
-                layer.confirm('确认下载 ： ' + data.name, {
-                    btn: ['确定', '取消']//按钮
-                }, function () {
-                    downLoad(data.fileId);
-                    layer.closeAll();
-                });
+                //如果不是文件夹，就下载
+                if (!data.dir) {
+                    layer.confirm('确认下载 ： ' + data.name, {
+                        btn: ['确定', '取消']//按钮
+                    }, function () {
+                        downLoad(data.fileId);
+                        layer.closeAll();
+                    });
+                } else { //如果是文件夹就重载表格
+                    selectFile(data.field, "1");
+                }
             });
         });
     })
