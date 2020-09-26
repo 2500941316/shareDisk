@@ -159,7 +159,8 @@
                                             table.reload('test', {
                                                 url: '/searchFile',
                                                 where: {
-                                                    content: content
+                                                    value: content,
+                                                    type: "share"
                                                 },
                                                 page: {
                                                     curr: 1
