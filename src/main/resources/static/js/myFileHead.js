@@ -78,6 +78,9 @@ document.writeln("                <a href=\'../html/index.html\' class=\'logo\'>
 
 document.writeln("                </a>");
 document.writeln("            </div>                 ");
+document.writeln("            <div class=\'buy-button\'>");
+document.writeln("                <a href=\'post-a-job.html\' class=\'btn btn-primary\'><i class=\'mdi mdi-cloud-upload\'></i> 上传文件</a>");
+document.writeln("            </div><!--end login button-->");
 document.writeln("            <!-- End Logo container-->");
 document.writeln("            <div class=\'menu-extras\'>");
 document.writeln("                <div class=\'menu-item\'>");
@@ -95,7 +98,7 @@ document.writeln("            </div>");
 document.writeln("    ");
 document.writeln("            <div id=\'navigation\'>");
 document.writeln("                <!-- Navigation Menu-->   ");
-document.writeln("                <ul class=\'navigation-menu\' style=\'margin-left:30px\'>");
+document.writeln("                <ul class=\'navigation-menu\' style=\'margin-left: 120px\'>");
 document.writeln("                    <li><a href=\'../html/index.html\'>主页</a></li>");
 document.writeln("                    <li class=\'has-submenu\'>");
 document.writeln("                        <a href=\'../html/myFile.html\'>我的文件</a>");

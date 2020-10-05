@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -104,6 +105,23 @@ public class PublicController {
             return TableModel.error("参数为空");
         }
         return userService.getFilesByType(type, username);
+    }
+
+
+    /**
+     * 上传文件到mvc后端
+     *
+     * @param file
+     * @param chunk
+     * @param chunks
+     * @param request
+     */
+    @PostMapping("uploadToBacken")
+    public TableModel uploadTomvc(@RequestParam MultipartFile file, Integer chunk, Integer chunks, String backId, HttpServletRequest request, Authentication authentication) {
+        if (file.isEmpty()) {
+            return TableModel.error("参数为空");
+        }
+        return userService.uploadTomvc(file, chunk, chunks, username, request, backId);
     }
 
 

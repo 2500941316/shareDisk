@@ -2,25 +2,26 @@ package com.shu.hbase.service.impl;
 
 import com.shu.hbase.pojo.FileInfoVO;
 import com.shu.hbase.pojo.Static;
+import com.shu.hbase.tools.hbasepool.HbaseConnectionPool;
 import org.apache.hadoop.hbase.Cell;
 import org.apache.hadoop.hbase.CellUtil;
-import org.apache.hadoop.hbase.client.Get;
-import org.apache.hadoop.hbase.client.Put;
-import org.apache.hadoop.hbase.client.Result;
-import org.apache.hadoop.hbase.client.Table;
+import org.apache.hadoop.hbase.TableName;
+import org.apache.hadoop.hbase.client.*;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.List;
 
-class CrudMethods {
+public class CrudMethods {
     private static Logger logger = LoggerFactory.getLogger(CrudMethods.class);
 
     //更新用户存储文件总大小
-    static boolean insertOrUpdateUser(Table userTable, String size, String uid, String type) {
+    public static boolean insertOrUpdateUser(Table userTable, String size, String uid, String type) {
         try {
             logger.info("开始查询用户的存储大小");
             //先获取当前用户存储的大小
@@ -155,5 +156,96 @@ class CrudMethods {
             }
         }
         return false;
+    }
+
+    //根据file表的文件id来查找，文件对应的物理路径
+    public static String findUploadPath(String backId) throws IOException {
+        Connection hBaseConn = null;
+        Table fileTable = null;
+        String path = null;
+        if (backId.length() == 8) {
+            path = Static.BASEURL + backId;
+        } else {
+            try {
+                hBaseConn = HbaseConnectionPool.getHbaseConnection();
+                fileTable = hBaseConn.getTable(TableName.valueOf(Static.FILE_TABLE));
+                //根据gid查询每个组的文件
+                Get get = new Get(Bytes.toBytes(backId));
+                get.addColumn(Bytes.toBytes(Static.FILE_TABLE_CF), Bytes.toBytes(Static.FILE_TABLE_PATH));
+                Result result = fileTable.get(get);
+                Cell cell = result.rawCells()[0];
+                path = Bytes.toString(CellUtil.cloneValue(cell));
+                fileTable.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            } finally {
+                fileTable.close();
+                HbaseConnectionPool.releaseConnection(hBaseConn);
+            }
+        }
+        return path;
+    }
+
+
+    //将上传的文件名和新建的文件夹 checkTable方法中新建的文件插入files表中
+    public static boolean insertToFiles(File localPath, String fileType, String hdfsPath, String backId, String uId, String fileId) {
+        Connection hBaseConn = null;
+        Table fileTable = null;
+        if (!backId.substring(0, 8).equals(uId)) {
+            return false;
+        }
+        try {
+            hBaseConn = HbaseConnectionPool.getHbaseConnection();
+            fileTable = hBaseConn.getTable(TableName.valueOf(Static.FILE_TABLE));
+
+            long l = System.currentTimeMillis();
+            Put put = new Put(Bytes.toBytes(fileId));
+            if (localPath != null) {
+                put.addColumn(Bytes.toBytes(Static.FILE_TABLE_CF), Bytes.toBytes(Static.FILE_TABLE_NAME), Bytes.toBytes(localPath.getName()));
+                put.addColumn(Bytes.toBytes(Static.FILE_TABLE_CF), Bytes.toBytes(Static.FILE_TABLE_SIZE), Bytes.toBytes(String.valueOf(localPath.length())));
+                put.addColumn(Bytes.toBytes(Static.FILE_TABLE_CF), Bytes.toBytes(Static.FILE_TABLE_ISDIR), Bytes.toBytes("false"));
+            } else {
+                String newPath = hdfsPath;
+                newPath = newPath.substring(newPath.lastIndexOf("/") + 1);
+                put.addColumn(Bytes.toBytes(Static.FILE_TABLE_CF), Bytes.toBytes(Static.FILE_TABLE_NAME), Bytes.toBytes(newPath));
+                put.addColumn(Bytes.toBytes(Static.FILE_TABLE_CF), Bytes.toBytes(Static.FILE_TABLE_SIZE), Bytes.toBytes("-"));
+                put.addColumn(Bytes.toBytes(Static.FILE_TABLE_CF), Bytes.toBytes(Static.FILE_TABLE_ISDIR), Bytes.toBytes("true"));
+            }
+            //如果是首页的数据则back设为/+学号；如果不是首页的数据则back设为当前文件夹的id号
+            put.addColumn(Bytes.toBytes(Static.FILE_TABLE_CF), Bytes.toBytes(Static.FILE_TABLE_TYPE), Bytes.toBytes(fileType));
+            put.addColumn(Bytes.toBytes(Static.FILE_TABLE_CF), Bytes.toBytes(Static.FILE_TABLE_BACK), Bytes.toBytes(backId));
+            put.addColumn(Bytes.toBytes(Static.FILE_TABLE_CF), Bytes.toBytes(Static.FILE_TABLE_PATH), Bytes.toBytes(hdfsPath));
+
+            //如果当前的backid不等于uid，说明在一个文件夹下面上传文件，则先查询文件夹的权限，然后等于该文件夹的权限
+            if (!backId.equals(uId)) {
+                //查询fileId是backId的文件夹的权限
+                Get authGet = new Get(Bytes.toBytes(backId));
+                authGet.setMaxVersions();
+                authGet.addColumn(Bytes.toBytes(Static.FILE_TABLE_CF), Bytes.toBytes(Static.FILE_TABLE_Auth));
+                Result authResult = fileTable.get(authGet);
+                List<String> authList = new ArrayList<>();
+                if (!authResult.isEmpty()) {
+                    for (Cell cell : authResult.rawCells()) {
+                        if (Bytes.toString(CellUtil.cloneQualifier(cell)).equals(Static.FILE_TABLE_Auth)) {
+                            authList.add(Bytes.toString(CellUtil.cloneValue(cell)));
+                        }
+                    }
+                }
+                for (String auth : authList) {
+                    put.addColumn(Bytes.toBytes(Static.FILE_TABLE_CF), Bytes.toBytes(Static.FILE_TABLE_Auth), ++l, Bytes.toBytes(auth));
+                }
+            } else {
+                put.addColumn(Bytes.toBytes(Static.FILE_TABLE_CF), Bytes.toBytes(Static.FILE_TABLE_Auth), Bytes.toBytes(uId));
+            }
+
+            put.addColumn(Bytes.toBytes(Static.FILE_TABLE_CF), Bytes.toBytes(Static.FILE_TABLE_TIME), Bytes.toBytes(l + ""));
+            fileTable.put(put);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            HbaseConnectionPool.releaseConnection(hBaseConn);
+        }
+        return true;
     }
 }
