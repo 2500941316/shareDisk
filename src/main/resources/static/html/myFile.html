@@ -188,7 +188,7 @@
         // 在队列中移除文件
         uploader.removeFile(file, true);
         // 在ui上移除
-        var list=document.getElementById("fileId-" + file.id);
+        var list = document.getElementById("fileId-" + file.id);
         list.remove();
     }
 
@@ -215,8 +215,7 @@
         });
     }
 
-    function remove1(s)
-    {
+    function remove1(s) {
         console.log(s);
     }
 
@@ -246,7 +245,7 @@
             '                             <li class="file-name">' + file.name + '</li>' +
             '                             <li class="file-size">' + fileSize + '</li>  ' +
             '                             <li id="status-' + file.id + '" class="file-status">上传中...</li>  ' +
-            '                             <li onclick="remove1('+file+')" class="file-operate">' +
+            '                             <li onclick="remove1(' + file + ')" class="file-operate">' +
             '                        <div   class="layui-btn-group">' +
             '                            <button type="button"   class="layui-btn layui-btn-sm"><i class="layui-icon"></i></button>' +
             '                        </div>' +
@@ -280,7 +279,7 @@
         if (response.code === 200) {
             remove(file)
             //刷新我的文件
-            layer.msg(file.name+'  上传成功', {
+            layer.msg(file.name + '  上传成功', {
                 time: 1000
             }, function () {
                 selectFile(localStorage.getItem("backid"), "1");
@@ -290,7 +289,7 @@
 
     uploader.on('uploadError', function (file) {
         remove(file);
-        layer.msg(file.name+'  网络异常，上传失败', {
+        layer.msg(file.name + '  网络异常，上传失败', {
             time: 1000
         }, function () {
         });
@@ -441,7 +440,9 @@
                 if (type === "1") {
                     localStorage.setItem("backid", detSrc);
                 } else {
-                    var newBack = res.data[0].back;
+                    if (res != null) {
+                        var newBack = res.data[0].back;
+                    }
                     localStorage.setItem("backid", newBack);
                 }
             }
