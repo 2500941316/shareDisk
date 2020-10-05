@@ -161,6 +161,7 @@
 
 
 <!-- javascript -->
+<script language="javascript" src="html/myFile.html"></script>
 <script src='js/jquery.min.js'></script>
 <script src='js/plugins.js'></script>
 <script src='js/webuploader.min.js'></script>
@@ -276,10 +277,10 @@
         if (response.code === 200) {
             remove(file)
             //刷新我的文件
-            window.parent.refreshTable(event, "A");
             layer.msg(file.name+'  上传成功', {
                 time: 1000
             }, function () {
+                selectFile("19721631", "1");
             });
         }
     });
