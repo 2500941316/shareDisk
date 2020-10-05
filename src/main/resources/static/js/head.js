@@ -98,7 +98,7 @@ document.writeln("                <!-- Navigation Menu-->   ");
 document.writeln("                <ul class=\'navigation-menu\' style=\'margin-left:30px\'>");
 document.writeln("                    <li><a href=\'../html/index2.html\'>主页</a></li>");
 document.writeln("                    <li class=\'has-submenu\'>");
-document.writeln("                        <a href=\'../index.html\'>我的文件</a>");
+document.writeln("                        <a href=\'../html/myFile.html\'>我的文件</a>");
 document.writeln("                    </li>");
 document.writeln("    ");
 document.writeln("                    <li class=\'has-submenu\'>");

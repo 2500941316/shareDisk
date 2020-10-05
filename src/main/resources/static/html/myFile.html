@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>我的文件</title>
+    <meta name="description" content=""/>
+    <meta name="keywords" content=""/>
+    <link rel='shortcut icon' href='../images/favicon.ico'>
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" type="text/css" href="../css/webuploader.css">
+    <link rel='stylesheet' href='../css/bootstrap.min.css' type='text/css'>
+    <link rel="stylesheet" href="../js/layui/css/layui.css" media="all">
+    <!--Material Icon -->
+    <link rel='stylesheet' type='text/css' href='../css/materialdesignicons.min.css'/>
+
+    <link rel='stylesheet' type='text/css' href='../css/fontawesome.css'/>
+    <link rel="stylesheet" href="../css/layuiMy.css" media="all">
+    <!-- selectize css -->
+    <link rel='stylesheet' type='text/css' href='../css/selectize.css'/>
+    <!--Slider-->
+    <link rel='stylesheet' href='../css/owl.carousel.css'/>
+    <link rel='stylesheet' href='../css/owl.theme.css'/>
+    <link rel='stylesheet' href='../css/owl.transitions.css'/>
+
+    <!-- Custom  Css -->
+    <link rel='stylesheet' type='text/css' href='../css/style.css'/>
+
+    <style type="text/css">
+        .layui-table-cell {
+            height: 100%;
+            max-width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- Loader -->
+<div id='preloader'>
+    <div id='status'>
+        <div class='spinner'>
+            <div class='double-bounce1'></div>
+            <div class='double-bounce2'></div>
+        </div>
+    </div>
+</div>
+<!-- Loader -->
+
+<!-- Navigation Bar-->
+<header id='topnav' class='defaultscroll scroll-active'>
+    <!-- Tagline STart -->
+    <div class='tagline'>
+        <div class='container'>
+            <div class='float-left'>
+                <div class='phone'>
+                    <i class='mdi mdi-phone-classic'></i> 17750905812
+                </div>
+                <div class='email'>
+                    <a href='#'>
+                        <i class='mdi mdi-email'></i> 2500941316@qq.com
+                    </a>
+                </div>
+            </div>
+            <div class='float-right'>
+                <ul class='topbar-list list-unstyled d-flex' style='margin: 11px 0px;'>
+                    <li class='list-inline-item'><a href='javascript:void(0);'><i class='mdi mdi-account mr-2'></i>19721631</a>
+                    </li>
+                    <li class='list-inline-item'><a href='/logout'><i class='mdi mdi-account mr-2'></i>注销</a></li>
+                </ul>
+            </div>
+            <div class='clearfix'></div>
+        </div>
+    </div>
+    <!-- Tagline End -->
+
+    <!-- Menu Start -->
+    <div class='container'>
+        <!-- Logo container-->
+        <div>
+            <a href='../index.html' class='logo'>
+
+            </a>
+        </div>
+        <div class='buy-button'>
+            <button href='#' onclick="openProductCount()" class='btn btn-primary'><i class='mdi mdi-cloud-upload'></i>
+                上传文件
+            </button>
+        </div><!--end login button-->
+        <!-- End Logo container-->
+        <div class='menu-extras'>
+            <div class='menu-item'>
+                <!-- Mobile menu toggle-->
+                <a class='navbar-toggle'>
+                    <div class='lines'>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </a>
+                <!-- End mobile menu toggle-->
+            </div>
+        </div>
+
+        <div id='navigation'>
+            <!-- Navigation Menu-->
+            <ul class='navigation-menu' style='margin-left: 120px'>
+                <li><a href='../index.html'>主页</a></li>
+                <li class='has-submenu'>
+                    <a href='myFile.html'>我的文件</a>
+                </li>
+
+                <li class='has-submenu'>
+                    <a href='group.html'>共享文件</a>
+                </li>
+
+
+            </ul><!--end navigation menu-->
+        </div><!--end navigation-->
+    </div><!--end container-->
+    <!--end end-->
+</header><!--end header-->
+<!-- Navbar End -->
+
+<!-- Start Home -->
+
+<section class='bg-home'>
+    <div class='bg-overlay'></div>
+    <div class='home-center'>
+        <div class='home-desc-center'>
+            <div class='container'>
+                <div class='row justify-content-center'>
+                    <div class='col-lg-12'>
+                        <div class='title-heading text-center text-white'>
+
+                            <h1 class='heading font-weight-bold mb-4'>上海大学资源共享平台</h1>
+                            <h6 class='small-title text-uppercase text-light mb-3'>Shanghai University Resource Sharing
+                                Platform</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- end home -->
+
+
+<!--弹出框中的内容-->
+<div id="upload-list" style="display: none">
+    <div class="page">
+        <div class="file-panel">
+            <div id="test2">
+                <button type="button" class="layui-btn" style="margin: 3px">点击上传</button>
+            </div>
+            <hr>
+
+            <div class="file-list" id="fileList"></div>
+        </div>
+    </div>
+</div>
+<button id="picker" style="display: none;">点击上传文件</button>
+
+
+<!-- javascript -->
+<script src='../js/jquery.min.js'></script>
+<script src='../js/plugins.js'></script>
+<script src='../js/webuploader.min.js'></script>
+<!-- selectize js -->
+<script src='../js/selectize.min.js'></script>
+<script src='../js/jquery.nice-select.min.js'></script>
+
+<script src='../js/PicPeak.js'></script>
+<script src='../js/layui/layui.js'></script>
+<script src='../js/iconfont.js'></script>
+<script src='../js/owl.carousel.min.js'></script>
+<script src='../js/app.js'></script>
+<script src='../js/home.js'></script>
+
+<script>
+
+    //在上传列表中移除file
+    function remove(file) {
+        // 取消并中断文件上传
+        uploader.cancelFile(file);
+        // 在队列中移除文件
+        uploader.removeFile(file, true);
+        // 在ui上移除
+        var list=document.getElementById("fileId-" + file.id);
+        list.remove();
+    }
+
+    //文件大小转换
+    function bytesToSize(bytes) {
+        if (bytes === 0) return "0 B";
+        var k = 1024;
+        var sizes = ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+        var i = Math.floor(Math.log(bytes) / Math.log(k));
+        return (bytes / Math.pow(k, i)).toPrecision(3) + " " + sizes[i];
+    }
+
+
+    function openProductCount() {
+        layui.use(['form'], function () {
+            var layer = layui.layer;
+            layer.open({
+                type: 1,
+                title: '上传文件',
+                area: ['700px', '617px'], //宽高
+                content: $('#upload-list'),
+
+            });
+        });
+    }
+
+    function remove1(s)
+    {
+        console.log(s);
+    }
+
+    $('#test2').click(function (event) {
+        $("#picker").find('input').click();
+    });
+    var uploader = WebUploader.create({
+        auto: true,// 选完文件后，是否自动上传。
+        swf: 'images/Uploader.swf',// swf文件路径
+        server: 'uploadToBacken',// 文件接收服务端。
+        pick: '#picker',// 内部根据当前运行是创建，可能是input元素，也可能是flash. 这里是div的id
+        multiple: true, // 选择多个
+        chunked: true,// 开起分片上传。
+        threads: 5, // 上传并发数。允许同时最大上传进程数。
+        method: 'POST', // 文件上传方式，POST或者GET。
+        fileSizeLimit: 1024 * 1024 * 100 * 100, //验证文件总大小是否超出限制, 超出则不允许加入队列。
+        fileSingleSizeLimit: 1024 * 1024 * 1024 * 3, //验证单个文件大小是否超出限制, 超出则不允许加入队列。
+        formData: {
+            backId: ""
+        }
+    });
+
+    uploader.on('fileQueued', function (file) {
+        // 选中文件时要做的事情，比如在页面中显示选中的文件并添加到文件列表，获取文件的大小，文件类型等
+        var fileSize = bytesToSize(file.size);
+        var html = '<ul id="fileId-' + file.id + '" class="file-item"><li class="file-type"></li>   ' +
+            '                             <li class="file-name">' + file.name + '</li>' +
+            '                             <li class="file-size">' + fileSize + '</li>  ' +
+            '                             <li id="status-' + file.id + '" class="file-status">上传中...</li>  ' +
+            '                             <li onclick="remove1('+file+')" class="file-operate">' +
+            '                        <div   class="layui-btn-group">' +
+            '                            <button type="button"   class="layui-btn layui-btn-sm"><i class="layui-icon"></i></button>' +
+            '                        </div>' +
+            '                    </li>' +
+            '                    <li id="progress-' + file.id + '" class="progress"></li></ul>';
+        $('#fileList').append(html);
+    });
+
+    uploader.on("uploadStart", function () {
+        // 在这里可以准备好formData的数据
+        var backId = localStorage.getItem("backId");
+        if (backId == "00000000") {
+            backId = localStorage.getItem("username");
+        }
+        uploader.options.formData.backId = "19721631";
+    });
+
+    uploader.on('uploadProgress', function (file, percent) {
+        if (percent === 1) {
+            $("#progress-" + file.id).css("width", percent * 100 + "%");
+            $("#status-" + file.id).html("正在存储");
+        } else {
+            $("#progress-" + file.id).css("width", percent * 100 + "%");
+            $("#status-" + file.id).html(
+                (percent * 100).toFixed(0) + "%"
+            );
+        }
+    });
+
+    uploader.on('uploadSuccess', function (file, response) {
+        if (response.code === 200) {
+            remove(file)
+            //刷新我的文件
+            layer.msg(file.name+'  上传成功', {
+                time: 1000
+            }, function () {
+                selectFile("19721631", "1");
+            });
+        }
+    });
+
+    uploader.on('uploadError', function (file) {
+        remove(file);
+        layer.msg(file.name+'  网络异常，上传失败', {
+            time: 1000
+        }, function () {
+        });
+    });
+
+    $('#fileList').on('click', '.upload-item .btn-delete', function () {
+        // 从文件队列中删除某个文件id
+        file_id = $(this).data('file_id');
+        // uploader.removeFile(file_id); // 标记文件状态为已取消
+        uploader.removeFile(file_id, true); // 从queue中删除
+        console.log(uploader.getFiles());
+    });
+
+    uploader.on('uploadComplete', function (file) {
+
+    });
+
+
+</script>
+
+
+<!-- JOB LIST START -->
+<section class="section pt-0">
+    <div class="container">
+
+        <div class="row justify-content-center">
+            <div class="col-lg-9 text-center mt-4 pt-2">
+                <ul class="nav nav-pills nav nav-pills bg-white rounded nav-justified flex-column flex-sm-row"
+                    id="pills-tab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link rounded " href="#" id="back" data-toggle="pill"
+                           onclick="callback()"
+                           role="tab" aria-controls="recent-job" aria-selected="true">上一级</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link rounded" href="#" id="doc" data-toggle="pill"
+                           onclick="getFilesByType('doc')"
+                           role="tab" aria-controls="featured-job" aria-selected="false">文档</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link rounded" href="#" id="pic" data-toggle="pill"
+                           onclick="getFilesByType('pic')"
+                           role="tab"
+                           aria-controls="part-job" aria-selected="false">图片</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link rounded" href="#" id="video" data-toggle="pill"
+                           onclick="getFilesByType('video')" role="tab"
+                           aria-controls="full-job" aria-selected="false">视频</a>
+                    </li>
+
+
+                    <li class="nav-item">
+                        <a class="nav-link rounded active" href="#" id="all" data-toggle="pill"
+                           onclick="getAllFile()"
+                           role="tab" aria-controls="full-job" aria-selected="false">全部</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link rounded " href="#" id="new" data-toggle="pill"
+                           onclick="buildDir()" style="width: 180px"
+                           role="tab" aria-controls="full-job" aria-selected="false">新建文件夹</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+
+        <!--表格开始-->
+        <!--layui-->
+        <table class="layui-hide" id="test" lay-filter="test"></table>
+        <script type="text/html" id="barDemo">
+
+            <!--begin-->
+            <div class="job-box bg-white overflow-hidden border rounded mt-4 position-relative overflow-hidden">
+                <div class="lable text-center pt-2 pb-2">
+                    <ul class="list-unstyled best text-white mb-0 text-uppercase">
+                        <li class="list-inline-item"><i class="mdi mdi-star"></i></li>
+                    </ul>
+                </div>
+
+                <div class="p-4">
+                    <div class="row align-items-center">
+                        <div class="col-md-2">
+                            <div class="mo-mb-2">
+                                <svg style="width: 35%;height: 50px;margin-left: 25px">
+                                    <use xlink:href={{d.type}}></use>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div>
+                                <h6 class="f-18"><a href="#"
+                                                    class="text-dark">{{d.name}}</a>
+                                </h6>
+                            </div>
+                        </div>
+
+                        <div class="col-md-1" style="text-align: center">
+                            <div>
+                                <p class="text-muted mb-0 mo-mb-2"><span
+                                        class="text-primary">{{d.size}}</span>
+                            </div>
+                        </div>
+                        <div class="col-md-2" style="text-align: center">
+                            <div>
+                                <p class="text-muted mb-0">{{d.time}}</p>
+                            </div>
+                        </div>
+                        <div class="col-md-1" style="text-align: center">
+                            <div>
+                                <a lay-even="downLoad" class="text-primary">{{ d.dir == true ? '进入' : '下载' }} <i
+                                        class="mdi mdi-chevron-double-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--一个文件端结束-->
+        </script>
+
+    </div>
+</section>
+<!-- JOB LIST START -->
+
+<script>
+
+    //点击新建文件夹按钮
+    function buildDir() {
+        alert("正在开发。。")
+    }
+
+    //查询文件夹或者回退的方法
+    function selectFile(detSrc, type) {
+        var table = layui.table;
+        table.reload('test', {
+            url: '/selectFile',
+            where: {
+                detSrc: detSrc,
+                type: type,
+                gId: ""
+            },
+            page: {
+                curr: 1
+            },
+            done: function (res, curr, count) {
+                //回调方法：如果类型为1，则将backid改成detSer，如果类型为0
+                // ，则读取第一个文件的backid来作为现在的backid
+                if (type === "1") {
+                    localStorage.setItem("backid", detSrc);
+                } else {
+                    var newBack = res.data[0].back;
+                    localStorage.setItem("backid", newBack);
+                }
+            }
+        })
+    }
+
+
+    //返回上一级方法
+    function callback() {
+        var backid = localStorage.getItem("backid");
+        if (backid.length > 8) {
+            selectFile(backid, "0");
+        } else {
+            layui.use('layer', function () {
+                layer.tips('已经是根目录', '#back', {
+                    tips: 1
+                });
+            });
+        }
+    }
+
+    //移除所有的竖导航栏的active
+    function removeCur() {
+        document.getElementById("pic").classList.remove("active");
+        document.getElementById("doc").classList.remove("active");
+        document.getElementById("video").classList.remove("active");
+        document.getElementById("all").classList.remove("active");
+    }
+
+
+    //查询框查询文件名的方法
+    function getFilesByType(type) {
+        var table = layui.table;
+        table.reload('test', {
+            url: '/getFilesByType',
+            where: {
+                type: type
+            },
+            page: {
+                curr: 1
+            }
+        })
+        removeCur();
+        document.getElementById(type).classList.add("active");
+    }
+
+
+    //查询全部文件
+    function getAllFile() {
+        selectFile(localStorage.getItem("userid"), "1");
+        removeCur();
+        document.getElementById("all").classList.add("active");
+    }
+
+    //文件大小转换
+    function bytesToSize(bytes) {
+        if (bytes === null || bytes === "") return "-";
+        if (bytes === 0) return "0 B";
+        var k = 1024;
+        var sizes = ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+        var i = Math.floor(Math.log(bytes) / Math.log(k));
+        return (bytes / Math.pow(k, i)).toPrecision(3) + " " + sizes[i];
+    }
+
+    //时间戳转换
+    function getDate(number) {
+        var now = new Date(number),
+            y = now.getFullYear(),
+            m = now.getMonth() + 1,
+            d = now.getDate();
+        return (
+            y +
+            "-" +
+            (m < 10 ? "0" + m : m) +
+            "-" +
+            (d < 10 ? "0" + d : d) +
+            " " +
+            now.toTimeString().substr(0, 5)
+        );
+    }
+
+
+    //点击下载按钮的时候
+    function downLoad(fileId) {
+        //模拟表单提交
+        var formHtml =
+            "<form action='/downLoad' method='post' >";
+        formHtml +=
+            "<input type='hidden' name='fileId' value=" + fileId + " />";
+        formHtml += "<input type='hidden' name='gId' value='' />";
+        formHtml += "</form>";
+        var form = $(formHtml);
+        $(document.body).append(form);
+        form.submit();
+    }
+
+    //给查询键绑定回车事件
+    document.onkeydown = function (event) {
+        var code = event.keyCode;
+        if (code === 13) { //这是键盘的enter监听事件
+            //绑定焦点，有可能不成功，需要多试试一些标签
+            document.getElementById("submits").focus();
+        }
+    }
+
+
+    //表格初始化值
+    layui.use('table', function () {
+        var table = layui.table;
+        table.render({
+            elem: '#test'
+            , url: "/selectFile"
+            , where: {
+                detSrc: localStorage.getItem("userid"),
+                type: "1",
+                gId: ""
+            }
+            , limit: 8
+            , page: {
+                layout: ['count', 'prev', 'page', 'next', 'skip'] //自定义分页布局
+                , groups: 3 //只显示 1 个连续页码
+                , first: false //不显示首页
+                , last: false //不显示尾页
+            }
+            , parseData: function (res) { //将原始数据解析成 table 组件所规定的数据，res为从url中get到的数据
+                var result;
+
+                if (res.data !== null) {
+                    if (this.page.curr) {
+                        result = res.data.slice(this.limit * (this.page.curr - 1), this.limit * this.page.curr);
+                    } else {
+                        result = res.data.slice(0, this.limit);
+                    }
+
+                    //处理result的时间格式
+                    for (var i = 0; i < result.length; i++) {
+                        result[i].time = getDate(result[i].time);
+                        result[i].type = peakPic(result[i].type);
+                        result[i].size = bytesToSize(result[i].size);
+                    }
+                    return {
+                        "code": res.code, //解析接口状态
+                        "msg": res.msg, //解析提示文本
+                        "count": res.count, //解析数据长度
+                        "data": result //解析数据列表
+                    };
+                }
+
+            }
+            , cols: [[
+                {toolbar: '#barDemo'}
+            ]]
+        });
+
+        table.on('row(test)', function (obj) {
+            var data = obj.data;
+            layui.use('layer', function () {
+                //如果不是文件夹，就下载
+                if (!data.dir) {
+                    layer.confirm('确认下载 ： ' + data.name, {
+                        btn: ['确定', '取消']//按钮
+                    }, function () {
+                        downLoad(data.fileId);
+                        layer.closeAll();
+                    });
+                } else { //如果是文件夹就重载表格
+                    selectFile(data.fileId, "1");
+                }
+            });
+        });
+    })
+
+</script>
+<script src="../js/foot.js"></script>
+</body>
+</html>
