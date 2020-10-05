@@ -226,7 +226,7 @@
     var uploader = WebUploader.create({
         auto: true,// 选完文件后，是否自动上传。
         swf: 'images/Uploader.swf',// swf文件路径
-        server: 'uploadToBacken',// 文件接收服务端。
+        server: '/uploadToBacken',// 文件接收服务端。
         pick: '#picker',// 内部根据当前运行是创建，可能是input元素，也可能是flash. 这里是div的id
         multiple: true, // 选择多个
         chunked: true,// 开起分片上传。
@@ -261,7 +261,7 @@
         if (backId == "00000000") {
             backId = localStorage.getItem("username");
         }
-        uploader.options.formData.backId = "19721631";
+        uploader.options.formData.backId = localStorage.getItem("backid");
     });
 
     uploader.on('uploadProgress', function (file, percent) {
@@ -283,7 +283,7 @@
             layer.msg(file.name+'  上传成功', {
                 time: 1000
             }, function () {
-                selectFile("19721631", "1");
+                selectFile(localStorage.getItem("backid"), "1");
             });
         }
     });
