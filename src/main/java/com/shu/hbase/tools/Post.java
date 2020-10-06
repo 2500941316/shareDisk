@@ -27,7 +27,7 @@ public class Post {
 
     public static void Post() throws Exception {
 
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 7; i++) {
             ApiUploadFileInfo commonsFileInfoVO = new ApiUploadFileInfo();
             String userId = "00000000"; //公共账号文件夹
             String fileName = "上海大学奖学金评选申请" + i + ".docx";
@@ -57,8 +57,8 @@ public class Post {
             apiDownLoadInfo.setDesPath("D://HDFSTest.jpg");
 
             String json = objectMapper.writeValueAsString(commonsFileInfoVO);
-            sendPost("http://202.120.117.43:8080/commonAPI/shareToAll", json);
-            //sendPost("http://10.10.0.92:8080/commonAPI/shareToAll", json);
+            //  sendPost("http://202.120.117.43:8080/commonAPI/shareToAll", json);
+            sendPost("http://10.10.0.92:8080/commonAPI/shareToAll", json);
             // sendPost("http://localhost:8080/commonAPI/shareToAll", json);
         }
     }
