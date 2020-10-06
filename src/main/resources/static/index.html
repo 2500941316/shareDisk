@@ -19,7 +19,11 @@
             <div class="modal-body">
                 <div id="folioModalBody">
                     <div data-parentDir="0" class="folioAll childrenDiv">
-
+                        <div class="p active-p" style="border-color: rgb(154, 205, 253);">
+                            <i class="fa fa1 fa-minus-square-o" data-folioid="0"></i>
+                            <i class="fa fa2 fa-folder-open"></i>
+                            <span>当前目录</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -36,7 +40,7 @@
 
 <script>
     $(function () {
-        $("#folioModal").modal("show");//模态框初始化就显示了
+
 
         getFolioToParentDir(0, $("#folioModalBody .folioAll"));//初始化时得到根目录下的文件夹
 
@@ -63,7 +67,7 @@
         //记得保存到数据库还要刷新，新增好的文件夹是使用jq动态创建节点实现的
         $("#creatFolio").click(function () {
             var $active = $(".active-p");
-            var parentDir = parseInt($active.parent().attr("data-parentDir")) ;
+            var parentDir = parseInt($active.parent().attr("data-parentDir"));
 
             var $children = $('<div class="childrenDiv new"><div class="p now">' +
                 '<i class="fa fa1"></i> <i class="fa fa2 fa-folder"></i>' +
@@ -130,6 +134,7 @@
                     $el.append($children);
                 });
             });
+        $("#folioModal").modal("show");//模态框初始化就显示了
     }
 
 </script>
