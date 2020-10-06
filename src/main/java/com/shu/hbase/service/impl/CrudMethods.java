@@ -206,7 +206,6 @@ public class CrudMethods {
             return false;
         }
         try {
-            logger.info("进入了insert方法");
             hBaseConn = HbaseConnectionPool.getHbaseConnection();
             fileTable = hBaseConn.getTable(TableName.valueOf(Static.FILE_TABLE));
 
