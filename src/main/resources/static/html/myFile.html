@@ -390,6 +390,9 @@
         <!--表格开始-->
         <!--layui-->
         <table class="layui-hide" id="test" lay-filter="test"></table>
+        <script type="text/html" id="barDemo2">
+            <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+        </script>
         <script type="text/html" id="barDemo">
 
             <!--begin-->
@@ -639,25 +642,33 @@
 
             }
             , cols: [[
-                {toolbar: '#barDemo'}
+                {toolbar: '#barDemo'},
+                , {fixed: 'right', title: '操作', toolbar: '#barDemo2', width: 75}
             ]]
         });
 
         table.on('row(test)', function (obj) {
             var data = obj.data;
-            layui.use('layer', function () {
-                //如果不是文件夹，就下载
-                if (!data.dir) {
-                    layer.confirm('确认下载 ： ' + data.name, {
-                        btn: ['确定', '取消']//按钮
-                    }, function () {
-                        downLoad(data.fileId);
-                        layer.closeAll();
-                    });
-                } else { //如果是文件夹就重载表格
-                    selectFile(data.fileId, "1");
-                }
-            });
+            if (obj.event === 'del') {
+                layer.confirm('真的删除行么', function (index) {
+                    obj.del();
+                    layer.close(index);
+                });
+            } else {
+                layui.use('layer', function () {
+                    //如果不是文件夹，就下载
+                    if (!data.dir) {
+                        layer.confirm('确认下载 ： ' + data.name, {
+                            btn: ['确定', '取消']//按钮
+                        }, function () {
+                            downLoad(data.fileId);
+                            layer.closeAll();
+                        });
+                    } else { //如果是文件夹就重载表格
+                        selectFile(data.fileId, "1");
+                    }
+                });
+            }
         });
     })
 
@@ -667,55 +678,40 @@
 <script>
     function buildDir() {
         getFolioToParentDir(0, $("#folioModalBody .folioAll"));//初始化时得到根目录下的文件夹
-        var $div = $("#folioModalBody>div:eq(0)");
-        $div.on('click', "div.p:not(.now)", function () {
-            var $fa1 = $(this).find(".fa1:eq(0)");
-            if ($fa1.hasClass("fa-plus-square-o")) {
-                $fa1.addClass("fa-minus-square-o").removeClass("fa-plus-square-o fa-spinner");
-                $fa1.siblings(".fa2").removeClass("fa-folder").addClass("fa-folder-open");
-                if ($(this).parent().hasClass("childrenDiv"))//多做一步优化 - 得到该文件夹的子文件夹
-                    getFolioToParentDir($fa1.attr("data-folioId"), $fa1.closest(".childrenDiv"));
-            } else if ($fa1.hasClass("fa-minus-square-o")) {
-                $fa1.addClass("fa-plus-square-o").removeClass("fa-minus-square-o fa-spinner");
-                $fa1.parents(".p").siblings(".childrenDiv").hide();
-                $fa1.siblings(".fa2").removeClass("fa-folder-open").addClass("fa-folder");
-            }
-        }).end().on('click', '.fa1', function () {
-
-        });
-        //创建文件夹 操作
-        //记得保存到数据库还要刷新，新增好的文件夹是使用jq动态创建节点实现的
-        $("#creatFolio").click(function () {
-            var $active = $(".active-p");
-            var parentDir = 1;
-
-            var $children = $('<div class="childrenDiv new"><div class="p now">' +
-                '<i class="fa fa1"></i> <i class="fa fa2 fa-folder"></i>' +
-                ' <input type="text" name="fileName"><span class="text-center spanOption ok">√</span>' +
-                '<span class="text-center spanOption toHide">×</span>' +
-                '</div></div>');
-            $children.find(".p").css("padding-left", parentDir * 20 + "px");
-            $children.find(".toHide").on('click', function () {
-                $children.remove();
-            }).end().find(".ok").on('click', function () {
-                var $fileName = $children.find("input[name=fileName]").val();
-                if ($fileName.trim().length === 0) {//确定创建文件夹
-                    alert("文件名不能为空");
-                } else {
-                    //ajax创建逻辑
-                    $.get("/buildDirect", {backId: "19721631", dirName: $fileName.trim()},
-                        function (res) {
-                            if (res.code === 200) {
-                                $active.find(".fa1").removeClass("fa-plus-square-o fa-spinner").addClass("fa-minus-square-o")
-                                    .end().find(".fa2").removeClass("fa-folder").addClass("fa-folder-open");
-                                getFolioToParentDir($active.find(".fa1").attr("data-folioId"), $active.parent());
-                            }
-                        });
-                }
-            });
-            $active.parent().append($children).find("[name=fileName]").focus();
-        });
     };
+
+    //创建文件夹 操作
+    //记得保存到数据库还要刷新，新增好的文件夹是使用jq动态创建节点实现的
+    $("#creatFolio").click(function () {
+        const $active = $(".active-p");
+        const parentDir = 1;
+
+        const $children = $('<div class="childrenDiv new"><div class="p now">' +
+            '<i class="fa fa1"></i> <i class="fa fa2 fa-folder"></i>' +
+            ' <input type="text" name="fileName"><span class="text-center spanOption ok">√</span>' +
+            '<span class="text-center spanOption toHide">×</span>' +
+            '</div></div>');
+        $children.find(".p").css("padding-left", parentDir * 20 + "px");
+        $children.find(".toHide").on('click', function () {
+            $children.remove();
+        }).end().find(".ok").on('click', function () {
+            var $fileName = $children.find("input[name=fileName]").val();
+            if ($fileName.trim().length === 0) {//确定创建文件夹
+                alert("文件名不能为空");
+            } else {
+                //ajax创建逻辑
+                $.get("/buildDirect", {backId: "19721631", dirName: $fileName.trim()},
+                    function (res) {
+                        if (res.code === 200) {
+                            $active.find(".fa1").removeClass("fa-plus-square-o fa-spinner").addClass("fa-minus-square-o")
+                                .end().find(".fa2").removeClass("fa-folder").addClass("fa-folder-open");
+                            getFolioToParentDir($active.find(".fa1").attr("data-folioId"), $active.parent());
+                        }
+                    });
+            }
+        });
+        $active.parent().append($children).find("[name=fileName]").focus();
+    });
 
     //更具文件当前文件夹的id得到该文件夹的子文件
     //参数1：父文件Id 参数2：父文件夹节点
@@ -726,16 +722,19 @@
         var arrParO = [];
         $.get("/selectFile", {detSrc: "19721631", type: "1", gId: ""},
             function (data) {
-                for (let i = 0; i < data.data.length; i++) {
-                    if (data.data[i].dir === true) {
-                        arrParO.push({
-                            "id": data.data[i].fileId,
-                            "folioName": data.data[i].name,
-                            "parentDir": 0,
-                            "children": 0
-                        },)
+                if (data.data != null) {
+                    for (let i = 0; i < data.data.length; i++) {
+                        if (data.data[i].dir === true) {
+                            arrParO.push({
+                                "id": data.data[i].fileId,
+                                "folioName": data.data[i].name,
+                                "parentDir": 0,
+                                "children": 0
+                            },)
+                        }
                     }
                 }
+
 
                 ///模拟ajax数据数据
                 $.each(arrParO, function (i, obj) {
@@ -747,6 +746,10 @@
                     $children.find(".p").css("padding-left", dir * 20 + "px");
                     $el.append($children);
                 });
+
+                //调用外部页面的刷新方法
+                selectFile(localStorage.getItem("backid"), "1");
+
             });
         $("#folioModal").modal("show");//模态框初始化就显示了
     }
