@@ -656,22 +656,22 @@
                 });
             }
 
-        table.on('row(test)', function (obj) {
-            var data = obj.data;
-            layui.use('layer', function () {
-                //如果不是文件夹，就下载
-                if (!data.dir) {
-                    layer.confirm('确认下载 ： ' + data.name, {
-                        btn: ['确定', '取消']//按钮
-                    }, function () {
-                        downLoad(data.fileId);
-                        layer.closeAll();
-                    });
-                } else { //如果是文件夹就重载表格
-                    selectFile(data.fileId, "1");
-                }
-            });
-        });
+        // table.on('row(test)', function (obj) {
+        //     var data = obj.data;
+        //     layui.use('layer', function () {
+        //         //如果不是文件夹，就下载
+        //         if (!data.dir) {
+        //             layer.confirm('确认下载 ： ' + data.name, {
+        //                 btn: ['确定', '取消']//按钮
+        //             }, function () {
+        //                 downLoad(data.fileId);
+        //                 layer.closeAll();
+        //             });
+        //         } else { //如果是文件夹就重载表格
+        //             selectFile(data.fileId, "1");
+        //         }
+        //     });
+        // });
     })
 
 </script>
