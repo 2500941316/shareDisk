@@ -28,6 +28,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
+import static com.shu.hbase.service.impl.CrudMethods.*;
+
 @Service
 public class UserServiceImpl implements UserService {
     private static Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
@@ -46,7 +48,7 @@ public class UserServiceImpl implements UserService {
             userTable = hBaseConn.getTable(TableName.valueOf(Static.USER_TABLE));
             logger.info("开始检测用户查询权限");
             //权限检测
-            if (!CrudMethods.verifite(fileTable, uId, backId, gId)) {
+            if (!verifite(fileTable, uId, backId, gId)) {
                 return TableModel.error("您的访问权限不足");
             }
             logger.info("权限检测成功");
@@ -76,7 +78,7 @@ public class UserServiceImpl implements UserService {
                 scan.setMaxVersions();
                 ResultScanner results = fileTable.getScanner(scan);
                 for (Result result : results) {
-                    FileInfoVO fileInfoVO = CrudMethods.packageCells(result);
+                    FileInfoVO fileInfoVO = packageCells(result);
                     list.add(fileInfoVO);
                 }
             }
@@ -136,7 +138,7 @@ public class UserServiceImpl implements UserService {
             ResultScanner scanner = fileTable.getScanner(scan);
             List<FileInfoVO> list = new ArrayList<>();
             for (Result result : scanner) {
-                FileInfoVO fileInfoVO = CrudMethods.packageCells(result);
+                FileInfoVO fileInfoVO = packageCells(result);
                 list.add(fileInfoVO);
             }
             TableModel tableModel = new TableModel();
@@ -276,7 +278,7 @@ public class UserServiceImpl implements UserService {
         if (dirName.equals("/我的文档")) {
             path = "/shuwebfs/" + userId + dirName;
         } else {
-            path = CrudMethods.findUploadPath(backId);
+            path = findUploadPath(backId);
             assert path != null;
             if (!path.isEmpty()) {
                 path = path + "/" + dirName;
@@ -289,7 +291,7 @@ public class UserServiceImpl implements UserService {
             fs = HdfsConnectionPool.getHdfsConnection();
             fs.mkdirs(new Path(path));
 
-            CrudMethods.insertToFiles(null, "dir", path, backId, userId, userId + "_" + uniqueseed.incrementAndGet());
+            insertToFiles(null, "dir", path, backId, userId, userId + "_" + uniqueseed.incrementAndGet());
             logger.info("insert执行成功");
             HdfsConnectionPool.releaseConnection(fs);
             logger.info("文件夹创建成功");
@@ -333,12 +335,12 @@ public class UserServiceImpl implements UserService {
                     }
                 }
                 logger.info("执行在hdfs中删除物理文件的方法");
-                if (CrudMethods.delete(path)) {
+                if (delete(path)) {
                     logger.info("hdfs中文件和文件夹删除成功");
                     //当hdfs和共享组中删除完毕后，递归删除文件表中的该fileId下面的所有文件
                     List<Delete> deleteList = new ArrayList<>();
                     logger.info("通过文件id删除开始在hbase中删除文件");
-                    CrudMethods.deleteFilesById(fileTable, deleteList, fileId, uId, sizeList);
+                    deleteFilesById(fileTable, deleteList, fileId, uId, sizeList);
                     deleteList.add(new Delete(Bytes.toBytes(fileId)));
                     if (!deleteList.isEmpty()) {
                         fileTable.delete(deleteList);
@@ -347,7 +349,7 @@ public class UserServiceImpl implements UserService {
                     for (Integer integer : sizeList) {
                         sizeAll += integer;
                     }
-                    if (!CrudMethods.insertOrUpdateUser(userTable, sizeAll + "", uId, "delete")) {
+                    if (!insertOrUpdateUser(userTable, sizeAll + "", uId, "delete")) {
                         return TableModel.error("文件超出存储容量");
                     }
                 }
