@@ -85,7 +85,7 @@
                             if (res.code === 200) {
                                 $active.find(".fa1").removeClass("fa-plus-square-o fa-spinner").addClass("fa-minus-square-o")
                                     .end().find(".fa2").removeClass("fa-folder").addClass("fa-folder-open");
-                                getFolioToParentDir($active.find(".fa1").attr("data-folioId"), $active.parent().parent());
+                                getFolioToParentDir($active.find(".fa1").attr("data-folioId"), $active.parent());
                             }
                         });
                 }
