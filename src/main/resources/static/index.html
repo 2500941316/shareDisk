@@ -67,7 +67,7 @@
         //记得保存到数据库还要刷新，新增好的文件夹是使用jq动态创建节点实现的
         $("#creatFolio").click(function () {
             var $active = $(".active-p");
-            var parentDir = parseInt($active.parent().attr("data-parentDir"));
+            var parentDir = 0;
 
             var $children = $('<div class="childrenDiv new"><div class="p now">' +
                 '<i class="fa fa1"></i> <i class="fa fa2 fa-folder"></i>' +
