@@ -43,8 +43,8 @@
         getFolioToParentDir(0, $("#folioModalBody .folioAll"));//初始化时得到根目录下的文件夹
         var $div = $("#folioModalBody>div:eq(0)");
         $div.on('click', "div.p:not(.now)", function () {
-            $("div.p").removeClass("active-p").css("border-color", "rgba(0,0,0,0)");
-            $(this).addClass("active-p").css("border-color", "#9acdfd");
+            //$("div.p").removeClass("active-p").css("border-color", "rgba(0,0,0,0)");
+           // $(this).addClass("active-p").css("border-color", "#9acdfd");
 
             var $fa1 = $(this).find(".fa1:eq(0)");
             if ($fa1.hasClass("fa-plus-square-o")) {
