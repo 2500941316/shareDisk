@@ -85,7 +85,7 @@
                             if (res.code === 200) {
                                 $active.find(".fa1").removeClass("fa-plus-square-o fa-spinner").addClass("fa-minus-square-o")
                                     .end().find(".fa2").removeClass("fa-folder").addClass("fa-folder-open");
-                                getFolioToParentDir($active.find(".fa1").attr("data-folioId"), $active.parent());
+                                getFolioToParentDir($active.find(".fa1").attr("data-folioId"), $active.parent().parent());
                             }
                         });
                 }
@@ -98,14 +98,7 @@
     //参数1：父文件Id 参数2：父文件夹节点
     function getFolioToParentDir(folioId, $el) {
         $el.find(".childrenDiv").remove();
-        var dir = parseInt($el.attr("data-parentDir"));//第几个级别
-
-        var tarClazz = ""; // 这个变量还没有用得上
-        if ($el.find(".fa1").hasClass("fa-plus-square-o")) {
-            tarClazz = "fa-plus-square-o";
-        } else if ($el.find(".fa1").hasClass("fa-minus-square-o")) {
-            tarClazz = "fa-minus-square-o";
-        }
+        var dir = parseInt($el.attr("data-parentDir")) + 1;//第几个级别
 
         var arrParO = [];
         $.get("/selectFile", {detSrc: "19721631", type: "1", gId: ""},
