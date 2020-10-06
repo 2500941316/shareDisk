@@ -261,29 +261,29 @@ public class UserServiceImpl implements UserService {
 
     //目录的创建
     @Override
-    public TableModel buildDirect(String backId, String dirName, String userId) {
-        logger.info("创建文件夹权限验证");
+    public  TableModel buildDirect(String backId, String dirName, String userId) {
+       // logger.info("创建文件夹权限验证");
         if (backId.length() > 8) {
             if (!backId.substring(0, 8).equals(userId)) {
                 return TableModel.error("权限不足");
             }
         }
-        logger.info("创建文件夹权限验证成功");
+       // logger.info("创建文件夹权限验证成功");
         String path = CrudMethods.findUploadPath(backId);
         assert path != null;
         if (!path.isEmpty()) {
             path = path + "/" + dirName;
         }
-        logger.info("新建文件夹物理路径拼接");
+       // logger.info("新建文件夹物理路径拼接");
         FileSystem fs = null;
         try {
-            synchronized (HdfsConnectionPool.class) {
-                fs = HdfsConnectionPool.getHdfsConnection();
-            }
+            fs = HdfsConnectionPool.getHdfsConnection();
+            logger.info("进入mkdir方法");
             fs.mkdirs(new Path(path));
+            logger.info("mkdir方法执行成功");
             CrudMethods.insertToFiles(null, "dir", path, backId, userId, userId + "_" + System.currentTimeMillis());
             HdfsConnectionPool.releaseConnection(fs);
-            logger.info("文件夹创建成功");
+          //  logger.info("文件夹创建成功");
         } catch (Exception e) {
             logger.error(e.getMessage());
         }
