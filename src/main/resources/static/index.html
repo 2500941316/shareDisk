@@ -9,6 +9,8 @@
 </head>
 
 <body>
+<button onclick="buildDir()">新建文件夹</button>
+
 <div id="folioModal" class="modal fade" tabindex="11" role="dialog" style="top: 90px;">
     <div class="modal-dialog" role="document" style="width: 500px;">
         <div class="modal-content">
@@ -39,13 +41,10 @@
 <script type="text/javascript" src="js/bootstrap.bundle.min.js"></script>
 
 <script>
-    $(function () {
+    function buildDir() {
         getFolioToParentDir(0, $("#folioModalBody .folioAll"));//初始化时得到根目录下的文件夹
         var $div = $("#folioModalBody>div:eq(0)");
         $div.on('click', "div.p:not(.now)", function () {
-            //$("div.p").removeClass("active-p").css("border-color", "rgba(0,0,0,0)");
-           // $(this).addClass("active-p").css("border-color", "#9acdfd");
-
             var $fa1 = $(this).find(".fa1:eq(0)");
             if ($fa1.hasClass("fa-plus-square-o")) {
                 $fa1.addClass("fa-minus-square-o").removeClass("fa-plus-square-o fa-spinner");
@@ -92,7 +91,7 @@
             });
             $active.parent().append($children).find("[name=fileName]").focus();
         });
-    });
+    };
 
     //更具文件当前文件夹的id得到该文件夹的子文件
     //参数1：父文件Id 参数2：父文件夹节点
