@@ -152,7 +152,6 @@ public class PublicController {
         if (fileId.isEmpty()) {
             return TableModel.error("参数为空");
         }
-        request.getSession().removeAttribute(fileId);
         return userService.deleteFile(fileId, username);
     }
 
