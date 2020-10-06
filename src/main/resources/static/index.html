@@ -128,7 +128,8 @@
 
         $.get("/selectFile", {detSrc: "19721631", type: "1", gId: ""},
             function (data) {
-                for (let i = 0; i < data.data; i++) {
+                for (let i = 0; i < data.data.length; i++) {
+                    alert(data.data[i].dir)
                     if (data.data[i].dir === true) {
                         arrParO.push({"id": data.data[i].fileId, "folioName": data.data[i].name, "parentDir": 0, "children": 0},)
                     }
