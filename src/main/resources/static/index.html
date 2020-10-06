@@ -40,10 +40,7 @@
 
 <script>
     $(function () {
-
-
         getFolioToParentDir(0, $("#folioModalBody .folioAll"));//初始化时得到根目录下的文件夹
-
         var $div = $("#folioModalBody>div:eq(0)");
         $div.on('click', "div.p:not(.now)", function () {
             $("div.p").removeClass("active-p").css("border-color", "rgba(0,0,0,0)");
@@ -79,17 +76,18 @@
                 $children.remove();
             }).end().find(".ok").on('click', function () {
                 var $fileName = $children.find("input[name=fileName]").val();
-                if ($fileName.trim().length == 0) {//确定创建文件夹
+                if ($fileName.trim().length === 0) {//确定创建文件夹
                     alert("文件名不能为空");
                 } else {
                     //ajax创建逻辑
-
-                    var res = {msg: "新增成功", "status": 200};//模拟ajax返回为新增成功的结果
-                    if (res.status == 200) {
-                        $active.find(".fa1").removeClass("fa-plus-square-o fa-spinner").addClass("fa-minus-square-o")
-                            .end().find(".fa2").removeClass("fa-folder").addClass("fa-folder-open");
-                        getFolioToParentDir($active.find(".fa1").attr("data-folioId"), $active.parent());
-                    }
+                    $.get("/buildDirect", {backId: "19721631", dirName: $fileName.trim()},
+                        function (res) {
+                            if (res.code === 200) {
+                                $active.find(".fa1").removeClass("fa-plus-square-o fa-spinner").addClass("fa-minus-square-o")
+                                    .end().find(".fa2").removeClass("fa-folder").addClass("fa-folder-open");
+                                getFolioToParentDir($active.find(".fa1").attr("data-folioId"), $active.parent());
+                            }
+                        });
                 }
             });
             $active.parent().append($children).find("[name=fileName]").focus();

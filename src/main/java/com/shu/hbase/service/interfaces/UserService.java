@@ -11,4 +11,6 @@ public interface UserService {
     TableModel getFilesByType(String type, String username);
 
     TableModel uploadTomvc(MultipartFile file, Integer chunk, Integer chunks, String username, HttpServletRequest request, String backId);
+
+    TableModel buildDirect(String backId, String dirName, String username);
 }

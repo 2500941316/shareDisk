@@ -6,6 +6,9 @@ import com.shu.hbase.service.impl.upload.MvcToHadoop;
 import com.shu.hbase.service.interfaces.UserService;
 import com.shu.hbase.tools.TableModel;
 import com.shu.hbase.tools.hbasepool.HbaseConnectionPool;
+import com.shu.hbase.tools.hdfspool.HdfsConnectionPool;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hbase.Cell;
 import org.apache.hadoop.hbase.CellUtil;
 import org.apache.hadoop.hbase.TableName;
@@ -258,6 +261,35 @@ public class UserServiceImpl implements UserService {
             logger.error(e.getMessage());
         }
         return TableModel.error("网络异常");
+    }
+
+
+    //目录的创建
+    @Override
+    public TableModel buildDirect(String backId, String dirName, String userId) {
+        logger.info("创建文件夹权限验证");
+        if (backId.length() > 8) {
+            if (!backId.substring(0, 8).equals(userId)) {
+                return TableModel.error("权限不足");
+            }
+        }
+        logger.info("创建文件夹权限验证成功");
+        String path = CrudMethods.findUploadPath(backId);
+        if (!path.isEmpty()) {
+            path = path + "/" + dirName;
+        }
+        logger.info("新建文件夹物理路径拼接");
+        FileSystem fs = null;
+        try {
+            fs = HdfsConnectionPool.getHdfsConnection();
+            fs.mkdirs(new Path(path));
+            CrudMethods.insertToFiles(null, "dir", path, backId, userId, userId + "_" + System.currentTimeMillis());
+            HdfsConnectionPool.releaseConnection(fs);
+            logger.info("文件夹创建成功");
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        }
+        return TableModel.success("创建成功");
     }
 
 }

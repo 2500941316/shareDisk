@@ -159,7 +159,7 @@ public class CrudMethods {
     }
 
     //根据file表的文件id来查找，文件对应的物理路径
-    public static String findUploadPath(String backId) throws IOException {
+    public static String findUploadPath(String backId) {
         Connection hBaseConn = null;
         Table fileTable = null;
         String path = null;
@@ -175,13 +175,19 @@ public class CrudMethods {
                 Result result = fileTable.get(get);
                 Cell cell = result.rawCells()[0];
                 path = Bytes.toString(CellUtil.cloneValue(cell));
-                fileTable.close();
+
             } catch (Exception e) {
                 e.printStackTrace();
                 return null;
             } finally {
-                fileTable.close();
-                HbaseConnectionPool.releaseConnection(hBaseConn);
+                try {
+                    assert fileTable != null;
+                    fileTable.close();
+                    HbaseConnectionPool.releaseConnection(hBaseConn);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
             }
         }
         return path;

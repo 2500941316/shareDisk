@@ -125,4 +125,20 @@ public class PublicController {
     }
 
 
+
+    /**
+     * 创建文件夹
+     *
+     * @param
+     */
+    @GetMapping("buildDirect")
+    public TableModel buildDirect(@RequestParam("backId") String backId, @RequestParam("dirName") String dirName, Authentication authentication) {
+
+        if (backId.isEmpty()) {
+            return TableModel.error("参数为空");
+        }
+        return userService.buildDirect(backId, dirName, username);
+    }
+
+
 }
