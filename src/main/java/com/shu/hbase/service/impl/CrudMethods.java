@@ -301,8 +301,10 @@ public class CrudMethods {
                     logger.info("检测扫描的文件是否是文件夹");
                     logger.info(Bytes.toString(CellUtil.cloneValue(cell)));
                     if (!Bytes.toString(CellUtil.cloneValue(cell)).equals("-") && !Bytes.toString(CellUtil.cloneValue(cell)).isEmpty())
+                    {
                         logger.info("扫描的对象部署文件夹");
                         sizeList.add(Integer.parseInt(Bytes.toString(CellUtil.cloneValue(cell))));
+                    }
                 }
             }
             //获得子文件的fileid，放入deleteFnHbase方法中
