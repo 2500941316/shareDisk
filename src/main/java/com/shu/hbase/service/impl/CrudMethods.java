@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class CrudMethods {
     private static Logger logger = LoggerFactory.getLogger(CrudMethods.class);
@@ -280,8 +281,9 @@ public class CrudMethods {
     }
 
     //多线程环境下获取时间戳的方法
-    public synchronized static Long getTime() {
-        return System.currentTimeMillis();
+    public static Long getTime() {
+        AtomicLong uniqueseed = new AtomicLong(System.currentTimeMillis());
+        return uniqueseed.incrementAndGet();
     }
 
 
