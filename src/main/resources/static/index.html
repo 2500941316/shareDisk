@@ -19,11 +19,7 @@
             <div class="modal-body">
                 <div id="folioModalBody">
                     <div data-parentDir="0" class="folioAll childrenDiv">
-                        <div class="p active-p" style="border-color: rgb(154, 205, 253);">
-                            <i class="fa fa1 fa-minus-square-o" data-folioid="0"></i>
-                            <i class="fa fa2 fa-folder-open"></i>
-                            <span>当前目录</span>
-                        </div>
+
                     </div>
                 </div>
             </div>
@@ -113,9 +109,7 @@
         $.get("/selectFile", {detSrc: "19721631", type: "1", gId: ""},
             function (data) {
                 for (let i = 0; i < data.data.length; i++) {
-
                     if (data.data[i].dir === true) {
-                        alert(data.data[i].dir)
                         arrParO.push({
                             "id": data.data[i].fileId,
                             "folioName": data.data[i].name,
