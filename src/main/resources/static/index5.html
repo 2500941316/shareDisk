@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="css/font-awesome.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="css/styleBuilder.css"/>
+</head>
+
+<body>
+<button onclick="buildDir()">新建文件夹</button>
+
+<div id="folioModal" class="modal fade" tabindex="11" role="dialog" style="top: 90px;">
+    <div class="modal-dialog" role="document" style="width: 500px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <div id="folioModalBody">
+                    <div data-parentDir="0" class="folioAll childrenDiv">
+                        <div class="p active-p" style="border-color: rgb(154, 205, 253);">
+                            <i class="fa fa1 fa-minus-square-o" data-folioid="0"></i>
+                            <i class="fa fa2 fa-folder-open"></i>
+                            <span>当前目录</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="creatFolio" class="btn btn-default">新建文件夹</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">确定</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/bootstrap.bundle.min.js"></script>
+
+<script>
+    function buildDir() {
+        getFolioToParentDir(0, $("#folioModalBody .folioAll"));//初始化时得到根目录下的文件夹
+        var $div = $("#folioModalBody>div:eq(0)");
+        $div.on('click', "div.p:not(.now)", function () {
+            var $fa1 = $(this).find(".fa1:eq(0)");
+            if ($fa1.hasClass("fa-plus-square-o")) {
+                $fa1.addClass("fa-minus-square-o").removeClass("fa-plus-square-o fa-spinner");
+                $fa1.siblings(".fa2").removeClass("fa-folder").addClass("fa-folder-open");
+                if ($(this).parent().hasClass("childrenDiv"))//多做一步优化 - 得到该文件夹的子文件夹
+                    getFolioToParentDir($fa1.attr("data-folioId"), $fa1.closest(".childrenDiv"));
+            } else if ($fa1.hasClass("fa-minus-square-o")) {
+                $fa1.addClass("fa-plus-square-o").removeClass("fa-minus-square-o fa-spinner");
+                $fa1.parents(".p").siblings(".childrenDiv").hide();
+                $fa1.siblings(".fa2").removeClass("fa-folder-open").addClass("fa-folder");
+            }
+        }).end().on('click', '.fa1', function () {
+
+        });
+        //创建文件夹 操作
+        //记得保存到数据库还要刷新，新增好的文件夹是使用jq动态创建节点实现的
+        $("#creatFolio").click(function () {
+            var $active = $(".active-p");
+            var parentDir = 1;
+
+            var $children = $('<div class="childrenDiv new"><div class="p now">' +
+                '<i class="fa fa1"></i> <i class="fa fa2 fa-folder"></i>' +
+                ' <input type="text" name="fileName"><span class="text-center spanOption ok">√</span>' +
+                '<span class="text-center spanOption toHide">×</span>' +
+                '</div></div>');
+            $children.find(".p").css("padding-left", parentDir * 20 + "px");
+            $children.find(".toHide").on('click', function () {
+                $children.remove();
+            }).end().find(".ok").on('click', function () {
+                var $fileName = $children.find("input[name=fileName]").val();
+                if ($fileName.trim().length === 0) {//确定创建文件夹
+                    alert("文件名不能为空");
+                } else {
+                    //ajax创建逻辑
+                    $.get("/buildDirect", {backId: "19721631", dirName: $fileName.trim()},
+                        function (res) {
+                            if (res.code === 200) {
+                                $active.find(".fa1").removeClass("fa-plus-square-o fa-spinner").addClass("fa-minus-square-o")
+                                    .end().find(".fa2").removeClass("fa-folder").addClass("fa-folder-open");
+                                getFolioToParentDir($active.find(".fa1").attr("data-folioId"), $active.parent());
+                            }
+                        });
+                }
+            });
+            $active.parent().append($children).find("[name=fileName]").focus();
+        });
+    };
+
+    //更具文件当前文件夹的id得到该文件夹的子文件
+    //参数1：父文件Id 参数2：父文件夹节点
+    function getFolioToParentDir(folioId, $el) {
+        $el.find(".childrenDiv").remove();
+        var dir = parseInt($el.attr("data-parentDir")) + 1;//第几个级别
+
+        var arrParO = [];
+        $.get("/selectFile", {detSrc: "19721631", type: "1", gId: ""},
+            function (data) {
+                for (let i = 0; i < data.data.length; i++) {
+                    if (data.data[i].dir === true) {
+                        arrParO.push({
+                            "id": data.data[i].fileId,
+                            "folioName": data.data[i].name,
+                            "parentDir": 0,
+                            "children": 0
+                        },)
+                    }
+                }
+
+                ///模拟ajax数据数据
+                $.each(arrParO, function (i, obj) {
+                    var clazz = obj.children > 0 ? 'fa-plus-square-o' : '';
+                    var $children = $('<div class="childrenDiv" data-parentDir="' + dir + '"><div class="p">' +
+                        '<i class="fa fa1 ' + clazz + '" data-folioId="' + obj.id + '"></i> <i class="fa fa2 fa-folder"></i>' +
+                        '<span>' + obj.folioName + '</span>' +
+                        '</div></div>');
+                    $children.find(".p").css("padding-left", dir * 20 + "px");
+                    $el.append($children);
+                });
+            });
+        $("#folioModal").modal("show");//模态框初始化就显示了
+    }
+
+</script>
+</body>
+</html>
