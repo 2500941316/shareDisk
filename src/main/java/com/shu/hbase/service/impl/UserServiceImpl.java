@@ -278,10 +278,9 @@ public class UserServiceImpl implements UserService {
         FileSystem fs = null;
         try {
             fs = HdfsConnectionPool.getHdfsConnection();
-            logger.info("进入mkdir方法");
             fs.mkdirs(new Path(path));
-            logger.info("mkdir方法执行成功");
             CrudMethods.insertToFiles(null, "dir", path, backId, userId, userId + "_" + System.currentTimeMillis());
+            logger.info("insert执行成功");
             HdfsConnectionPool.releaseConnection(fs);
           //  logger.info("文件夹创建成功");
         } catch (Exception e) {
