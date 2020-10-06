@@ -261,7 +261,7 @@ public class UserServiceImpl implements UserService {
 
     //目录的创建
     @Override
-    public  TableModel buildDirect(String backId, String dirName, String userId) {
+    public TableModel buildDirect(String backId, String dirName, String userId) {
         logger.info("创建文件夹权限验证");
         if (backId.length() > 8) {
             if (!backId.substring(0, 8).equals(userId)) {
@@ -277,7 +277,9 @@ public class UserServiceImpl implements UserService {
         logger.info("新建文件夹物理路径拼接");
         FileSystem fs = null;
         try {
-            fs = HdfsConnectionPool.getHdfsConnection();
+            synchronized (HdfsConnectionPool.class) {
+                fs = HdfsConnectionPool.getHdfsConnection();
+            }
             fs.mkdirs(new Path(path));
             CrudMethods.insertToFiles(null, "dir", path, backId, userId, userId + "_" + System.currentTimeMillis());
             HdfsConnectionPool.releaseConnection(fs);

@@ -5,7 +5,7 @@ import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.apache.hadoop.fs.FileSystem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-public class HdfsConnectionPool {
+public  class HdfsConnectionPool {
     private static Logger logger = LoggerFactory.getLogger(HbaseConnectionPool.class);
     private static ConnectionFactory factory;
     private static ConnectionPoolConfig connectionPool;
@@ -23,7 +23,7 @@ public class HdfsConnectionPool {
         connectionPool = new ConnectionPoolConfig(factory, config);
     }
 
-    public synchronized static FileSystem getHdfsConnection() throws Exception {
+    public  static FileSystem getHdfsConnection() throws Exception {
         try {
             logger.info("归还了Hdfs连接"+connectionPool.getReturnedCount());
             logger.info("借出了Hdfs连接"+connectionPool.getBorrowedCount());
