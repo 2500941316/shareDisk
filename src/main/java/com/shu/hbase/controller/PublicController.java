@@ -125,7 +125,6 @@ public class PublicController {
     }
 
 
-
     /**
      * 创建文件夹
      *
@@ -138,6 +137,23 @@ public class PublicController {
             return TableModel.error("参数为空");
         }
         return userService.buildDirect(backId, dirName, username);
+    }
+
+
+    /**
+     * 删除文件
+     *
+     * @param
+     * @throws IOException
+     */
+    @GetMapping("deleteFile")
+    public TableModel deleteFile(@RequestParam("fileId") String fileId, HttpServletRequest request, Authentication authentication) {
+
+        if (fileId.isEmpty()) {
+            return TableModel.error("参数为空");
+        }
+        request.getSession().removeAttribute(fileId);
+        return userService.deleteFile(fileId, username);
     }
 
 

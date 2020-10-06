@@ -13,4 +13,6 @@ public interface UserService {
     TableModel uploadTomvc(MultipartFile file, Integer chunk, Integer chunks, String username, HttpServletRequest request, String backId);
 
     TableModel buildDirect(String backId, String dirName, String username);
+
+    TableModel deleteFile(String fileId, String username);
 }

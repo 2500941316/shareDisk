@@ -3,10 +3,14 @@ package com.shu.hbase.service.impl;
 import com.shu.hbase.pojo.FileInfoVO;
 import com.shu.hbase.pojo.Static;
 import com.shu.hbase.tools.hbasepool.HbaseConnectionPool;
+import com.shu.hbase.tools.hdfspool.HdfsConnectionPool;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hbase.Cell;
 import org.apache.hadoop.hbase.CellUtil;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.*;
+import org.apache.hadoop.hbase.filter.*;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -254,4 +258,186 @@ public class CrudMethods {
         }
         return true;
     }
+
+
+    //单个物理目录的删除
+    public static boolean delete(String detSrc) {
+        FileSystem fs = null;
+        //true意思是递归删除，如果不为空也删除
+        try {
+            fs = HdfsConnectionPool.getHdfsConnection();
+            fs.delete(new Path(detSrc), true);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        } finally {
+            try {
+                HdfsConnectionPool.releaseConnection(fs);
+            } catch (Exception e) {
+                logger.error(e.getMessage());
+            }
+            return true;
+        }
+    }
+
+
+    //递归删除某个fileId下面的全部文件的方法
+    public static void deleteFilesById(Table fileTable, List<Delete> deleteList, String fileId, String uId, List sizeList) throws IOException {
+        Scan scan = new Scan();
+        FilterList filterList = new FilterList();
+        logger.info("开始查询所有backid是删除对象的文件，也要进行删除");
+        SingleColumnValueFilter singleColumnValueFilter = new SingleColumnValueFilter(
+                Static.FILE_TABLE_CF.getBytes(),
+                Static.FILE_TABLE_BACK.getBytes(),
+                CompareFilter.CompareOp.EQUAL,
+                new BinaryComparator(Bytes.toBytes(fileId)));
+        singleColumnValueFilter.setFilterIfMissing(true);
+        filterList.addFilter(singleColumnValueFilter);
+
+        scan.setFilter(filterList);
+        ResultScanner scanner = fileTable.getScanner(scan);
+        for (Result result : scanner) {
+            for (Cell cell : result.rawCells()) {
+                if (Bytes.toString(CellUtil.cloneQualifier(cell)).equals(Static.FILE_TABLE_SIZE)) {
+                    logger.info("检测扫描的文件是否是文件夹");
+                    if (!Bytes.toString(CellUtil.cloneValue(cell)).equals("-") && !Bytes.toString(CellUtil.cloneValue(cell)).isEmpty())
+                        logger.info("扫描的对象部署文件夹");
+                        sizeList.add(Integer.parseInt(Bytes.toString(CellUtil.cloneValue(cell))));
+                }
+            }
+            //获得子文件的fileid，放入deleteFnHbase方法中
+            String newFile = Bytes.toString(result.getRow());
+            deleteFnHbase(newFile, null, uId);
+            Delete delete = new Delete(Bytes.toBytes(newFile));
+            deleteList.add(delete);
+            deleteFilesById(fileTable, deleteList, newFile, uId, sizeList);
+        }
+    }
+
+
+
+    //删除一个group最外层文件夹的所有文件
+    public static boolean deleteFnHbase(String fileId, String gId, String uId) {
+        Connection hbaseConnection = null;
+        Table indexTable = null;
+        Table groupTable = null;
+        Table fileTable = null;
+        try {
+            hbaseConnection = HbaseConnectionPool.getHbaseConnection();
+            indexTable = hbaseConnection.getTable(TableName.valueOf(Static.INDEX_TABLE));
+            groupTable = hbaseConnection.getTable(TableName.valueOf(Static.GROUP_TABLE));
+            fileTable = hbaseConnection.getTable(TableName.valueOf(Static.FILE_TABLE));
+
+            //检查index表中所有的组中有没有该路径，如果有则删除该版本
+            Get get = new Get(Bytes.toBytes(uId));
+            get.setMaxVersions();
+            if (gId != null) {
+                get.addColumn(Bytes.toBytes(Static.INDEX_TABLE_CF), Bytes.toBytes(gId)); //如果删除的是共享组的某个文件
+            } else {
+                get.addFamily(Bytes.toBytes(Static.INDEX_TABLE_CF));
+            }
+
+            Result result = indexTable.get(get);
+            List<Delete> deleteList = new ArrayList<>();
+            List<String> authIdList = new ArrayList<>();
+            List<Delete> indexDeList = new ArrayList<>();
+            List<Delete> groupDeList = new ArrayList<>();
+            for (Cell cell : result.rawCells()) {
+                if (Bytes.toString(CellUtil.cloneValue(cell)).length() != 0) {
+                    //如果fileId存在index表的该格子中，则删除该fileId的版本
+                    if (Bytes.toString(CellUtil.cloneValue(cell)).equals(fileId)) {
+                        Delete indexDelete = new Delete(Bytes.toBytes(uId));
+                        indexDelete.addColumn(Bytes.toBytes(Static.INDEX_TABLE_CF), CellUtil.cloneQualifier(cell), cell.getTimestamp());
+                        indexDeList.add(indexDelete);
+
+                        //获取group表中该组的所以成员和文件id：（要删除组的节奏）遍历结果，如果是成员的列则封装成auth，必须删除每一个取得的auth
+                        Get groupGet = new Get(CellUtil.cloneQualifier(cell));
+                        groupGet.setMaxVersions();
+                        groupGet.addColumn(Bytes.toBytes(Static.GROUP_TABLE_CF), Bytes.toBytes(Static.GROUP_TABLE_fileId));
+                        groupGet.addColumn(Bytes.toBytes(Static.GROUP_TABLE_CF), Bytes.toBytes(Static.GROUP_TABLE_MEMBER));
+                        Result groupRes = groupTable.get(groupGet);
+                        //遍历该组的成员和fileid，获得所有的有要删除的文件权限的gid+uid
+                        for (Cell rawCell : groupRes.rawCells()) {
+                            if (Bytes.toString(CellUtil.cloneValue(rawCell)).length() != 0) {
+                                //如果列名等于组成员并且列值不等于uid的话，说明不是此文件的拥有者，则gid+uid组合成权限值，准备删除
+                                if (Bytes.toString(CellUtil.cloneQualifier(rawCell)).equals(Static.GROUP_TABLE_MEMBER) && !Bytes.toString(CellUtil.cloneValue(rawCell)).equals(uId)) {
+                                    authIdList.add(gId + Bytes.toString(CellUtil.cloneValue(rawCell)));
+                                }
+                                //如果文件id等于当前要删除的fileId，则加入要删除的数组
+                                if (Bytes.toString(CellUtil.cloneValue(rawCell)).equals(fileId)) {
+                                    Delete groupDelete = new Delete(CellUtil.cloneRow(rawCell));
+                                    groupDelete.addColumn(Bytes.toBytes(Static.GROUP_TABLE_CF), Bytes.toBytes(Static.GROUP_TABLE_fileId), rawCell.getTimestamp());
+                                    groupDeList.add(groupDelete);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            //针对删除的文件夹获得其中的所有的fileId
+            List<String> fielIdList=new ArrayList<>();
+            fielIdList.add(fileId);
+            //递归获取到该文件夹下所有要删除的文件
+            deleteCallBack(fileTable,fielIdList,fileId,uId,gId);
+
+            //查询file表获得对应的时间戳
+            for (String fileid : fielIdList) {
+                Get fileGet = new Get(Bytes.toBytes(fileid));
+                fileGet.setMaxVersions();
+                fileGet.addColumn(Bytes.toBytes(Static.FILE_TABLE_CF), Bytes.toBytes(Static.FILE_TABLE_Auth));
+                Result fileAuthRes = fileTable.get(fileGet);
+                if (!fileAuthRes.isEmpty()) {
+                    for (Cell cell : fileAuthRes.rawCells()) {
+                        //如果包含了文件权限表的权限，则进行删除
+                        if (authIdList.contains(Bytes.toString(CellUtil.cloneValue(cell)))) {
+                            Delete delete = new Delete(Bytes.toBytes(fileid));
+                            delete.addColumn(Bytes.toBytes(Static.FILE_TABLE_CF), Bytes.toBytes(Static.FILE_TABLE_Auth), cell.getTimestamp());
+                            deleteList.add(delete);
+                        }
+                    }
+                }
+            }
+            indexTable.delete(indexDeList);
+            groupTable.delete(groupDeList);
+            fileTable.delete(deleteList);
+            indexTable.close();
+            fileTable.close();
+            groupTable.close();
+        } catch (Exception e) {
+          logger.error(e.getMessage());
+            return false;
+        } finally {
+            if (hbaseConnection != null) {
+                HbaseConnectionPool.releaseConnection(hbaseConnection);
+            }
+        }
+        return true;
+    }
+
+
+    //递归获取要删除的文件夹下面所有的文件id
+    private static void deleteCallBack(Table fileTable, List<String> fielIdList, String fileId, String uId, String gId) throws IOException {
+        Scan scan = new Scan();
+        FilterList filterList = new FilterList();
+        Filter colFilter = new PrefixFilter(Bytes.toBytes(uId));
+        SingleColumnValueFilter singleColumnValueFilter = new SingleColumnValueFilter(
+                Static.FILE_TABLE_CF.getBytes(),
+                Static.FILE_TABLE_BACK.getBytes(),
+                CompareFilter.CompareOp.EQUAL,
+                new BinaryComparator(Bytes.toBytes(fileId)));
+        singleColumnValueFilter.setFilterIfMissing(true);
+        filterList.addFilter(colFilter);
+        filterList.addFilter(singleColumnValueFilter);
+
+        scan.setFilter(filterList);
+        ResultScanner scanner = fileTable.getScanner(scan);
+        for (Result result : scanner) {
+            String newFile = Bytes.toString(result.getRow());
+            fielIdList.add(newFile);
+
+            deleteCallBack(fileTable, fielIdList, newFile, uId, gId);
+        }
+    }
+
+
 }

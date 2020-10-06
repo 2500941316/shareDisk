@@ -147,6 +147,7 @@ public class UserServiceImpl implements UserService {
             return TableModel.error("参数有误");
         } finally {
             try {
+                assert fileTable != null;
                 fileTable.close();
                 HbaseConnectionPool.releaseConnection(hBaseConn);
             } catch (IOException e) {
@@ -194,6 +195,7 @@ public class UserServiceImpl implements UserService {
                     File tempFiles = new File(realpath + "/" + uid + "/" + file.getOriginalFilename());
                     File[] files = tempFiles.listFiles();
                     while (true) {
+                        assert files != null;
                         if (files.length == chunks) {
                             break;
                         }
@@ -217,19 +219,12 @@ public class UserServiceImpl implements UserService {
                                     public int compare(File o1, File o2) {
                                         int o1Index = Integer.parseInt(o1.getName().split("\\.")[0]);
                                         int o2Index = Integer.parseInt(o2.getName().split("\\.")[0]);
-                                        if (o1Index > o2Index) {
-                                            return 1;
-                                        } else if (o1Index == o2Index) {
-                                            return 0;
-                                        } else {
-                                            return -1;
-                                        }
+                                        return Integer.compare(o1Index, o2Index);
                                     }
                                 }
                         );
                         logger.info("开始将分片的文件合成为一个主文件");
-                        for (int i = 0; i < files.length; i++) {
-                            File fileTemp = files[i];
+                        for (File fileTemp : files) {
                             inputStream = new BufferedInputStream(new FileInputStream(fileTemp));
                             int readcount;
                             while ((readcount = inputStream.read(buffer)) > 0) {
@@ -246,8 +241,8 @@ public class UserServiceImpl implements UserService {
                         logger.error(e.getMessage());
                         return TableModel.error("上传失败");
                     } finally {
-                        for (int i = 0; i < files.length; i++) {
-                            files[i].delete();
+                        for (File value : files) {
+                            value.delete();
                         }
                         tempFiles.delete();
                         assert inputStream != null;
@@ -275,6 +270,7 @@ public class UserServiceImpl implements UserService {
         }
         logger.info("创建文件夹权限验证成功");
         String path = CrudMethods.findUploadPath(backId);
+        assert path != null;
         if (!path.isEmpty()) {
             path = path + "/" + dirName;
         }
@@ -290,6 +286,75 @@ public class UserServiceImpl implements UserService {
             logger.error(e.getMessage());
         }
         return TableModel.success("创建成功");
+    }
+
+
+    //删除我的文件
+    @Override
+    public TableModel deleteFile(String fileId, String uId) {
+        logger.info("执行删除权限检测");
+        if (!fileId.substring(0, 8).equals(uId)) {
+            return TableModel.error("权限不足");
+        }
+        Connection hBaseConn = null;
+        Table fileTable = null;
+        Table userTable = null;
+        List<Integer> sizeList = new ArrayList<>();
+        String path = null;
+        try {
+            hBaseConn = HbaseConnectionPool.getHbaseConnection();
+            fileTable = hBaseConn.getTable(TableName.valueOf(Static.FILE_TABLE));
+            userTable = hBaseConn.getTable(TableName.valueOf(Static.USER_TABLE));
+            //首先根据id查出文件物理路径，调用hdfs的方法删除文件
+            Get get = new Get(Bytes.toBytes(fileId));
+            get.addColumn(Bytes.toBytes(Static.FILE_TABLE_CF), Bytes.toBytes(Static.FILE_TABLE_PATH));
+            get.addColumn(Bytes.toBytes(Static.FILE_TABLE_CF), Bytes.toBytes(Static.FILE_TABLE_SIZE));
+            Result result = fileTable.get(get);
+            logger.info("查询删除文件的物理地址");
+            if (!result.isEmpty()) {
+                for (Cell cell : result.rawCells()) {
+                    if (Bytes.toString(CellUtil.cloneQualifier(cell)).equals(Static.FILE_TABLE_PATH))
+                        path = Bytes.toString(CellUtil.cloneValue(cell));
+                    if (Bytes.toString(CellUtil.cloneQualifier(cell)).equals(Static.FILE_TABLE_SIZE)) {
+                        if (!Bytes.toString(CellUtil.cloneValue(cell)).equals("-")) {
+                            sizeList.add(Integer.parseInt(Bytes.toString(CellUtil.cloneValue(cell))));
+                        }
+                    }
+                }
+                logger.info("执行在hdfs中删除物理文件的方法");
+                if (CrudMethods.delete(path)) {
+                    logger.info("hdfs中文件和文件夹删除成功");
+                    //当hdfs和共享组中删除完毕后，递归删除文件表中的该fileId下面的所有文件
+                    List<Delete> deleteList = new ArrayList<>();
+                    logger.info("通过文件id删除开始在hbase中删除文件");
+                    CrudMethods.deleteFilesById(fileTable, deleteList, fileId, uId, sizeList);
+                    deleteList.add(new Delete(Bytes.toBytes(fileId)));
+                    if (!deleteList.isEmpty()) {
+                        fileTable.delete(deleteList);
+                    }
+                    int sizeAll = 0;
+                    for (Integer integer : sizeList) {
+                        sizeAll += integer;
+                    }
+                    if (!CrudMethods.insertOrUpdateUser(userTable, sizeAll + "", uId, "delete")) {
+                        return TableModel.error("文件超出存储容量");
+                    }
+                }
+            }
+            logger.error("文件删除成功");
+            return TableModel.success("删除成功");
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return TableModel.error("删除失败");
+        } finally {
+            try {
+                assert fileTable != null;
+                fileTable.close();
+                HbaseConnectionPool.releaseConnection(hBaseConn);
+            } catch (IOException e) {
+                logger.error(e.getMessage());
+            }
+        }
     }
 
 }
