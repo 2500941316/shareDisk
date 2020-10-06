@@ -19,7 +19,7 @@ import java.security.Principal;
 @RestController
 @CrossOrigin
 public class PublicController {
-    private String username = "19721631";
+    private String username = "19721632";
 
     @Autowired
     PublicService publicService;
