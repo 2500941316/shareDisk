@@ -108,16 +108,34 @@
         } else if ($el.find(".fa1").hasClass("fa-minus-square-o")) {
             tarClazz = "fa-minus-square-o";
         }
-        var folios = getChildren(folioId); ///模拟ajax数据数据
-        $.each(folios, function (i, obj) {
-            var clazz = obj.children > 0 ? 'fa-plus-square-o' : '';
-            var $children = $('<div class="childrenDiv" data-parentDir="' + dir + '"><div class="p">' +
-                '<i class="fa fa1 ' + clazz + '" data-folioId="' + obj.id + '"></i> <i class="fa fa2 fa-folder"></i>' +
-                '<span>' + obj.folioName + '</span>' +
-                '</div></div>');
-            $children.find(".p").css("padding-left", dir * 20 + "px");
-            $el.append($children);
-        });
+
+        var arrParO = [];
+        $.get("/selectFile", {detSrc: "19721631", type: "1", gId: ""},
+            function (data) {
+                for (let i = 0; i < data.data.length; i++) {
+
+                    if (data.data[i].dir === true) {
+                        alert(data.data[i].dir)
+                        arrParO.push({
+                            "id": data.data[i].fileId,
+                            "folioName": data.data[i].name,
+                            "parentDir": 0,
+                            "children": 0
+                        },)
+                    }
+                }
+
+                ///模拟ajax数据数据
+                $.each(arrParO, function (i, obj) {
+                    var clazz = obj.children > 0 ? 'fa-plus-square-o' : '';
+                    var $children = $('<div class="childrenDiv" data-parentDir="' + dir + '"><div class="p">' +
+                        '<i class="fa fa1 ' + clazz + '" data-folioId="' + obj.id + '"></i> <i class="fa fa2 fa-folder"></i>' +
+                        '<span>' + obj.folioName + '</span>' +
+                        '</div></div>');
+                    $children.find(".p").css("padding-left", dir * 20 + "px");
+                    $el.append($children);
+                });
+            });
     }
 
 
@@ -138,7 +156,6 @@
                         },)
                     }
                 }
-                return arrParO;
             });
     }
 </script>
