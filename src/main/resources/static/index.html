@@ -126,7 +126,7 @@
 
         var arrParO = [];
 
-        $.get("/selectFile", {detSrc: localStorage.getItem("backid"), type: "1", gId: ""},
+        $.get("/selectFile", {detSrc: "19721631", type: "1", gId: ""},
             function (data) {
                 for (let i = 0; i < data.data; i++) {
                     if (data.data[i].isDir === true) {
