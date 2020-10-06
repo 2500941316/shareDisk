@@ -612,15 +612,19 @@
                     }
 
                     //将文件夹放在最前面
-                    while (left <= right) {
-                        if (result[left].dir === true) {
-                            left++;
-                        } else if (result[right].dir === false) {
-                            right--;
-                        } else {
-                            var temp = result[left];
-                            result[left] = result[right];
-                            result[right] = temp;
+                    if (result.length !== 0) {
+                        let left = 0;
+                        let right = result.length - 1;
+                        while (left <= right) {
+                            if (result[left].dir === true) {
+                                left++;
+                            } else if (result[right].dir === false) {
+                                right--;
+                            } else {
+                                var temp = result[left];
+                                result[left] = result[right];
+                                result[right] = temp;
+                            }
                         }
                     }
 
