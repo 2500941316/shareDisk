@@ -217,6 +217,23 @@ public class TestController {
     }
 
     /**
+     * 查询hdfs的文件
+     *
+     * @param
+     * @throws IOException
+     */
+    @GetMapping("getHdfsAll")
+    public void getHdfsAll() throws Exception {
+        FileSystem fs = HdfsConnectionPool.getHdfsConnection();
+        FileStatus[] fileStatuses = fs.listStatus(new Path("/shuwebfs/"));
+        for (FileStatus fileStatus : fileStatuses) {
+            System.out.println(fileStatus.getPath().getName());
+        }
+        HdfsConnectionPool.releaseConnection(fs);
+    }
+
+
+    /**
      * 删除所有表的数据
      *
      * @param
@@ -239,6 +256,7 @@ public class TestController {
         fs.delete(new Path("/shuwebfs/19721631/"), true);
         HdfsConnectionPool.releaseConnection(fs);
     }
+
 
     /**
      * 给首页传值
