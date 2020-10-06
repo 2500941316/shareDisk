@@ -23,7 +23,7 @@ public  class HdfsConnectionPool {
         connectionPool = new ConnectionPoolConfig(factory, config);
     }
 
-    public  static FileSystem getHdfsConnection() throws Exception {
+    public synchronized static FileSystem getHdfsConnection() throws Exception {
         try {
             logger.info("归还了Hdfs连接"+connectionPool.getReturnedCount());
             logger.info("借出了Hdfs连接"+connectionPool.getBorrowedCount());

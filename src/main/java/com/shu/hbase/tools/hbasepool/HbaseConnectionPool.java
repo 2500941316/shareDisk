@@ -25,7 +25,7 @@ public class HbaseConnectionPool {
         connectionPool = new ConnectionPoolConfig(factory, config);
     }
 
-    public static Connection getHbaseConnection() throws Exception {
+    public synchronized static Connection getHbaseConnection() throws Exception {
         try {
             logger.info("归还HBase连接了"+connectionPool.getReturnedCount());
             logger.info("借出HBase连接了"+connectionPool.getBorrowedCount());
