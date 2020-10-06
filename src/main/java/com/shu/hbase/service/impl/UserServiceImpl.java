@@ -26,10 +26,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Service
 public class UserServiceImpl implements UserService {
     private static Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
+    private static AtomicLong uniqueseed = new AtomicLong(System.currentTimeMillis());
 
     //根据fileId在file表中查找文件信息
     public TableModel selectFile(String backId, String type, String uId, String gId) {
@@ -280,9 +282,8 @@ public class UserServiceImpl implements UserService {
         try {
             fs = HdfsConnectionPool.getHdfsConnection();
             fs.mkdirs(new Path(path));
-            Long time = CrudMethods.getTime();
-            System.out.println("----------------------------------------------+++++++++++++++++"+time);
-            CrudMethods.insertToFiles(null, "dir", path, backId, userId, userId + "_" + time);
+
+            CrudMethods.insertToFiles(null, "dir", path, backId, userId, userId + "_" + uniqueseed.incrementAndGet());
             logger.info("insert执行成功");
             HdfsConnectionPool.releaseConnection(fs);
             logger.info("文件夹创建成功");
@@ -360,7 +361,6 @@ public class UserServiceImpl implements UserService {
             }
         }
     }
-
 
 
 }

@@ -280,12 +280,6 @@ public class CrudMethods {
         }
     }
 
-    //多线程环境下获取时间戳的方法
-    public static Long getTime() {
-        AtomicLong uniqueseed = new AtomicLong(System.currentTimeMillis());
-        return uniqueseed.incrementAndGet();
-    }
-
 
     //递归删除某个fileId下面的全部文件的方法
     public static void deleteFilesById(Table fileTable, List<Delete> deleteList, String fileId, String uId, List sizeList) throws IOException {
