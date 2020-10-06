@@ -341,7 +341,7 @@ public class UserServiceImpl implements UserService {
                     }
                 }
             }
-            logger.error("文件删除成功");
+            logger.info("文件删除成功");
             return TableModel.success("删除成功");
         } catch (Exception e) {
             logger.error(e.getMessage());

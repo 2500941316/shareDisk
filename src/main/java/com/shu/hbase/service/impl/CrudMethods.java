@@ -434,10 +434,7 @@ public class CrudMethods {
         for (Result result : scanner) {
             String newFile = Bytes.toString(result.getRow());
             fielIdList.add(newFile);
-
             deleteCallBack(fileTable, fielIdList, newFile, uId, gId);
         }
     }
-
-
 }
