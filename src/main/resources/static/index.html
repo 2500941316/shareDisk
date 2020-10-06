@@ -67,7 +67,7 @@
         //记得保存到数据库还要刷新，新增好的文件夹是使用jq动态创建节点实现的
         $("#creatFolio").click(function () {
             var $active = $(".active-p");
-            var parentDir = parseInt($active.parent().attr("data-parentDir")) + 1;
+            var parentDir = parseInt($active.parent().attr("data-parentDir")) ;
 
             var $children = $('<div class="childrenDiv new"><div class="p now">' +
                 '<i class="fa fa1"></i> <i class="fa fa2 fa-folder"></i>' +
@@ -138,26 +138,6 @@
             });
     }
 
-
-    /*得到一个文件夹下的子文件 --- 模拟ajax数据*/
-    function getChildren(folioId) {
-        var arrParO = [];
-        $.get("/selectFile", {detSrc: "19721631", type: "1", gId: ""},
-            function (data) {
-                for (let i = 0; i < data.data.length; i++) {
-
-                    if (data.data[i].dir === true) {
-                        alert(data.data[i].dir)
-                        arrParO.push({
-                            "id": data.data[i].fileId,
-                            "folioName": data.data[i].name,
-                            "parentDir": 0,
-                            "children": 0
-                        },)
-                    }
-                }
-            });
-    }
 </script>
 </body>
 </html>
