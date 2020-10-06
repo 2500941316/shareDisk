@@ -68,7 +68,7 @@ public class TestController {
                 public void run() {
                     logger.info("新的线程启动了" + Thread.currentThread().getName());
                     final String url = "http://localhost:8080/buildDirect";
-                    String string = Get.sendGet(url, "backId=19721631&dirName=testDir" + new java.util.Random().nextInt(900) + 100, "");
+                    String string = Get.sendGet(url, "backId=19721631&dirName=testDir" + Thread.currentThread().getName()+System.currentTimeMillis(), "");
                     System.out.println(string);
                 }
             }).start();
