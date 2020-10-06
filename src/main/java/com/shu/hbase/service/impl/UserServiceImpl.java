@@ -261,7 +261,7 @@ public class UserServiceImpl implements UserService {
 
     //目录的创建
     @Override
-    public TableModel buildDirect(String backId, String dirName, String userId) {
+    public synchronized TableModel buildDirect(String backId, String dirName, String userId) {
         logger.info("创建文件夹权限验证");
         if (backId.length() > 8) {
             if (!backId.substring(0, 8).equals(userId)) {
