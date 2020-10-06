@@ -280,7 +280,9 @@ public class UserServiceImpl implements UserService {
         try {
             fs = HdfsConnectionPool.getHdfsConnection();
             fs.mkdirs(new Path(path));
-            CrudMethods.insertToFiles(null, "dir", path, backId, userId, userId + "_" + getTime());
+            Long time = CrudMethods.getTime();
+            System.out.println("----------------------------------------------+++++++++++++++++"+time);
+            CrudMethods.insertToFiles(null, "dir", path, backId, userId, userId + "_" + time);
             logger.info("insert执行成功");
             HdfsConnectionPool.releaseConnection(fs);
             logger.info("文件夹创建成功");
@@ -359,9 +361,6 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    //多线程环境下获取时间戳的方法
-    public synchronized static Long getTime() {
-        return System.currentTimeMillis();
-    }
+
 
 }

@@ -279,6 +279,11 @@ public class CrudMethods {
         }
     }
 
+    //多线程环境下获取时间戳的方法
+    public synchronized static Long getTime() {
+        return System.currentTimeMillis();
+    }
+
 
     //递归删除某个fileId下面的全部文件的方法
     public static void deleteFilesById(Table fileTable, List<Delete> deleteList, String fileId, String uId, List sizeList) throws IOException {
@@ -300,8 +305,7 @@ public class CrudMethods {
                 if (Bytes.toString(CellUtil.cloneQualifier(cell)).equals(Static.FILE_TABLE_SIZE)) {
                     logger.info("检测扫描的文件是否是文件夹");
                     logger.info(Bytes.toString(CellUtil.cloneValue(cell)));
-                    if (!Bytes.toString(CellUtil.cloneValue(cell)).equals("-") && !Bytes.toString(CellUtil.cloneValue(cell)).isEmpty())
-                    {
+                    if (!Bytes.toString(CellUtil.cloneValue(cell)).equals("-") && !Bytes.toString(CellUtil.cloneValue(cell)).isEmpty()) {
                         logger.info("扫描的对象部署文件夹");
                         sizeList.add(Integer.parseInt(Bytes.toString(CellUtil.cloneValue(cell))));
                     }
@@ -315,7 +319,6 @@ public class CrudMethods {
             deleteFilesById(fileTable, deleteList, newFile, uId, sizeList);
         }
     }
-
 
 
     //删除一个group最外层文件夹的所有文件
@@ -378,10 +381,10 @@ public class CrudMethods {
             }
 
             //针对删除的文件夹获得其中的所有的fileId
-            List<String> fielIdList=new ArrayList<>();
+            List<String> fielIdList = new ArrayList<>();
             fielIdList.add(fileId);
             //递归获取到该文件夹下所有要删除的文件
-            deleteCallBack(fileTable,fielIdList,fileId,uId,gId);
+            deleteCallBack(fileTable, fielIdList, fileId, uId, gId);
 
             //查询file表获得对应的时间戳
             for (String fileid : fielIdList) {
@@ -407,7 +410,7 @@ public class CrudMethods {
             fileTable.close();
             groupTable.close();
         } catch (Exception e) {
-          logger.error(e.getMessage());
+            logger.error(e.getMessage());
             return false;
         } finally {
             if (hbaseConnection != null) {
