@@ -123,23 +123,23 @@
 
     /*得到一个文件夹下的子文件 --- 模拟ajax数据*/
     function getChildren(folioId) {
-
         var arrParO = [];
-
         $.get("/selectFile", {detSrc: "19721631", type: "1", gId: ""},
             function (data) {
                 for (let i = 0; i < data.data.length; i++) {
-                    alert(data.data[i].dir)
+
                     if (data.data[i].dir === true) {
-                        arrParO.push({"id": data.data[i].fileId, "folioName": data.data[i].name, "parentDir": 0, "children": 0},)
+                        alert(data.data[i].dir)
+                        arrParO.push({
+                            "id": data.data[i].fileId,
+                            "folioName": data.data[i].name,
+                            "parentDir": 0,
+                            "children": 0
+                        },)
                     }
                 }
+                return arrParO;
             });
-
-        if (folioId > 4)
-            return [];
-        else if (folioId == 0)
-            return arrParO;
     }
 </script>
 </body>
