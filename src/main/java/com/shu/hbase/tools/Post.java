@@ -35,7 +35,7 @@ public class Post {
             String salt = "C6K02DUeJct3VGn7";
             String text = userId + time + salt;
             String key = Md5.md5(text, salt);
-            String fileId = "19721631_1591844996293";
+            String fileId = "00000000_1591844996293";
 
             ApiSearchFileInfo apiSearchFileInfo = new ApiSearchFileInfo();
             apiSearchFileInfo.setKey(key);
@@ -58,6 +58,7 @@ public class Post {
 
             String json = objectMapper.writeValueAsString(commonsFileInfoVO);
             //  sendPost("http://202.120.117.43:8080/commonAPI/shareToAll", json);
+            logger.info("发送了请求");
             sendPost("http://10.10.0.92:8080/commonAPI/shareToAll", json);
             // sendPost("http://localhost:8080/commonAPI/shareToAll", json);
         }

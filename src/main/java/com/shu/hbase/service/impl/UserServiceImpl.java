@@ -264,7 +264,7 @@ public class UserServiceImpl implements UserService {
     //目录的创建
     @Override
     public TableModel buildDirect(String backId, String dirName, String userId) {
-
+        String path = "";
         logger.info("创建文件夹权限验证");
         if (backId.length() > 8) {
             if (!backId.substring(0, 8).equals(userId)) {
@@ -272,11 +272,17 @@ public class UserServiceImpl implements UserService {
             }
         }
         logger.info("创建文件夹权限验证成功");
-        String path = CrudMethods.findUploadPath(backId);
-        assert path != null;
-        if (!path.isEmpty()) {
-            path = path + "/" + dirName;
+        //如果是创建默认文件夹则拼接路径
+        if (dirName.equals("/我的文档")) {
+            path = "/shuwebfs/" + userId + dirName;
+        } else {
+            path = CrudMethods.findUploadPath(backId);
+            assert path != null;
+            if (!path.isEmpty()) {
+                path = path + "/" + dirName;
+            }
         }
+
         logger.info("新建文件夹物理路径拼接");
         FileSystem fs = null;
         try {

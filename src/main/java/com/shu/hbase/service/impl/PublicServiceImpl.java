@@ -6,11 +6,13 @@ import com.shu.hbase.pojo.FileInfoVO;
 import com.shu.hbase.pojo.Static;
 import com.shu.hbase.service.impl.downLoad.DownLoad;
 import com.shu.hbase.service.interfaces.PublicService;
+import com.shu.hbase.service.interfaces.UserService;
 import com.shu.hbase.tools.TableModel;
 import com.shu.hbase.tools.hbasepool.HbaseConnectionPool;
 import com.shu.hbase.tools.hdfspool.HdfsConnectionPool;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hbase.Cell;
 import org.apache.hadoop.hbase.CellUtil;
 import org.apache.hadoop.hbase.TableName;
@@ -19,6 +21,7 @@ import org.apache.hadoop.hbase.filter.*;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -29,6 +32,9 @@ import java.util.List;
 
 @Service
 public class PublicServiceImpl implements PublicService {
+
+    @Autowired
+    UserService userService;
     private Logger logger = LoggerFactory.getLogger(PublicServiceImpl.class);
 
     @Override
@@ -44,6 +50,27 @@ public class PublicServiceImpl implements PublicService {
             hBaseConn = HbaseConnectionPool.getHbaseConnection();
             fileTable = hBaseConn.getTable(TableName.valueOf(Static.FILE_TABLE));
             userTable = hBaseConn.getTable(TableName.valueOf(Static.USER_TABLE));
+
+            //查询files表中有没有默认文件夹，如果没有则调用mkdir创建
+            Scan scan = new Scan();
+
+            FilterList filterList = new FilterList();
+            Filter colFilter = new PrefixFilter(Bytes.toBytes(uid));
+            SingleColumnValueFilter singleColumnValueFilter = new SingleColumnValueFilter(
+                    Static.FILE_TABLE_CF.getBytes(),
+                    Static.FILE_TABLE_PATH.getBytes(),
+                    CompareFilter.CompareOp.EQUAL,
+                    new BinaryComparator(Bytes.toBytes("/shuwebfs/" + uid + "/我的文档"))); //安装hdfs的路径查询
+            singleColumnValueFilter.setFilterIfMissing(true);
+            filterList.addFilter(colFilter);
+            filterList.addFilter(singleColumnValueFilter);
+            scan.setFilter(filterList);
+            ResultScanner scanner = fileTable.getScanner(scan);
+
+            if (scanner.next() == null) {
+                userService.buildDirect(uid,  "/我的文档", uid);
+            }
+            logger.info("用户检测成功，存在默认文件夹");
 
             //查询user大小表中没有用户rowkey，如果没有则插入
             if (!CrudMethods.insertOrUpdateUser(userTable, "0", uid, "upload")) {

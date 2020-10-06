@@ -269,6 +269,17 @@ public class TestController {
         Post.Post();
     }
 
+    /**
+     * 创建用户
+     *
+     * @param
+     * @throws IOException
+     */
+    @GetMapping("buildUser")
+    public void buildUser() throws Exception {
+        Post.Post();
+    }
+
 
     public static void clearTables() throws Exception {
         Connection connection = HbaseConnectionPool.getHbaseConnection();
