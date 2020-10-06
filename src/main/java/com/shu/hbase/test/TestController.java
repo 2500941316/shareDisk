@@ -30,7 +30,7 @@ public class TestController {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    logger.info("新的线程启动了"+Thread.currentThread().getName());
+                    logger.info("新的线程启动了" + Thread.currentThread().getName());
                     final String url = "http://localhost:8080/getPublicFiles";
                     String string = Get.sendGet(url, "", "");
                     System.out.println(string);
@@ -48,7 +48,7 @@ public class TestController {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    logger.info("新的线程启动了"+Thread.currentThread().getName());
+                    logger.info("新的线程启动了" + Thread.currentThread().getName());
                     final String url = "http://localhost:8080/searchFile";
                     String string = Get.sendGet(url, "value=3&type=share", "");
                     System.out.println(string);
@@ -63,13 +63,12 @@ public class TestController {
     @GetMapping("testBuildDir")
     public String testBuildDir() {
         for (int i = 0; i < 10; i++) {
-            int n=i;
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    logger.info("新的线程启动了"+Thread.currentThread().getName());
+                    logger.info("新的线程启动了" + Thread.currentThread().getName());
                     final String url = "http://localhost:8080/buildDirect";
-                    String string = Get.sendGet(url, "backId=19721631&dirName=testDir"+n, "");
+                    String string = Get.sendGet(url, "backId=19721631&dirName=testDir" + new java.util.Random().nextInt(900) + 100, "");
                     System.out.println(string);
                 }
             }).start();
