@@ -98,7 +98,7 @@
     //参数1：父文件Id 参数2：父文件夹节点
     function getFolioToParentDir(folioId, $el) {
         $el.find(".childrenDiv").remove();
-        var dir = parseInt($el.attr("data-parentDir")) + 1;//第几个级别
+        var dir = parseInt($el.attr("data-parentDir"));//第几个级别
 
         var tarClazz = ""; // 这个变量还没有用得上
         if ($el.find(".fa1").hasClass("fa-plus-square-o")) {
