@@ -495,6 +495,8 @@
         document.getElementById("doc").classList.remove("active");
         document.getElementById("video").classList.remove("active");
         document.getElementById("all").classList.remove("active");
+        document.getElementById("back").classList.remove("active");
+        document.getElementById("new").classList.remove("active");
     }
 
 
@@ -608,6 +610,20 @@
                         result[i].type = peakPic(result[i].type);
                         result[i].size = bytesToSize(result[i].size);
                     }
+
+                    //将文件夹放在最前面
+                    while (left <= right) {
+                        if (result[left].dir === true) {
+                            left++;
+                        } else if (result[right].dir === false) {
+                            right--;
+                        } else {
+                            var temp = result[left];
+                            result[left] = result[right];
+                            result[right] = temp;
+                        }
+                    }
+
                     return {
                         "code": res.code, //解析接口状态
                         "msg": res.msg, //解析提示文本
