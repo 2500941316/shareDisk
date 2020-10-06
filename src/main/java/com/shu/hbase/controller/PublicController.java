@@ -19,7 +19,7 @@ import java.security.Principal;
 @RestController
 @CrossOrigin
 public class PublicController {
-    private String username = "19721632";
+    private String username = "19721631";
 
     @Autowired
     PublicService publicService;
@@ -89,7 +89,7 @@ public class PublicController {
         if (detSrc.isEmpty()) {
             return TableModel.error("参数为空");
         }
-        return userService.selectFile(username, type, username, gId);
+        return userService.selectFile(detSrc, type, username, gId);
     }
 
 
