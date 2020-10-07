@@ -270,35 +270,47 @@ public class UserServiceImpl implements UserService {
     public TableModel buildDirect(String backId, String dirName, String userId) {
         String path = "";
         logger.info("创建文件夹权限验证");
-        if (backId.length() > 8) {
-            if (!backId.substring(0, 8).equals(userId)) {
-                return TableModel.error("权限不足");
-            }
-        }
-        logger.info("创建文件夹权限验证成功");
-        //如果是创建默认文件夹则拼接路径
-        if (dirName.equals("/我的文档")) {
-            path = "/shuwebfs/" + userId + dirName;
-        } else {
-            path = findUploadPath(backId);
-            assert path != null;
-            if (!path.isEmpty()) {
-                path = path + "/" + dirName;
-            }
-        }
-
-        logger.info("新建文件夹物理路径拼接");
+        Connection hBaseConn = null;
         FileSystem fs = null;
+        Table fileTable = null;
         try {
+            hBaseConn = HbaseConnectionPool.getHbaseConnection();
+            fileTable = hBaseConn.getTable(TableName.valueOf(Static.FILE_TABLE));
+            if (backId.length() > 8) {
+                if (!backId.substring(0, 8).equals(userId)) {
+                    return TableModel.error("权限不足");
+                }
+            }
+            if (!verifite(fileTable, userId, backId, null)) {
+                logger.info("权限检测失败！正在返回");
+                return TableModel.error("auth检测失败，权限不足！");
+            }
+            logger.info("创建文件夹权限验证成功");
+            //如果是创建默认文件夹则拼接路径
+            if (dirName.equals("/我的文档")) {
+                path = "/shuwebfs/" + userId + dirName;
+            } else {
+                path = findUploadPath(backId);
+                assert path != null;
+                if (!path.isEmpty()) {
+                    path = path + "/" + dirName;
+                }
+            }
+            logger.info("新建文件夹物理路径拼接");
             fs = HdfsConnectionPool.getHdfsConnection();
             fs.mkdirs(new Path(path));
-
             insertToFiles(null, "dir", path, backId, userId, userId + "_" + uniqueseed.incrementAndGet());
-            logger.info("insert执行成功");
-            HdfsConnectionPool.releaseConnection(fs);
             logger.info("文件夹创建成功");
         } catch (Exception e) {
             logger.error(e.getMessage());
+        } finally {
+            try {
+                fileTable.close();
+                HdfsConnectionPool.releaseConnection(fs);
+                HbaseConnectionPool.releaseConnection(hBaseConn);
+            } catch (Exception e) {
+                logger.error(e.getMessage());
+            }
         }
         return TableModel.success("创建成功");
     }
