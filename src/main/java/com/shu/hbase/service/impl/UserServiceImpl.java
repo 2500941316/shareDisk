@@ -305,6 +305,7 @@ public class UserServiceImpl implements UserService {
             logger.error(e.getMessage());
         } finally {
             try {
+                assert fileTable != null;
                 fileTable.close();
                 HdfsConnectionPool.releaseConnection(fs);
                 HbaseConnectionPool.releaseConnection(hBaseConn);
