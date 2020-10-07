@@ -142,7 +142,6 @@ public class CrudMethods {
         if ((filedId.equals(authId)) || filedId.substring(0, 8).equals("00000000")) {
             return true;
         } else {
-
             Get get = new Get(Bytes.toBytes(filedId));
             get.setMaxVersions();
             get.addColumn(Bytes.toBytes(Static.FILE_TABLE_CF), Bytes.toBytes(Static.FILE_TABLE_Auth));
@@ -153,12 +152,15 @@ public class CrudMethods {
                 logger.info("gId不为空，开始组合新的AuthId进行验证");
                 newAuthId = gId + authId;
             }
+            logger.info("开始查找文件权限，进行循环比对");
             for (Cell cell : cells) {
                 if (Bytes.toString(CellUtil.cloneValue(cell)).equals(newAuthId) || Bytes.toString(CellUtil.cloneValue(cell)).equals(authId) || Bytes.toString(CellUtil.cloneValue(cell)).equals("公开")) {
+                    logger.info("权限比对成功，返回true");
                     return true;
                 }
             }
         }
+        logger.info("权限比对失败，返回false");
         return false;
     }
 
