@@ -15,4 +15,6 @@ public interface UserService {
     TableModel buildDirect(String backId, String dirName, String username);
 
     TableModel deleteFile(String fileId, String username);
+
+    TableModel getShares(String username);
 }

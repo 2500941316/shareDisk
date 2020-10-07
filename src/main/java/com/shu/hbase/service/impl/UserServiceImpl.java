@@ -1,12 +1,15 @@
 package com.shu.hbase.service.impl;
 
 import com.shu.hbase.pojo.FileInfoVO;
+import com.shu.hbase.pojo.GroupInfoVO;
+import com.shu.hbase.pojo.ShareFileVO;
 import com.shu.hbase.pojo.Static;
 import com.shu.hbase.service.impl.upload.MvcToHadoop;
 import com.shu.hbase.service.interfaces.UserService;
 import com.shu.hbase.tools.TableModel;
 import com.shu.hbase.tools.hbasepool.HbaseConnectionPool;
 import com.shu.hbase.tools.hdfspool.HdfsConnectionPool;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hbase.Cell;
@@ -22,10 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 
 import static com.shu.hbase.service.impl.CrudMethods.*;
@@ -326,6 +326,7 @@ public class UserServiceImpl implements UserService {
         if (!fileId.substring(0, 8).equals(uId)) {
             return TableModel.error("权限不足");
         }
+
         Connection hBaseConn = null;
         Table fileTable = null;
         Table userTable = null;
@@ -388,4 +389,84 @@ public class UserServiceImpl implements UserService {
     }
 
 
+    //获取当前用户的共享组
+    @Override
+    public TableModel getShares(String uid) {
+        Connection hBaseConn = null;
+        Table indexTable = null;
+        Table groupTable = null;
+        try {
+            if (StringUtils.isEmpty(uid)) {
+                throw new Exception("参数有误");
+            }
+            hBaseConn = HbaseConnectionPool.getHbaseConnection();
+            //获得index表下面所有组的id
+            logger.info("开始获取index表中所以分组的id");
+            indexTable = hBaseConn.getTable(TableName.valueOf(Static.INDEX_TABLE));
+            groupTable = hBaseConn.getTable(TableName.valueOf(Static.GROUP_TABLE));
+            Get indexGet = new Get(Bytes.toBytes(uid));
+            indexGet.addFamily(Bytes.toBytes(Static.INDEX_TABLE_CF));
+            Result result = indexTable.get(indexGet);
+            logger.info("获得到当前用户所以分组的id，数量为"+result.size());
+            List<GroupInfoVO> groupInfoVOList = new ArrayList<>();
+            for (Cell cell : result.rawCells()) {
+                logger.info("对每个分组id进行查询，封装为组信息对象");
+                GroupInfoVO groupInfoVO = new GroupInfoVO();
+                Set<String> memberSet = new HashSet<>();
+                Set<ShareFileVO> fileVOSet = new HashSet<>();
+                //在group表中，根据组id，搜索出对应的name、path 和member
+                logger.info("使用每个组id在group表中查询组名称 member 文件id");
+                Get groupGet = new Get(CellUtil.cloneQualifier(cell));
+                groupInfoVO.setGId(Bytes.toString(CellUtil.cloneQualifier(cell)));
+                groupGet.setMaxVersions();
+                groupGet.addColumn(Bytes.toBytes(Static.GROUP_TABLE_CF), Bytes.toBytes(Static.GROUP_TABLE_NAME));
+                groupGet.addColumn(Bytes.toBytes(Static.GROUP_TABLE_CF), Bytes.toBytes(Static.GROUP_TABLE_MEMBER));
+                groupGet.addColumn(Bytes.toBytes(Static.GROUP_TABLE_CF), Bytes.toBytes(Static.GROUP_TABLE_fileId));
+                Result groupRes = groupTable.get(groupGet);
+                logger.info("开始对每个分组的查询结果进行封装");
+                for (Cell rawCell : groupRes.rawCells()) {
+                    if (Bytes.toString(CellUtil.cloneQualifier(rawCell)).equals(Static.GROUP_TABLE_MEMBER)) //如果列名是member
+                    {
+                        memberSet.add(Bytes.toString(CellUtil.cloneValue(rawCell)));
+                    } else if (Bytes.toString(CellUtil.cloneQualifier(rawCell)).equals(Static.GROUP_TABLE_NAME))  //如果列名name
+                    {
+                        groupInfoVO.setName(Bytes.toString(CellUtil.cloneValue(rawCell)));
+                    } else {
+                        String path = Bytes.toString(CellUtil.cloneValue(rawCell));
+                        ShareFileVO shareFileVO = new ShareFileVO();
+                        //截取最后一个/，之后的是文件名称
+                        String fileName = path.substring(path.lastIndexOf("/") + 1);
+                        shareFileVO.setName(fileName);
+                        shareFileVO.setPath(path);
+                        if (path.charAt(1) == '/' && path.charAt(10) == '/') {
+                            shareFileVO.setSharer(path.substring(2, 10));
+                        }
+                        fileVOSet.add(shareFileVO);
+                    }
+                }
+                logger.info("分组对象封装成功，开始返回数据");
+                groupInfoVO.setMember(memberSet);
+                groupInfoVO.setFile(fileVOSet);
+                groupInfoVOList.add(groupInfoVO);
+            }
+            TableModel tableModel = new TableModel();
+            tableModel.setData(groupInfoVOList);
+            tableModel.setCode(200);
+            return tableModel;
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return TableModel.error("网络异常，查询失败");
+        } finally {
+            try {
+                if (indexTable != null)
+                indexTable.close();
+                if (groupTable != null)
+                groupTable.close();
+                if (hBaseConn!=null)
+                HbaseConnectionPool.releaseConnection(hBaseConn);
+            } catch (IOException e) {
+                logger.error(e.getMessage());
+            }
+        }
+    }
 }
