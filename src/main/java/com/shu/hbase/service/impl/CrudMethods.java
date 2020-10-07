@@ -139,7 +139,7 @@ public class CrudMethods {
     static boolean verifite(Table fileTable, String authId, String filedId, String gId) throws IOException {
         //通过fileTable查出该文件的权限信息
         //如果fileId为8位，则说明在查首页,只有本人能查到
-        if ((filedId == authId) || filedId.substring(0, 8).equals("00000000")) {
+        if ((filedId.equals(authId)) || filedId.substring(0, 8).equals("00000000")) {
             return true;
         } else {
 
