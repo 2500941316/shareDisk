@@ -178,6 +178,7 @@ public class PublicServiceImpl implements PublicService {
             logger.info("开始验证用户下载权限");
             //权限验证
             if (!CrudMethods.verifite(fileTable, uid, fileId, gId)) {
+                logger.info("权限校验失败");
                 return;
             }
             logger.info("用户下载权限校验成功");
@@ -195,6 +196,7 @@ public class PublicServiceImpl implements PublicService {
             logger.info(e.getMessage());
         } finally {
             try {
+                assert fileTable != null;
                 fileTable.close();
                 HbaseConnectionPool.releaseConnection(hBaseConn);
                 HdfsConnectionPool.releaseConnection(fs);

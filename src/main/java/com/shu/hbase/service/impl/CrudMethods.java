@@ -141,6 +141,9 @@ public class CrudMethods {
         //如果fileId为8位，则说明在查首页,只有本人能查到
         if ((filedId.equals(authId)) || filedId.substring(0, 8).equals("00000000")) {
             return true;
+        } else if (filedId.length() == 8) {
+            logger.info("无法访问其他用户的根目录，权限验证失败");
+            return false;
         } else {
             Get get = new Get(Bytes.toBytes(filedId));
             get.setMaxVersions();
@@ -153,6 +156,10 @@ public class CrudMethods {
                 newAuthId = gId + authId;
             }
             logger.info("开始查找文件权限，进行循环比对");
+            if (cells.isEmpty()) {
+                logger.info("权限列表为空，文件可能不存在，权限验证失败");
+                return false;
+            }
             for (Cell cell : cells) {
                 if (Bytes.toString(CellUtil.cloneValue(cell)).equals(newAuthId) || Bytes.toString(CellUtil.cloneValue(cell)).equals(authId) || Bytes.toString(CellUtil.cloneValue(cell)).equals("公开")) {
                     logger.info("权限比对成功，返回true");
