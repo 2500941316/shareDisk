@@ -156,7 +156,7 @@ public class CrudMethods {
                 newAuthId = gId + authId;
             }
             logger.info("开始查找文件权限，进行循环比对");
-            if (cells.isEmpty()) {
+            if (cells == null) {
                 logger.info("权限列表为空，文件可能不存在，权限验证失败");
                 return false;
             }
