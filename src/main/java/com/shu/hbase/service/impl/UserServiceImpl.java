@@ -49,7 +49,9 @@ public class UserServiceImpl implements UserService {
             logger.info("开始检测用户查询权限");
             //权限检测
             if (!verifite(fileTable, uId, backId, gId)) {
-                return TableModel.error("您的访问权限不足");
+                logger.info("权限检测失败！正在返回");
+                tableModel.setMsg("auth检测失败，权限不足！");
+                return tableModel;
             }
             logger.info("权限检测成功");
             Scan scan = new Scan();
