@@ -180,7 +180,7 @@
                         </div>
 
                     </div>
-                    <h4 class="mb-4">共享分组</h4>
+                    <h4 class="mb-4">分组列表</h4>
 
                     <!-- Start add group Modal -->
                     <div class="modal fade" id="addgroup-exampleModal" tabindex="-1" role="dialog"
@@ -566,12 +566,22 @@
 
 <script>
     const groupMembers = [];
+    const groupNames = [];
+    const currentGroupName = "";
+    const currentGroupId = "";
 
     //点击创建分组的按钮
     function buildGroup() {
         //获得分组名称
         const groupName = $("#addgroupname-input").val();
         if (groupName.length === 0 || groupMembers.length < 2) return;
+        //检测当前分组列表中有没有相同名称的分组
+        for (let i = 0; i < groupNames.length; i++) {
+            if (groupName === groupNames[i]) {
+                return;
+            }
+        }
+
         //将分组的成员放入一个list中
         const member = [];
         for (let i = 0; i < groupMembers.length; i++) {
@@ -635,9 +645,19 @@
             function (res) {
                 if (res.code === 200) {
                     doData(res.data);
+                    if (res.data != null) {
+                        getGroupFiles(res.data[0].gid);
+                    }
                 }
             });
     });
+
+
+    //查询分组文件的方法
+    function getGroupFiles(gid) {
+        alert(gid)
+    }
+
 
     ///根据ajax数据进行渲染
     function doData(arrParO) {
@@ -654,7 +674,7 @@
                 '                                            </div>\n' +
                 '                                        </div>\n' +
                 '                                        <div class="media-body overflow-hidden">\n' +
-                '                                            <h5 class="text-truncate font-size-14 mb-0">#Snacks</h5>\n' +
+                '                                            <h5 class="text-truncate font-size-14 mb-0">#' + obj.name + '</h5>\n' +
                 '                                        </div>\n' +
                 '                                    </div>\n' +
                 '                                </a>\n' +
