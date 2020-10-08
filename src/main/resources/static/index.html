@@ -663,7 +663,7 @@
     function doData(arrParO) {
         const $active = $("#groupsName");
         $.each(arrParO, function (i, obj) {
-            const $children = $(' <li>\n' +
+            const $children = $(' <li onclick="getGroupFiles('+obj.gid+')">\n' +
                 '                                <a href="#">\n' +
                 '                                    <div class="media align-items-center">\n' +
                 '                                        <div class="chat-user-img mr-3">\n' +
