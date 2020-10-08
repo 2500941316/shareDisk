@@ -1,9 +1,6 @@
 package com.shu.hbase.service.impl;
 
-import com.shu.hbase.pojo.FileInfoVO;
-import com.shu.hbase.pojo.GroupInfoVO;
-import com.shu.hbase.pojo.ShareFileVO;
-import com.shu.hbase.pojo.Static;
+import com.shu.hbase.pojo.*;
 import com.shu.hbase.service.impl.upload.MvcToHadoop;
 import com.shu.hbase.service.interfaces.UserService;
 import com.shu.hbase.tools.TableModel;
@@ -407,7 +404,7 @@ public class UserServiceImpl implements UserService {
             Get indexGet = new Get(Bytes.toBytes(uid));
             indexGet.addFamily(Bytes.toBytes(Static.INDEX_TABLE_CF));
             Result result = indexTable.get(indexGet);
-            logger.info("获得到当前用户所以分组的id，数量为"+result.size());
+            logger.info("获得到当前用户所以分组的id，数量为" + result.size());
             List<GroupInfoVO> groupInfoVOList = new ArrayList<>();
             for (Cell cell : result.rawCells()) {
                 logger.info("对每个分组id进行查询，封装为组信息对象");
@@ -459,12 +456,66 @@ public class UserServiceImpl implements UserService {
         } finally {
             try {
                 if (indexTable != null)
-                indexTable.close();
+                    indexTable.close();
                 if (groupTable != null)
-                groupTable.close();
-                if (hBaseConn!=null)
-                HbaseConnectionPool.releaseConnection(hBaseConn);
+                    groupTable.close();
+                if (hBaseConn != null)
+                    HbaseConnectionPool.releaseConnection(hBaseConn);
             } catch (IOException e) {
+                logger.error(e.getMessage());
+            }
+        }
+    }
+
+
+    //新建分组
+    @Override
+    public TableModel buildGroup(NewGroupInfoVO newGroupInfoVO) {
+        Connection hBaseConn = null;
+        Table groupTable = null;
+        Table indexTable = null;
+        try {
+            hBaseConn = HbaseConnectionPool.getHbaseConnection();
+            groupTable = hBaseConn.getTable(TableName.valueOf(Static.GROUP_TABLE));
+            indexTable = hBaseConn.getTable(TableName.valueOf(Static.INDEX_TABLE));
+
+            //在group表中，将分组建立
+            logger.info("开始执行创建分组方法");
+            logger.info("获得当前时间戳");
+            long l = System.currentTimeMillis();
+            String groupId = newGroupInfoVO.getUId() + l;
+            logger.info("将用户id和时间戳合并成分组id");
+            Put groupPut = new Put(Bytes.toBytes(groupId));
+            groupPut.addColumn(Bytes.toBytes(Static.GROUP_TABLE_CF), Bytes.toBytes(Static.GROUP_TABLE_NAME), Bytes.toBytes(newGroupInfoVO.getGroupName()));
+
+            logger.info("将分组成员添加到不同的时间戳上");
+            for (int i = 0; i < newGroupInfoVO.getMember().size(); i++) {
+                groupPut.addColumn(Bytes.toBytes(Static.GROUP_TABLE_CF), Bytes.toBytes(Static.GROUP_TABLE_MEMBER), l + i, Bytes.toBytes(newGroupInfoVO.getMember().get(i)));
+            }
+            groupTable.put(groupPut);
+
+            logger.info("开始想index表中添加一个列，列名叫做分组的id");
+            //在index表中，针对每一个member，添加一个列
+            List<Put> putList = new ArrayList<>();
+            for (String member : newGroupInfoVO.getMember()) {
+                Put indexPut = new Put(Bytes.toBytes(member));
+                indexPut.addColumn(Bytes.toBytes(Static.INDEX_TABLE_CF), Bytes.toBytes(groupId), null);
+                putList.add(indexPut);
+            }
+            indexTable.put(putList);
+            logger.info("创建分组成功");
+            return TableModel.success("创建成功");
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return TableModel.error("网络异常，请重试");
+        } finally {
+            try {
+                assert groupTable != null;
+                groupTable.close();
+                assert indexTable != null;
+                indexTable.close();
+                HbaseConnectionPool.releaseConnection(hBaseConn);
+            } catch (Exception e) {
                 logger.error(e.getMessage());
             }
         }

@@ -1,5 +1,6 @@
 package com.shu.hbase.service.interfaces;
 
+import com.shu.hbase.pojo.NewGroupInfoVO;
 import com.shu.hbase.tools.TableModel;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,4 +18,6 @@ public interface UserService {
     TableModel deleteFile(String fileId, String username);
 
     TableModel getShares(String username);
+
+    TableModel buildGroup(NewGroupInfoVO newGroupInfoVO);
 }
