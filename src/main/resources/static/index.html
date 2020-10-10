@@ -291,7 +291,7 @@
                 </div>
                 <!-- end chat user head -->
                 <div style="margin-top: -10px">
-                    <table class="layui-hide" id="file" lay-filter="test"></table>
+                    <table class="layui-hide" id="file" lay-filter="test1"></table>
                 </div>
             </div>
             <!-- end chat conversation section -->
@@ -610,6 +610,60 @@
     const currentGroupName = "";
     const currentGroupId = "";
 
+    //初始化文件表格
+    layui.use('table', function () {
+        var table = layui.table;
+        table.render({
+            elem: '#file'
+            , data: []
+            , limit: 8
+            , page: {
+                layout: ['count', 'prev', 'page', 'next', 'skip'] //自定义分页布局
+                , groups: 3 //只显示 1 个连续页码
+                , first: false //不显示首页
+                , last: false //不显示尾页
+            }
+            , parseData: function (res) { //将原始数据解析成 table 组件所规定的数据，res为从url中get到的数据
+                var result;
+
+                if (this.page.curr) {
+                    result = res.data.slice(this.limit * (this.page.curr - 1), this.limit * this.page.curr);
+                } else {
+                    result = res.data.slice(0, this.limit);
+                }
+
+                //处理result的时间格式
+                for (var i = 0; i < result.length; i++) {
+                    result[i].time = getDate(result[i].time);
+                    result[i].type = peakPic(result[i].type);
+                }
+                return {
+                    "code": res.code, //解析接口状态
+                    "msg": res.msg, //解析提示文本
+                    "count": res.count, //解析数据长度
+                    "data": result //解析数据列表
+                };
+            }
+            , cols: [[
+                {title: '文件', toolbar: '#barDemo1'}
+            ]]
+        });
+
+        table.on('row(test1)', function (obj) {
+            var data = obj.data;
+            layui.use('layer', function () {
+
+                layer.confirm('确认下载 ： ' + data.name, {
+                    btn: ['确定', '取消']//按钮
+                }, function () {
+                    downLoad(data.fileId);
+                    layer.closeAll();
+                });
+            });
+        });
+    })
+
+
     //点击创建分组的按钮
     function buildGroup() {
         //获得分组名称
@@ -692,13 +746,11 @@
                 if (res.code === 200) {
                     doData(res.data);
                     if (res.data != null) {
-                        alert(res.data[0].gid)
                         getGroupFiles(res.data[0].gid);
                     }
                 }
             });
     }
-
 
 
     ///根据ajax数据进行渲染
@@ -754,64 +806,9 @@
     });
 
 
-    //初始化文件表格
-    layui.use('table', function () {
-        var table = layui.table;
-        table.render({
-            elem: '#file'
-            , data: []
-            , limit: 8
-            , page: {
-                layout: ['count', 'prev', 'page', 'next', 'skip'] //自定义分页布局
-                , groups: 3 //只显示 1 个连续页码
-                , first: false //不显示首页
-                , last: false //不显示尾页
-            }
-            , parseData: function (res) { //将原始数据解析成 table 组件所规定的数据，res为从url中get到的数据
-                var result;
-
-                if (this.page.curr) {
-                    result = res.data.slice(this.limit * (this.page.curr - 1), this.limit * this.page.curr);
-                } else {
-                    result = res.data.slice(0, this.limit);
-                }
-
-                //处理result的时间格式
-                for (var i = 0; i < result.length; i++) {
-                    result[i].time = getDate(result[i].time);
-                    result[i].type = peakPic(result[i].type);
-                }
-                return {
-                    "code": res.code, //解析接口状态
-                    "msg": res.msg, //解析提示文本
-                    "count": res.count, //解析数据长度
-                    "data": result //解析数据列表
-                };
-            }
-            , cols: [[
-                {title: '文件', toolbar: '#barDemo1'}
-            ]]
-        });
-
-        table.on('row(test)', function (obj) {
-            var data = obj.data;
-            layui.use('layer', function () {
-
-                layer.confirm('确认下载 ： ' + data.name, {
-                    btn: ['确定', '取消']//按钮
-                }, function () {
-                    downLoad(data.fileId);
-                    layer.closeAll();
-                });
-            });
-        });
-    })
-
-
     //查询分组文件的方法
     function getGroupFiles(gId) {
         if (gId.length !== 0) {
-            alert(gId)
             //表格初始化值
             //查询框查询文件名的方法
             const table = layui.table;
