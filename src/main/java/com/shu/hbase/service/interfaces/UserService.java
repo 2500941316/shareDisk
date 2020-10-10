@@ -20,4 +20,6 @@ public interface UserService {
     TableModel getShares(String username);
 
     TableModel buildGroup(NewGroupInfoVO newGroupInfoVO);
+
+    TableModel getGroupFile(String gId);
 }

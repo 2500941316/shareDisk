@@ -91,9 +91,7 @@
     <div class='container'>
         <!-- Logo container-->
         <div>
-            <a href='index2.html' class='logo'>
-
-            </a>
+            <a href='index2.html' class='logo'></a>
         </div>
         <div class='buy-button'>
             <button href='#' data-toggle="modal" data-target="#addgroup-exampleModal" class='btn btn-primary'><i
@@ -123,12 +121,9 @@
                 <li class='has-submenu'>
                     <a href='myFile.html'>我的文件</a>
                 </li>
-
                 <li class='has-submenu'>
                     <a href='index2.html'>共享文件</a>
                 </li>
-
-
             </ul><!--end navigation menu-->
         </div><!--end navigation-->
     </div><!--end container-->
@@ -158,7 +153,6 @@
     </div>
 </section>
 <!-- end home -->
-
 
 <div class="layout-wrapper d-lg-flex">
     <!-- start chat-leftsidebar -->
@@ -225,13 +219,10 @@
                     <!-- End add group Modal -->
                 </div>
                 <hr style="margin-top: -5px">
-
                 <!-- Start chat-group-list -->
                 <div style="margin-top: -3px" class="p-4 chat-message-list chat-group-list" data-simplebar>
-
                     <ul class="list-unstyled chat-list">
                         <div id="groupsName"></div>
-
                     </ul>
                 </div>
                 <!-- End chat-group-list -->
@@ -240,9 +231,9 @@
         </div>
         <!-- End groups tab-pane -->
         <!-- end tab content -->
-
     </div>
     <!-- end chat-leftsidebar -->
+
 
     <!-- Start User chat -->
     <div class="user-chat w-100">
@@ -299,14 +290,14 @@
                     </div>
                 </div>
                 <!-- end chat user head -->
-
+                <div style="margin-top: -10px">
+                    <table class="layui-hide" id="file" lay-filter="test"></table>
+                </div>
             </div>
             <!-- end chat conversation section -->
 
             <!-- start User profile detail sidebar -->
             <div class="user-profile-sidebar">
-
-
                 <div class="text-center p-4 border-bottom">
                     <div class="mb-4">
                         <img src="assets/images/users/avatar-4.jpg" class="rounded-circle avatar-lg img-thumbnail"
@@ -541,9 +532,7 @@
                                         </div>
                                     </div>
                                     <!-- end card -->
-
                                 </div>
-
                             </div>
                         </div>
                         <!-- End Attached Files card -->
@@ -562,6 +551,57 @@
 <script src="js/foot.js"></script>
 <script type="text/html" id="barDemo">
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+
+<script type="text/html" id="barDemo1">
+
+    <!--begin-->
+    <div class="job-box bg-white overflow-hidden border rounded mt-4 position-relative overflow-hidden">
+        <div class="lable text-center pt-2 pb-2">
+            <ul class="list-unstyled best text-white mb-0 text-uppercase">
+                <li class="list-inline-item"><i class="mdi mdi-star"></i></li>
+            </ul>
+        </div>
+
+        <div class="p-4">
+            <div class="row align-items-center">
+                <div class="col-md-2">
+                    <div class="mo-mb-2">
+                        <svg style="width: 35%;height: 50px;margin-left: 25px">
+                            <use xlink:href={{d.type}}></use>
+                        </svg>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div>
+                        <h6 class="f-18"><a href="#"
+                                            class="text-dark">{{d.name}}</a>
+                        </h6>
+
+                    </div>
+                </div>
+
+                <div class="col-md-1">
+                    <div>
+                        <p class="text-muted mb-0 mo-mb-2"><span
+                                class="text-primary">15.7M</span>
+                    </div>
+                </div>
+                <div class="col-md-2" style="text-align: center">
+                    <div>
+                        <p class="text-muted mb-0">{{d.time}}</p>
+                    </div>
+                </div>
+                <div class="col-md-1">
+                    <div>
+                        <a lay-even="downLoad" class="text-primary">下载 <i
+                                class="mdi mdi-chevron-double-right"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--一个文件端结束-->
 </script>
 
 <script>
@@ -603,7 +643,7 @@
             data: JSON.stringify(data),
             success: function (res) {
                 if (res.code === 200) {
-                    alert("1111")
+                    getGroupList();
                 }
             }
         })
@@ -640,6 +680,12 @@
 
     //获取全部分组的信息
     $(function () {
+        getGroupList();
+    });
+
+
+    //获得全部分组列表
+    function getGroupList() {
         //ajax创建逻辑
         $.get("/getShares",
             function (res) {
@@ -650,12 +696,25 @@
                     }
                 }
             });
-    });
+    }
 
 
     //查询分组文件的方法
     function getGroupFiles(gid) {
-        alert(gid)
+        if (gid.length !== 0) {
+            //表格初始化值
+            //查询框查询文件名的方法
+            var table = layui.table;
+            table.reload('file', {
+                url: '/getGroupFile',
+                where: {
+                    gId: gid
+                },
+                page: {
+                    curr: 1
+                }
+            })
+        }
     }
 
 
@@ -663,7 +722,7 @@
     function doData(arrParO) {
         const $active = $("#groupsName");
         $.each(arrParO, function (i, obj) {
-            const $children = $(' <li onclick="getGroupFiles('+obj.gid+')">\n' +
+            const $children = $(' <li onclick="getGroupFiles(' + obj.gid + ')">\n' +
                 '                                <a href="#">\n' +
                 '                                    <div class="media align-items-center">\n' +
                 '                                        <div class="chat-user-img mr-3">\n' +
@@ -710,7 +769,60 @@
             }
         });
     });
-    //新建分组中点击添加
+
+
+    //初始化文件表格
+    layui.use('table', function () {
+        var table = layui.table;
+        table.render({
+            elem: '#file'
+            , data: []
+            , limit: 8
+            , page: {
+                layout: ['count', 'prev', 'page', 'next', 'skip'] //自定义分页布局
+                , groups: 3 //只显示 1 个连续页码
+                , first: false //不显示首页
+                , last: false //不显示尾页
+            }
+            , parseData: function (res) { //将原始数据解析成 table 组件所规定的数据，res为从url中get到的数据
+                var result;
+
+                if (this.page.curr) {
+                    result = res.data.slice(this.limit * (this.page.curr - 1), this.limit * this.page.curr);
+                } else {
+                    result = res.data.slice(0, this.limit);
+                }
+
+                //处理result的时间格式
+                for (var i = 0; i < result.length; i++) {
+                    result[i].time = getDate(result[i].time);
+                    result[i].type = peakPic(result[i].type);
+                }
+                return {
+                    "code": res.code, //解析接口状态
+                    "msg": res.msg, //解析提示文本
+                    "count": res.count, //解析数据长度
+                    "data": result //解析数据列表
+                };
+            }
+            , cols: [[
+                {title: '文件', toolbar: '#barDemo1'}
+            ]]
+        });
+
+        table.on('row(test)', function (obj) {
+            var data = obj.data;
+            layui.use('layer', function () {
+
+                layer.confirm('确认下载 ： ' + data.name, {
+                    btn: ['确定', '取消']//按钮
+                }, function () {
+                    downLoad(data.fileId);
+                    layer.closeAll();
+                });
+            });
+        });
+    })
 
 
 </script>

@@ -520,4 +520,55 @@ public class UserServiceImpl implements UserService {
             }
         }
     }
+
+    //获得某一个分组的文件
+    @Override
+    public TableModel getGroupFile(String gId) {
+        Connection hBaseConn = null;
+        Table groupTable = null;
+        Table fileTable = null;
+        try {
+            hBaseConn = HbaseConnectionPool.getHbaseConnection();
+            groupTable = hBaseConn.getTable(TableName.valueOf(Static.GROUP_TABLE));
+            fileTable = hBaseConn.getTable(TableName.valueOf(Static.FILE_TABLE));
+            //根据gid查询每个组的文件
+            logger.info("根据分组id查询分组的文件fileid");
+            Get get = new Get(Bytes.toBytes(gId));
+            get.setMaxVersions();
+            get.addColumn(Bytes.toBytes(Static.GROUP_TABLE_CF), Bytes.toBytes(Static.GROUP_TABLE_fileId));
+            Result result = groupTable.get(get);
+            logger.info("group表查询成功，分组中含有文件数量为" + result.size());
+            List<FileInfoVO> fileVOList = new ArrayList<>();
+            logger.info("根据查询到的fileid，在file表中查询对应的文件具体信息");
+            for (Cell cell : result.rawCells()) {
+                String fileId = Bytes.toString(CellUtil.cloneValue(cell));
+                //根据fileId，查询出file表中对应的文件
+                Get fileGet = new Get(Bytes.toBytes(fileId));
+                fileGet.addFamily(Bytes.toBytes(Static.FILE_TABLE_CF));
+                Result fileRes = fileTable.get(fileGet);
+                if (!fileRes.isEmpty()) {
+                    FileInfoVO fileInfoVO = packageCells(fileRes);
+                    fileVOList.add(fileInfoVO);
+                }
+            }
+            logger.info("文件具体信息封装完毕，开始返回");
+            TableModel tableModel = new TableModel();
+            tableModel.setData(fileVOList);
+            tableModel.setCount(fileVOList.size());
+            tableModel.setCode(0);
+            return tableModel;
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return TableModel.error("网络异常请重试");
+        } finally {
+            try {
+                assert groupTable != null;
+                groupTable.close();
+                HbaseConnectionPool.releaseConnection(hBaseConn);
+            } catch (Exception e) {
+                logger.error(e.getMessage());
+            }
+        }
+    }
+
 }

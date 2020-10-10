@@ -46,4 +46,21 @@ public class GroupController {
         return userService.buildGroup(newGroupInfoVO);
     }
 
+
+    /**
+     * 获得某个分组的文件
+     *
+     * @param
+     * @throws IOException
+     */
+    @GetMapping("getGroupFile")
+    public TableModel getGroupFile(@RequestParam("gId") String gId) {
+
+        if (gId.isEmpty()) {
+            return TableModel.error("参数为空");
+        }
+        return userService.getGroupFile(gId);
+    }
+
+
 }
