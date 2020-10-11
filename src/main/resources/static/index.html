@@ -721,7 +721,7 @@
         $active.html("");
         $.each(arrParO, function (i, obj) {
             localStorage.setItem("cur", obj.gid)
-            const $children = $(' <li onclick="getGroupFiles(obj.gid)">\n' +
+            const $children = $(' <li onclick="getGroupFiles(localStorage.getItem("cur"))">\n' +
                 '                                <a href="#">\n' +
                 '                                    <div class="media align-items-center">\n' +
                 '                                        <div class="chat-user-img mr-3">\n' +
