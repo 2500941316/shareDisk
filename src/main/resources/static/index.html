@@ -564,14 +564,12 @@
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">共享</a>
 </script>
 
-<script type="text/html" id="barDemo1">
-    <div class="col-md-2">
+<script type="text/html" id="types">
         <div class="mo-mb-2">
             <svg style="width: 35%;height: 50px;margin-left: 25px">
                 <use xlink:href={{d.type}}></use>
             </svg>
         </div>
-    </div>
 </script>
 
 <script>
@@ -955,7 +953,7 @@
                             }
                         }
                         , cols: [[
-                              {toolbar: '#barDemo1', width: 100, title: '类型'}
+                              {toolbar: '#types', width: 150, title: '类型'}
                             , {field: 'name', title: '文件名'}
                             , {field: 'size', width: 100, title: '大小'}
                             , {field: 'time', width: 150, title: '修改时间'}
