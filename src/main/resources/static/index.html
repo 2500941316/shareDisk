@@ -572,7 +572,7 @@
 <script type="text/html" id="barDemo9">
 
     <!--begin-->
-    <div class="job-box bg-white overflow-hidden border rounded mt-4 position-relative overflow-hidden">
+    <div style="height: 40px" class="job-box bg-white overflow-hidden border rounded mt-4 position-relative overflow-hidden">
         <div class="lable text-center pt-2 pb-2">
             <ul class="list-unstyled best text-white mb-0 text-uppercase">
                 <li class="list-inline-item"><i class="mdi mdi-star"></i></li>
@@ -605,12 +605,6 @@
                 <div class="col-md-2" style="text-align: center">
                     <div>
                         <p class="text-muted mb-0">{{d.time}}</p>
-                    </div>
-                </div>
-                <div class="col-md-1" style="text-align: center">
-                    <div>
-                        <a lay-even="downLoad" class="text-primary">{{ d.dir == true ? '进入' : '下载' }} <i
-                                class="mdi mdi-chevron-double-right"></i></a>
                     </div>
                 </div>
             </div>
@@ -1008,7 +1002,6 @@
                             }
                         }
                         , cols: [[
-
                             {toolbar: '#barDemo9', title: '操作'}
                         ]]
                     });
