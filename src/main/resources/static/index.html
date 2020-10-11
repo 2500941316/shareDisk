@@ -970,10 +970,6 @@
                     table2.render({
                         elem: '#myFile'
                         , url: "/selectFile"
-                        // ,data: [{
-                        //     type: "#icon-wenjianjia1",
-                        //     name: "123123"
-                        // }]
                         , where: {
                             detSrc: "19721631",
                             type: "1",
@@ -1057,10 +1053,11 @@
                                     success: function (res) {
                                         if (res.code === 200) {
                                             getGroupFiles(localStorage.getItem("gId"), localStorage.getItem("gName"));
+                                            layer.close(index);
                                         }
                                     }
                                 })
-                                layer.close(index);
+
                             });
                         } else {
                             //如果是文件夹，就进入
