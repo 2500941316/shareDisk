@@ -210,7 +210,8 @@
                                     </div>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-link" data-dismiss="modal">关闭</button>
+                                    <button type="button" class="btn btn-link" id="close" data-dismiss="modal">关闭
+                                    </button>
                                     <button type="button" onclick="buildGroup()" class="btn btn-primary">创建</button>
                                 </div>
                             </div>
@@ -654,9 +655,11 @@
             },
             data: JSON.stringify(data),
             success: function (res) {
+                document.getElementById("close").click();
                 if (res.code === 200) {
 
                     getGroupList();
+
                 }
             }
         })
@@ -717,6 +720,8 @@
         const $active = $("#groupsName");
         $active.html("");
         $.each(arrParO, function (i, obj) {
+            console.log(obj)
+            alert(obj.gid)
             const $children = $(' <li onclick="getGroupFiles(' + obj.gid + ')">\n' +
                 '                                <a href="#">\n' +
                 '                                    <div class="media align-items-center">\n' +
