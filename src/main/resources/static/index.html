@@ -887,7 +887,7 @@
             document.getElementById("curGroup").innerText = name;
             //更新缓存中的gid
             localStorage.setItem("gId", gId);
-
+            localStorage.setItem("gName", name);
         }
     }
 
@@ -978,10 +978,10 @@
                             }
                         }
                         , cols: [[
-                            {toolbar: '#barDemo9', width: 80, event: 'setSign',title: '类型'}
-                            , {field: 'name',event: 'setSign', title: '用户名'}
-                            , {field: 'size', width: 110,event: 'setSign', title: '大小'}
-                            , {field: 'time', width: 170,event: 'setSign', title: '时间'}
+                            {toolbar: '#barDemo9', width: 80, event: 'setSign', title: '类型'}
+                            , {field: 'name', event: 'setSign', title: '用户名'}
+                            , {field: 'size', width: 110, event: 'setSign', title: '大小'}
+                            , {field: 'time', width: 170, event: 'setSign', title: '时间'}
                             , {toolbar: '#barDemo', width: 80, title: '共享'}
                         ]]
                     });
@@ -991,12 +991,29 @@
                         var data = obj.data;
                         if (obj.event === 'del') {
                             layer.confirm('共享文件？  ' + data.name, function (index) {
+                                var req = {
+                                    "groupId": localStorage.getItem("gId"),
+                                    "uId": localStorage.getItem("userid"),
+                                    "fileList":
+                                        [obj.fileId]
+                                };
                                 //ajax共享逻辑
-
+                                $.ajax({
+                                    url: '/shareTo',
+                                    type: 'post',
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    },
+                                    data: JSON.stringify(req),
+                                    success: function (res) {
+                                        if (res.code === 200) {
+                                            getGroupFiles(localStorage.getItem("gId"), localStorage.getItem("gName"));
+                                        }
+                                    }
+                                })
                                 layer.close(index);
                             });
                         } else {
-
                             //如果是文件夹，就进入
                             if (data.dir) {
                                 selectFile(data.fileId, "1");

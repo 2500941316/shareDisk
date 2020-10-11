@@ -666,4 +666,107 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+
+    //将当前用户共享的文件写入myshare表
+    //更新相对于user的index表
+    @Override
+    public TableModel shareTo(ShareToFileVO shareToFileVO) {
+        Connection hBaseConn = null;
+        Table fileTable = null;
+        Table groupTable = null;
+        Table indexTable = null;
+        //首先检查共享的文件是否已经存在myshare表中，如果存在则删除该版本数据数据，然后插入
+        try {
+            hBaseConn = HbaseConnectionPool.getHbaseConnection();
+            groupTable = hBaseConn.getTable(TableName.valueOf(Static.GROUP_TABLE));
+            fileTable = hBaseConn.getTable(TableName.valueOf(Static.FILE_TABLE));
+            indexTable = hBaseConn.getTable(TableName.valueOf(Static.INDEX_TABLE));
+            //检查index表和group表是否已经含有共享的路径
+            List<Put> indexList = new ArrayList<>();
+            List<Put> groupList = new ArrayList<>();
+            logger.info("开始查询要共享文件的index的全部版本，即为我在该组中的文件，如果不存在，则加入");
+            Get indexGet = new Get(Bytes.toBytes(shareToFileVO.getUId()));
+            indexGet.setMaxVersions();
+            indexGet.addColumn(Bytes.toBytes(Static.INDEX_TABLE_CF), Bytes.toBytes(shareToFileVO.getGroupId()));
+            Result indexRes = indexTable.get(indexGet);
+            //标志位数组
+            boolean[] rel = new boolean[shareToFileVO.getFileList().size()];
+            for (Cell cell : indexRes.rawCells()) {
+                for (int i = 0; i < shareToFileVO.getFileList().size(); i++) {
+                    if (shareToFileVO.getFileList().get(i).equals(Bytes.toString(CellUtil.cloneValue(cell)))) {
+                        rel[i] = true;
+                    }
+                }
+            }
+            //对没有被覆盖的进行插入
+            logger.info("开始对index表中不存在的共享文件进行插入");
+            long l = System.currentTimeMillis();
+            for (int i = 0; i < rel.length; i++) {
+                if (!rel[i]) {
+                    Put indexPut = new Put(Bytes.toBytes(shareToFileVO.getUId()));
+                    Put groupPut = new Put(Bytes.toBytes(shareToFileVO.getGroupId()));
+                    indexPut.addColumn(Bytes.toBytes(Static.INDEX_TABLE_CF), Bytes.toBytes(shareToFileVO.getGroupId()), l + i, Bytes.toBytes(shareToFileVO.getFileList().get(i)));
+                    indexList.add(indexPut);
+                    groupPut.addColumn(Bytes.toBytes(Static.GROUP_TABLE_CF), Bytes.toBytes(Static.GROUP_TABLE_fileId), l + i, Bytes.toBytes(shareToFileVO.getFileList().get(i)));
+                    groupList.add(groupPut);
+                }
+            }
+            indexTable.put(indexList);
+            groupTable.put(groupList);
+            logger.info("index表和group表插入成功");
+            logger.info("开始对共享的文件进行授权");
+            //对分享的文件进行授权：针对分享的每一个文件，先查询出共享组中的分组成员，然后把每一个id插入文件权限表中
+            Get get = new Get(Bytes.toBytes(shareToFileVO.getGroupId()));
+            get.setMaxVersions();
+            get.addColumn(Bytes.toBytes(Static.GROUP_TABLE_CF), Bytes.toBytes(Static.GROUP_TABLE_MEMBER));
+            Result result = groupTable.get(get);
+            List<Cell> memberList = result.listCells();
+            List<String> fileList = shareToFileVO.getFileList();
+            List<Put> putList = new ArrayList<>();
+            List<String> curAuthList = new ArrayList<>();
+            for (int i = 0; i < fileList.size(); i++) {
+                //先拿到该文件的所有的权限数组
+                Get curAuthGet = new Get(Bytes.toBytes(fileList.get(i)));
+                curAuthGet.setMaxVersions();
+                curAuthGet.addColumn(Bytes.toBytes(Static.FILE_TABLE_CF), Bytes.toBytes(Static.FILE_TABLE_Auth));
+                Result authGet = fileTable.get(curAuthGet);
+                for (Cell cell : authGet.rawCells()) {
+                    if (Bytes.toString(CellUtil.cloneQualifier(cell)).equals(Static.FILE_TABLE_Auth)) {
+                        curAuthList.add(Bytes.toString(CellUtil.cloneValue(cell)));
+                    }
+                }
+
+                for (Cell menber : memberList) {
+                    //先将当前文件放入list中
+                    if (Bytes.toString(CellUtil.cloneValue(menber)).equals(shareToFileVO.getUId())) {
+                        continue;
+                    }
+                    String memberId = Bytes.toString(CellUtil.cloneValue(menber));
+                    if (curAuthList.contains(shareToFileVO.getGroupId() + memberId)) {
+                        continue;
+                    }
+                    Put put = new Put(Bytes.toBytes(fileList.get(i)));
+                    put.addColumn(Bytes.toBytes(Static.FILE_TABLE_CF), Bytes.toBytes(Static.FILE_TABLE_Auth),
+                            System.currentTimeMillis(), Bytes.toBytes(shareToFileVO.getGroupId() + memberId));
+                    putList.add(put);
+                    CrudMethods.shareCallBack(fileTable, putList, fileList.get(i), menber, shareToFileVO.getUId(), shareToFileVO.getGroupId());
+                }
+            }
+            fileTable.put(putList);
+            logger.info("授权成功，文件共享完成");
+
+        } catch (Exception e) {
+            return TableModel.error("分享失败");
+        } finally {
+            try {
+                indexTable.close();
+                groupTable.close();
+                HbaseConnectionPool.releaseConnection(hBaseConn);
+            } catch (Exception e) {
+                logger.error(e.getMessage());
+            }
+        }
+        return TableModel.success("分享成功");
+    }
+
 }

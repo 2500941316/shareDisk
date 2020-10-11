@@ -1,6 +1,7 @@
 package com.shu.hbase.controller;
 
 import com.shu.hbase.pojo.NewGroupInfoVO;
+import com.shu.hbase.pojo.ShareToFileVO;
 import com.shu.hbase.service.interfaces.UserService;
 import com.shu.hbase.tools.TableModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,4 +80,15 @@ public class GroupController {
     }
 
 
+    /**
+     * 共享文件方法
+     *
+     * @param
+     * @throws IOException
+     */
+    @PostMapping("shareTo")
+    public TableModel shareTo(@RequestBody ShareToFileVO shareToFileVO, Authentication authentication) {
+        shareToFileVO.setUId(username);
+        return userService.shareTo(shareToFileVO);
+    }
 }

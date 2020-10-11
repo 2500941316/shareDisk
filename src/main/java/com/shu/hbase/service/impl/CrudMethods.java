@@ -447,4 +447,30 @@ public class CrudMethods {
             deleteCallBack(fileTable, fielIdList, newFile, uId, gId);
         }
     }
+
+    //递归对文件夹进行授权
+    public static void shareCallBack(Table fileTable, List<Put> putList, String fileId, Cell menber, String uId, String gId) throws IOException {
+        Scan scan = new Scan();
+        FilterList filterList = new FilterList();
+        Filter colFilter = new PrefixFilter(Bytes.toBytes(uId));
+        SingleColumnValueFilter singleColumnValueFilter = new SingleColumnValueFilter(
+                Static.FILE_TABLE_CF.getBytes(),
+                Static.FILE_TABLE_BACK.getBytes(),
+                CompareFilter.CompareOp.EQUAL,
+                new BinaryComparator(Bytes.toBytes(fileId)));
+        singleColumnValueFilter.setFilterIfMissing(true);
+        filterList.addFilter(colFilter);
+        filterList.addFilter(singleColumnValueFilter);
+
+        scan.setFilter(filterList);
+        ResultScanner scanner = fileTable.getScanner(scan);
+        for (Result result : scanner) {
+            String newFile = Bytes.toString(result.getRow());
+            Put put = new Put(Bytes.toBytes(newFile));
+            String memberId = Bytes.toString(CellUtil.cloneValue(menber));
+            put.addColumn(Bytes.toBytes(Static.FILE_TABLE_CF), Bytes.toBytes(Static.FILE_TABLE_Auth), System.currentTimeMillis(), Bytes.toBytes(gId + memberId));
+            putList.add(put);
+            shareCallBack(fileTable, putList, newFile, menber, uId, gId);
+        }
+    }
 }

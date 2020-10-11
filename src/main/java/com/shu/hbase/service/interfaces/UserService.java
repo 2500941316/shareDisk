@@ -1,6 +1,7 @@
 package com.shu.hbase.service.interfaces;
 
 import com.shu.hbase.pojo.NewGroupInfoVO;
+import com.shu.hbase.pojo.ShareToFileVO;
 import com.shu.hbase.tools.TableModel;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,4 +25,6 @@ public interface UserService {
     TableModel getGroupFile(String gId);
 
     TableModel deleteGroup(String gid, String username);
+
+    TableModel shareTo(ShareToFileVO shareToFileVO);
 }
