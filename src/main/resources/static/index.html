@@ -566,12 +566,12 @@
 
 <script src="js/foot.js"></script>
 <script type="text/html" id="barDemo">
-    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">共享</a>
 </script>
 
 <script type="text/html" id="barDemo1">
 
-    <svg style="width: 35%;height: 50px;margin-left: 25px">
+    <svg>
         <use xlink:href={{d.type}}></use>
     </svg>
 </script>
@@ -961,7 +961,7 @@
 
                         }
                         , cols: [[
-                            , {toolbar: '#barDemo1', width: 150}
+                            , {toolbar: '#barDemo1', width: 150, title: '类型'}
                             , {field: 'name', width: 380, title: '文件名'}
                             , {field: 'size', width: 80, title: '大小'}
                             , {field: 'time', width: 180, title: '修改时间'}
