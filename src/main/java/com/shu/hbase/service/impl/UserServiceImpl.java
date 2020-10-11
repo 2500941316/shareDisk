@@ -571,4 +571,99 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+
+    //删除某个分组
+    @Override
+    public TableModel deleteGroup(String gid, String uid) {
+        Connection hBaseConn = null;
+        Table groupTable = null;
+        Table indexTable = null;
+        Table fileTable = null;
+        try {
+            hBaseConn = HbaseConnectionPool.getHbaseConnection();
+            groupTable = hBaseConn.getTable(TableName.valueOf(Static.GROUP_TABLE));
+            indexTable = hBaseConn.getTable(TableName.valueOf(Static.INDEX_TABLE));
+            fileTable = hBaseConn.getTable(TableName.valueOf(Static.FILE_TABLE));
+            logger.info("开始验证删除分组权限");
+            //检查用户
+            if (!gid.substring(0, 8).equals(uid)) {
+                return TableModel.error("权限不足");
+            }
+            logger.info("删除分组权限验证成功");
+            //先获取所有的组成员，和组分享文件
+            List<String> memberList = new ArrayList<>();
+            List<String> fileList = new ArrayList<>();
+
+            logger.info("开始获取所有的组成员和组文件");
+            Get memberGet = new Get(Bytes.toBytes(gid));
+            memberGet.setMaxVersions();
+            memberGet.addColumn(Bytes.toBytes(Static.GROUP_TABLE_CF), Bytes.toBytes(Static.GROUP_TABLE_MEMBER));
+            memberGet.addColumn(Bytes.toBytes(Static.GROUP_TABLE_CF), Bytes.toBytes(Static.GROUP_TABLE_fileId));
+            Result result = groupTable.get(memberGet);
+            for (Cell cell : result.rawCells()) {
+                if (Bytes.toString(CellUtil.cloneQualifier(cell)).equals(Static.GROUP_TABLE_MEMBER)) {
+                    memberList.add(Bytes.toString(CellUtil.cloneValue(cell)));
+                } else if (Bytes.toString(CellUtil.cloneQualifier(cell)).equals(Static.GROUP_TABLE_fileId)) {
+                    fileList.add(Bytes.toString(CellUtil.cloneValue(cell)));
+                }
+            }
+            logger.info("针对每个组成员在index表中删除列的所以版本");
+            //每个member在index表中删除列的所有版本
+            List<Delete> indexDeleteList = new ArrayList<>();
+            if (memberList.size() != 0) {
+                for (String memberId : memberList) {
+                    Delete delete = new Delete(Bytes.toBytes(memberId));
+                    delete.addColumns(Bytes.toBytes(Static.INDEX_TABLE_CF), Bytes.toBytes(gid));
+                    indexDeleteList.add(delete);
+                }
+            }
+            logger.info("删除每个组成员的该共享组信息成功");
+            indexTable.delete(indexDeleteList);
+
+            logger.info("开始更新文件表中该组开头的权限名称");
+            //遍历所有的组的分享文件，删去所有的该组开头的权限名
+            List<Delete> authDeleteList = new ArrayList<>();
+            if (fileList.size() != 0) {
+                for (String fileId : fileList) {
+                    //查询file中该文件的权限的时间戳
+                    Get authGet = new Get(Bytes.toBytes(fileId));
+                    authGet.setMaxVersions();
+                    authGet.addColumn(Bytes.toBytes(Static.FILE_TABLE_CF), Bytes.toBytes(Static.FILE_TABLE_Auth));
+                    Result fileRes = fileTable.get(authGet);
+                    for (Cell cell : fileRes.rawCells()) {
+                        //针对每一个gid开头权限的时间戳生成delete
+                        if (Bytes.toString(CellUtil.cloneValue(cell)).contains(gid) && !Bytes.toString(CellUtil.cloneValue(cell)).equals(uid)) {
+                            Delete authDelete = new Delete(Bytes.toBytes(fileId));
+                            authDelete.addColumn(Bytes.toBytes(Static.FILE_TABLE_CF), Bytes.toBytes(Static.FILE_TABLE_Auth), cell.getTimestamp());
+                            authDeleteList.add(authDelete);
+                        }
+                    }
+                    fileTable.delete(authDeleteList);
+                }
+            }
+            logger.info("文件权限更新成功");
+
+            //在group组中删去该组
+            Delete groupDelete = new Delete(Bytes.toBytes(gid));
+            groupTable.delete(groupDelete);
+            logger.info("该组删除成功");
+            TableModel tableModel = new TableModel();
+            tableModel.setCode(200);
+
+            return tableModel;
+        } catch (Exception e) {
+            logger.info(e.getMessage());
+            return TableModel.error("error");
+        } finally {
+            try {
+                indexTable.close();
+                fileTable.close();
+                groupTable.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            HbaseConnectionPool.releaseConnection(hBaseConn);
+        }
+    }
+
 }

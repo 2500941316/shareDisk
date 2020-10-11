@@ -280,7 +280,7 @@
                                 </li>
 
                                 <li class="list-inline-item d-none d-lg-inline-block">
-                                    <button type="button" class="btn nav-btn user-profile-show">
+                                    <button onclick="deleteGroup()" type="button" class="btn nav-btn user-profile-show">
                                         <i class="ri-delete-bin-line float-right text-muted"></i>
                                     </button>
                                 </li>
@@ -610,6 +610,23 @@
     const currentGroupName = "";
     const currentGroupId = "";
 
+    //删除分组的方法
+    function deleteGroup() {
+        let gId = localStorage.getItem("gId");
+        if (gId != null && gId.length !== 0) {
+            $.ajax({
+                url: '/deleteGroup',
+                type: 'get',
+                param: {
+                    gId: gId
+                },
+                success: function (res) {
+                    getGroupList();
+                }
+            })
+        }
+    }
+
     //点击创建分组的按钮
     function buildGroup() {
 
@@ -857,7 +874,6 @@
                 table.on('row(test1)', function (obj) {
                     var data = obj.data;
                     layui.use('layer', function () {
-
                         layer.confirm('确认下载 ： ' + data.name, {
                             btn: ['确定', '取消']//按钮
                         }, function () {
@@ -867,6 +883,8 @@
                     });
                 });
             })
+            //更新缓存中的gid
+            localStorage.setItem("gId", gId);
         }
     }
 

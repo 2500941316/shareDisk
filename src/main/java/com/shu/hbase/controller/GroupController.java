@@ -63,4 +63,20 @@ public class GroupController {
     }
 
 
+    /**
+     * 删除一个分组
+     *
+     * @param
+     * @throws IOException
+     */
+    @GetMapping("deleteGroup")
+    public TableModel deleteGroup(@RequestParam("gid") String gid, Authentication authentication) {
+
+        if (gid.isEmpty()) {
+            return TableModel.error("参数为空");
+        }
+        return userService.deleteGroup(gid, username);
+    }
+
+
 }

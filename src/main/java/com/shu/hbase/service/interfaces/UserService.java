@@ -22,4 +22,6 @@ public interface UserService {
     TableModel buildGroup(NewGroupInfoVO newGroupInfoVO);
 
     TableModel getGroupFile(String gId);
+
+    TableModel deleteGroup(String gid, String username);
 }
