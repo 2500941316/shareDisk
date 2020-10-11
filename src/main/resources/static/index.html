@@ -30,7 +30,7 @@
     <script src='js/layui/layui.js'></script>
     <script src='js/iconfont.js'></script>
     <script src='js/app.js'></script>
-
+    <script src='js/PicPeak.js'></script>
     <script src="./assets/libs/simplebar/simplebar.min.js"></script>
     <!-- Magnific Popup-->
     <script src="./assets/libs/magnific-popup/jquery.magnific-popup.min.js"></script>
@@ -640,7 +640,6 @@
 
     //点击创建分组的按钮
     function buildGroup() {
-
         //获得分组名称
         const groupName = $("#addgroupname-input").val();
         if (groupName.length === 0 || groupMembers.length < 2) return;
@@ -650,13 +649,11 @@
                 return;
             }
         }
-
         //将分组的成员放入一个list中
         const member = [];
         for (let i = 0; i < groupMembers.length; i++) {
             member.push(groupMembers[i].id)
         }
-
         var data = {
             'uId': localStorage.getItem("userid"),
             'groupName': groupName,
@@ -714,6 +711,34 @@
     $(function () {
         getGroupList();
     });
+
+    //文件大小转换
+    function bytesToSize(bytes) {
+        if (bytes === 0) return "0 B";
+        var k = 1024;
+        var sizes = ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+        var i = Math.floor(Math.log(bytes) / Math.log(k));
+        return (bytes / Math.pow(k, i)).toPrecision(3) + " " + sizes[i];
+    }
+
+    //时间戳转换
+    function getDate(number) {
+        var now = new Date(number),
+            y = now.getFullYear(),
+            m = now.getMonth() + 1,
+            d = now.getDate();
+        return (
+            y +
+            "-" +
+            (m < 10 ? "0" + m : m) +
+            "-" +
+            (d < 10 ? "0" + d : d) +
+            " " +
+            now.toTimeString().substr(0, 5)
+        );
+    }
+
+
 
 
     //获得全部分组列表
