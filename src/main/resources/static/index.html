@@ -720,8 +720,7 @@
         const $active = $("#groupsName");
         $active.html("");
         $.each(arrParO, function (i, obj) {
-            console.log(obj)
-            alert(obj.gid)
+            alert(obj.gid);
             const $children = $(' <li onclick="getGroupFiles(' + obj.gid + ')">\n' +
                 '                                <a href="#">\n' +
                 '                                    <div class="media align-items-center">\n' +
@@ -826,6 +825,7 @@
 
     //查询分组文件的方法
     function getGroupFiles(gId) {
+        alert(gId);
         if (gId.length !== 0) {
             //表格初始化值
             //查询框查询文件名的方法
