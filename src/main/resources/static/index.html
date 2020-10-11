@@ -707,8 +707,11 @@
             function (res) {
                 if (res.code === 200) {
                     doData(res.data);
-                    if (res.data != null) {
+                    if (res.data[0] != null) {
                         getGroupFiles(res.data[0].gid);
+                    }else
+                    {
+                        localStorage.removeItem("gId")
                     }
                 }
             });
@@ -740,7 +743,6 @@
             $active.append($children)
             var btn = document.getElementById("gid-" + i);
             btn.onclick = function () {
-                alert(obj.gid)
                 getGroupFiles(obj.gid)
             }
         });
