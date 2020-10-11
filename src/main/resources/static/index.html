@@ -612,18 +612,12 @@
 
     //删除分组的方法
     function deleteGroup() {
-        let gId = localStorage.getItem("gId");
-        if (gId != null && gId.length !== 0) {
-            $.ajax({
-                url: '/deleteGroup',
-                type: 'get',
-                param: {
-                    gId: gId
-                },
-                success: function (res) {
+        let gid = localStorage.getItem("gId");
+        if (gid != null && gid.length !== 0) {
+            $.get("/deleteGroup", {gid: gid},
+                function (data) {
                     getGroupList();
-                }
-            })
+                });
         }
     }
 
