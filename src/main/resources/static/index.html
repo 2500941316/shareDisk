@@ -570,56 +570,11 @@
 </script>
 
 <script type="text/html" id="barDemo9">
-
-    <!--begin-->
-    <div style="height: 40px" class="job-box bg-white overflow-hidden border rounded mt-4 position-relative overflow-hidden">
-        <div class="lable text-center pt-2 pb-2">
-            <ul class="list-unstyled best text-white mb-0 text-uppercase">
-                <li class="list-inline-item"><i class="mdi mdi-star"></i></li>
-            </ul>
-        </div>
-
-        <div class="p-4">
-            <div class="row align-items-center">
-                <div class="col-md-2">
-                    <div class="mo-mb-2">
-                        <svg style="width: 35%;height: 50px;margin-left: 25px">
-                            <use xlink:href={{d.type}}></use>
-                        </svg>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div>
-                        <h6 class="f-18"><a href="#"
-                                            class="text-dark">{{d.name}}</a>
-                        </h6>
-                    </div>
-                </div>
-
-                <div class="col-md-1" style="text-align: center">
-                    <div>
-                        <p class="text-muted mb-0 mo-mb-2"><span
-                                class="text-primary">{{d.size}}</span>
-                    </div>
-                </div>
-                <div class="col-md-2" style="text-align: center">
-                    <div>
-                        <p class="text-muted mb-0">{{d.time}}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!--一个文件端结束-->
-</script>
-
-<script type="text/html" id="types">
-        <div class="mo-mb-2">
-            <svg style="width: 35%;height: 50px;margin-left: 25px">
+            <svg style="width: 70%;height: 30px">
                 <use xlink:href={{d.type}}></use>
             </svg>
-        </div>
 </script>
+
 
 <script>
     const groupMembers = [];
@@ -1002,7 +957,11 @@
                             }
                         }
                         , cols: [[
-                            {toolbar: '#barDemo9', title: '操作'}
+                            {toolbar: '#barDemo9',width:80, title: '类型'}
+                            ,{field:'name', title: '用户名'}
+                            ,{field:'size', width:80, title: '用户名'}
+                            ,{field:'time', width:130, title: '用户名'}
+                            ,{toolbar: '#barDemo',width:80, title: '共享'}
                         ]]
                     });
 
