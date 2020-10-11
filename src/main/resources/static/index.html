@@ -606,12 +606,13 @@
 
 <script>
     const groupMembers = [];
-    const groupNames = [];
+    var groupNames = [];
     const currentGroupName = "";
     const currentGroupId = "";
 
     //点击创建分组的按钮
     function buildGroup() {
+
         //获得分组名称
         const groupName = $("#addgroupname-input").val();
         if (groupName.length === 0 || groupMembers.length < 2) return;
@@ -632,7 +633,7 @@
             'uId': localStorage.getItem("userid"),
             'groupName': groupName,
             'member': member
-        }
+        };
         //发起ajax的post请求
         $.ajax({
             url: '/buildGroup',
@@ -643,6 +644,7 @@
             data: JSON.stringify(data),
             success: function (res) {
                 if (res.code === 200) {
+
                     getGroupList();
                 }
             }
@@ -699,10 +701,10 @@
     }
 
 
-
     ///根据ajax数据进行渲染
     function doData(arrParO) {
         const $active = $("#groupsName");
+        $active.html("");
         $.each(arrParO, function (i, obj) {
             const $children = $(' <li onclick="getGroupFiles(' + obj.gid + ')">\n' +
                 '                                <a href="#">\n' +
@@ -867,7 +869,6 @@
             })
         }
     }
-
 
 
 </script>
