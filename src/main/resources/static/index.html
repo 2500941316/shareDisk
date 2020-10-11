@@ -707,7 +707,7 @@
                 if (res.code === 200) {
                     doData(res.data);
                     if (res.data[0] != null) {
-                        getGroupFiles(res.data[0].gid);
+                        getGroupFiles(res.data[0].gid,res.data[0].name);
                     } else {
                         localStorage.removeItem("gId")
                     }
