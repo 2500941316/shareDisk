@@ -720,7 +720,7 @@
         const $active = $("#groupsName");
         $active.html("");
         $.each(arrParO, function (i, obj) {
-            const $children = $(' <li onclick="getGroupFiles(' + obj.gid + ')">\n' +
+            const $children = $(' <li id="gid-' + i + '">\n' +
                 '                                <a href="#">\n' +
                 '                                    <div class="media align-items-center">\n' +
                 '                                        <div class="chat-user-img mr-3">\n' +
@@ -736,7 +736,13 @@
                 '                                    </div>\n' +
                 '                                </a>\n' +
                 '                            </li>');
+
             $active.append($children)
+            var btn = document.getElementById("gid-" + i);
+            btn.onclick = function () {
+                alert(obj.gid)
+                getGroupFiles(obj.gid)
+            }
         });
     }
 
