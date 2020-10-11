@@ -570,9 +570,9 @@
 </script>
 
 <script type="text/html" id="barDemo9">
-            <svg style="width: 70%;height: 30px">
-                <use xlink:href={{d.type}}></use>
-            </svg>
+    <svg style="width: 70%;height: 30px">
+        <use xlink:href={{d.type}}></use>
+    </svg>
 </script>
 
 
@@ -891,7 +891,24 @@
         }
     }
 
+    //查询文件夹
+    function selectFile(detSrc, type) {
+        var table = layui.table;
+        table.reload('myFile', {
+            url: '/selectFile',
+            where: {
+                detSrc: detSrc,
+                type: type,
+                gId: ""
+            },
+            page: {
+                curr: 1
+            },
+        })
+    }
 
+
+    //点击了共享文件的按钮
     function openFile() {
         layui.use(['table', 'form'], function () {
             var table2 = layui.table;
@@ -904,6 +921,10 @@
                     table2.render({
                         elem: '#myFile'
                         , url: "/selectFile"
+                        // ,data: [{
+                        //     type: "#icon-wenjianjia1",
+                        //     name: "123123"
+                        // }]
                         , where: {
                             detSrc: "19721631",
                             type: "1",
@@ -957,11 +978,11 @@
                             }
                         }
                         , cols: [[
-                            {toolbar: '#barDemo9',width:80, title: '类型'}
-                            ,{field:'name', title: '用户名'}
-                            ,{field:'size', width:80, title: '用户名'}
-                            ,{field:'time', width:130, title: '用户名'}
-                            ,{toolbar: '#barDemo',width:80, title: '共享'}
+                            {toolbar: '#barDemo9', width: 80, event: 'setSign',title: '类型'}
+                            , {field: 'name',event: 'setSign', title: '用户名'}
+                            , {field: 'size', width: 80,event: 'setSign', title: '用户名'}
+                            , {field: 'time', width: 130,event: 'setSign', title: '用户名'}
+                            , {toolbar: '#barDemo', width: 80, title: '共享'}
                         ]]
                     });
 
@@ -974,6 +995,12 @@
 
                                 layer.close(index);
                             });
+                        } else {
+
+                            //如果是文件夹，就进入
+                            if (data.dir) {
+                                selectFile(data.fileId, "1");
+                            }
                         }
                     });
                 }
