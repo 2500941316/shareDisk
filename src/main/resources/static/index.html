@@ -267,6 +267,13 @@
 
                                 <li class="list-inline-item">
                                     <div class="dropdown">
+                                        <button  class='btn btn-primary'><i
+                                                class='mdi mdi-cloud-upload'></i>只显示我的文件
+                                        </button>
+                                    </div>
+                                </li>
+                                <li class="list-inline-item">
+                                    <div class="dropdown">
                                         <button onclick="openFile()" class='btn btn-primary'><i
                                                 class='mdi mdi-cloud-upload'></i>共享文件
                                         </button>
@@ -299,7 +306,7 @@
                     </div>
                 </div>
                 <!-- end chat user head -->
-                <div>
+                <div style="margin-top: -10px">
                     <table class="layui-hide" id="file" lay-filter="test"></table>
                 </div>
             </div>
@@ -575,6 +582,50 @@
     </svg>
 </script>
 
+<script type="text/html" id="barDemo1">
+    <div class="job-box bg-white overflow-hidden border rounded mt-4 position-relative overflow-hidden" style="margin-top: -10px">
+        <div class="lable text-center pt-2 pb-2">
+            <ul class="list-unstyled best text-white mb-0 text-uppercase">
+                <li class="list-inline-item"><i class="mdi mdi-star"></i></li>
+            </ul>
+        </div>
+        <div class="p-4">
+            <div class="row align-items-center">
+                <div class="col-md-2">
+                    <div class="mo-mb-2">
+                        <svg style="width: 35%;height: 50px;margin-left: 25px">
+                            <use xlink:href={{d.type}}></use>
+                        </svg>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div>
+                        <h6 class="f-18"><a href="#" class="text-dark">{{d.name}}</a></h6>
+                    </div>
+                </div>
+                <div class="col-md-1">
+                    <div>
+                        <p class="text-muted mb-0 mo-mb-2"><span
+                                class="text-primary">15.7M</span>
+                    </div>
+                </div>
+                <div class="col-md-2" style="text-align: center">
+                    <div>
+                        <p class="text-muted mb-0">{{d.time}}</p>
+                    </div>
+                </div>
+                <div class="col-md-1">
+                    <div>
+                        <a lay-even="downLoad" class="text-primary">下载 <i
+                                class="mdi mdi-chevron-double-right"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--一个文件端结束-->
+</script>
+
 
 <script>
     const groupMembers = [];
@@ -626,9 +677,7 @@
             success: function (res) {
                 document.getElementById("close").click();
                 if (res.code === 200) {
-
                     getGroupList();
-
                 }
             }
         })
