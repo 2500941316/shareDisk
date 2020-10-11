@@ -1053,10 +1053,11 @@
                                     success: function (res) {
                                         if (res.code === 200) {
                                             getGroupFiles(localStorage.getItem("gId"), localStorage.getItem("gName"));
-                                            layer.close(index);
+
                                         }
                                     }
                                 })
+                                layer.closeAll();
 
                             });
                         } else {
