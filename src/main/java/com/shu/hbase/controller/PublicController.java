@@ -70,7 +70,7 @@ public class PublicController {
             return TableModel.error("参数为空");
         }
         if (type.equals("private"))
-            return publicService.searchFile(value, authentication.getName());
+            return publicService.searchFile(value, username);
         else
             return publicService.searchFile(value, "00000000");
     }
