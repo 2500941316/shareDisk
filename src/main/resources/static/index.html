@@ -259,11 +259,19 @@
                                         <i class="ri-record-circle-fill font-size-10 text-success d-inline-block ml-1"></i>
                                     </h5>
                                 </div>
+
                             </div>
                         </div>
                         <div class="col-sm-8 col-4">
                             <ul class="list-inline user-chat-nav text-right mb-0">
 
+                                <li class="list-inline-item">
+                                    <div class="dropdown">
+                                        <button onclick="openFile()" class='btn btn-primary'><i
+                                                class='mdi mdi-cloud-upload'></i>共享文件
+                                        </button>
+                                    </div>
+                                </li>
                                 <li class="list-inline-item">
                                     <div class="dropdown">
                                         <button class="btn nav-btn dropdown-toggle" type="button" data-toggle="dropdown"
@@ -276,6 +284,7 @@
                                                        placeholder="Search..">
                                             </div>
                                         </div>
+
                                     </div>
                                 </li>
 
@@ -548,6 +557,13 @@
 </div>
 <!-- end  layout wrapper -->
 
+
+<div id="openProductBox" style="display: none; padding: 10px;">
+    <!--layui表格-->
+    <table class="layui-hide" id="myFile" lay-filter="myFile"></table>
+</div>
+
+
 <script src="js/foot.js"></script>
 <script type="text/html" id="barDemo">
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
@@ -609,6 +625,7 @@
     var groupNames = [];
     const currentGroupName = "";
     const currentGroupId = "";
+
 
     //删除分组的方法
     function deleteGroup() {
@@ -707,7 +724,7 @@
                 if (res.code === 200) {
                     doData(res.data);
                     if (res.data[0] != null) {
-                        getGroupFiles(res.data[0].gid,res.data[0].name);
+                        getGroupFiles(res.data[0].gid, res.data[0].name);
                     } else {
                         localStorage.removeItem("gId")
                     }
@@ -892,6 +909,99 @@
             localStorage.setItem("gId", gId);
 
         }
+    }
+
+
+    function openFile() {
+        layui.use(['table', 'form'], function () {
+            var table2 = layui.table;
+            layer.open({
+                type: 1,
+                title: '共享文件窗口',
+                area: ['800px', '600px'], //宽高
+                content: $('#openProductBox'),
+                success: function () {
+                    table2.render({
+                        elem: '#myFile'
+                        , url: "/selectFile"
+                        , where: {
+                            detSrc: localStorage.getItem("userid"),
+                            type: "1",
+                            gId: ""
+                        }
+                        , limit: 8
+                        , page: {
+                            layout: ['count', 'prev', 'page', 'next', 'skip'] //自定义分页布局
+                            , groups: 3 //只显示 1 个连续页码
+                            , first: false //不显示首页
+                            , last: false //不显示尾页
+                        }
+                        , parseData: function (res) { //将原始数据解析成 table 组件所规定的数据，res为从url中get到的数据
+                            var result;
+
+                            if (res.data !== null) {
+
+                                //将文件夹放在最前面
+                                if (res.data.length !== 0) {
+                                    let left = 0;
+                                    let right = res.data.length - 1;
+                                    while (left <= right) {
+                                        if (res.data[left].dir === true) {
+                                            left++;
+                                        } else if (res.data[right].dir === false) {
+                                            right--;
+                                        } else {
+                                            const temp = res.data[left];
+                                            res.data[left] = res.data[right];
+                                            res.data[right] = temp;
+                                        }
+                                    }
+                                }
+
+                                if (this.page.curr) {
+                                    result = res.data.slice(this.limit * (this.page.curr - 1), this.limit * this.page.curr);
+                                } else {
+                                    result = res.data.slice(0, this.limit);
+                                }
+
+                                //处理result的时间格式
+                                for (var i = 0; i < result.length; i++) {
+                                    result[i].time = getDate(result[i].time);
+                                    result[i].type = peakPic(result[i].type);
+                                    result[i].size = bytesToSize(result[i].size);
+                                }
+
+                                return {
+                                    "code": res.code, //解析接口状态
+                                    "msg": res.msg, //解析提示文本
+                                    "count": res.count, //解析数据长度
+                                    "data": result //解析数据列表
+                                };
+                            }
+
+                        }
+                        , cols: [[
+                            { event: 'setSign', toolbar: '#barDemo1'},
+                            , { toolbar: '#barDemo', width: 70}
+                        ]]
+                    });
+
+                    //监听行工具事件
+                    table2.on('tool(myFile)', function (obj) {
+                        var data = obj.data;
+                        if (obj.event === 'del') {
+                            layer.confirm('共享文件？  ' + data.name, function (index) {
+                                //ajax共享逻辑
+
+                                layer.close(index);
+                            });
+                        }
+                    });
+
+
+                }
+            });
+        });
     }
 
 
