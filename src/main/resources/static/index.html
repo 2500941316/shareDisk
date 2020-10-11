@@ -720,7 +720,8 @@
         const $active = $("#groupsName");
         $active.html("");
         $.each(arrParO, function (i, obj) {
-            const $children = $(' <li onclick="getGroupFiles("1123")">\n' +
+            localStorage.setItem("cur", obj.gid)
+            const $children = $(' <li onclick="getGroupFiles(obj.gid)">\n' +
                 '                                <a href="#">\n' +
                 '                                    <div class="media align-items-center">\n' +
                 '                                        <div class="chat-user-img mr-3">\n' +
@@ -824,7 +825,6 @@
 
     //查询分组文件的方法
     function getGroupFiles(gId) {
-        alert(gId)
         if (gId.length !== 0) {
             //表格初始化值
             //查询框查询文件名的方法
