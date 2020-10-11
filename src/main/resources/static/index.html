@@ -38,12 +38,7 @@
     <script src="./assets/libs/owl.carousel/owl.carousel.min.js"></script>
     <!-- page init -->
     <script src="./assets/js/pages/index.init.js"></script>
-    <style type="text/css">
-        .layui-table-cell {
-            height: 100%;
-            max-width: 100%;
-        }
-    </style>
+
 </head>
 
 <body>
@@ -558,7 +553,7 @@
 <!-- end  layout wrapper -->
 
 
-<div id="openProductBox" style="display: none; padding: 10px;">
+<div id="openProductBox" style="display: none;margin-top: -10px">
     <!--layui表格-->
     <table class="layui-hide" id="myFile" lay-filter="myFile"></table>
 </div>
@@ -570,8 +565,7 @@
 </script>
 
 <script type="text/html" id="barDemo1">
-
-    <svg style="width: 60%;height: 130px;margin-left: 5px">
+    <svg>
         <use xlink:href={{d.type}}></use>
     </svg>
 </script>
@@ -903,7 +897,13 @@
                 success: function () {
                     table2.render({
                         elem: '#myFile'
-                        , url: "/selectFile"
+                        //, url: "/selectFile"
+                        ,data: [
+                            {
+                                name: "1232",
+
+                            }
+                        ]
                         , where: {
                             detSrc: "19721631",
                             type: "1",
@@ -918,9 +918,7 @@
                         }
                         , parseData: function (res) { //将原始数据解析成 table 组件所规定的数据，res为从url中get到的数据
                             var result;
-
                             if (res.data !== null) {
-
                                 //将文件夹放在最前面
                                 if (res.data.length !== 0) {
                                     let left = 0;
@@ -937,7 +935,6 @@
                                         }
                                     }
                                 }
-
                                 if (this.page.curr) {
                                     result = res.data.slice(this.limit * (this.page.curr - 1), this.limit * this.page.curr);
                                 } else {
@@ -958,14 +955,13 @@
                                     "data": result //解析数据列表
                                 };
                             }
-
                         }
                         , cols: [[
-                            , {toolbar: '#barDemo1', width: 150, title: '类型'}
-                            , {field: 'name', width: 380, title: '文件名'}
-                            , {field: 'size', width: 80, title: '大小'}
-                            , {field: 'time', width: 180, title: '修改时间'}
-                            , {toolbar: '#barDemo', width: 70}
+                            {toolbar: '#barDemo1',width: 75,title: '类型'}
+                            ,{field: 'name',  title: '文件名'}
+                            , {field: 'size',width: 100,  title: '大小'}
+                            , {field: 'time', width: 150, title: '修改时间'}
+                            , {toolbar: '#barDemo',title: '操作' ,width: 75}
                         ]]
                     });
 
