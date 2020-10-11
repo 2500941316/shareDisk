@@ -565,9 +565,13 @@
 </script>
 
 <script type="text/html" id="barDemo1">
-    <svg>
-        <use xlink:href={{d.type}}></use>
-    </svg>
+    <div class="col-md-2">
+        <div class="mo-mb-2">
+            <svg style="width: 35%;height: 50px;margin-left: 25px">
+                <use xlink:href={{d.type}}></use>
+            </svg>
+        </div>
+    </div>
 </script>
 
 <script>
@@ -951,7 +955,7 @@
                             }
                         }
                         , cols: [[
-                            {toolbar: '#barDemo1', width: 100, title: '类型'}
+                              {toolbar: '#barDemo1', width: 100, title: '类型'}
                             , {field: 'name', title: '文件名'}
                             , {field: 'size', width: 100, title: '大小'}
                             , {field: 'time', width: 150, title: '修改时间'}
