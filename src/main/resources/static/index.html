@@ -299,7 +299,7 @@
                     </div>
                 </div>
                 <!-- end chat user head -->
-                <div style="margin-top: -10px">
+                <div>
                     <table class="layui-hide" id="file" lay-filter="test"></table>
                 </div>
             </div>
@@ -872,7 +872,7 @@
                     ]]
                 });
 
-                table.on('row(test1)', function (obj) {
+                table.on('row(test)', function (obj) {
                     var data = obj.data;
                     layui.use('layer', function () {
                         layer.confirm('确认下载 ： ' + data.name, {
@@ -911,7 +911,7 @@
     //点击了共享文件的按钮
     function openFile() {
         layui.use(['table', 'form'], function () {
-            var table2 = layui.table;
+            const table2 = layui.table;
             layer.open({
                 type: 1,
                 title: '共享文件窗口',
