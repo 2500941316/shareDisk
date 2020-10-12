@@ -643,7 +643,7 @@
     function showMyFile() {
         var cols = [[
             {title: '文件', event: 'setSign2', toolbar: '#groupFile'},
-            , {fixed: 'right', title: '操作', align: 'center', toolbar: '#barDemoDelete', width: 200}
+            , {fixed: 'right', title: '操作', align: 'center', toolbar: '#barDemoDelete'}
         ]];
         initTable("/getMyShare", localStorage.getItem("gId"), cols);
     }
