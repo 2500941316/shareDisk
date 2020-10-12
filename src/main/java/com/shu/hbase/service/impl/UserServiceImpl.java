@@ -769,4 +769,67 @@ public class UserServiceImpl implements UserService {
         return TableModel.success("分享成功");
     }
 
+
+    //获得共享组中我的文件的方法
+    @Override
+    public TableModel getMyShare(String gId, String userId) {
+        Connection hBaseConn = null;
+        Table indexTable = null;
+        Table fileTable = null;
+        try {
+            hBaseConn = HbaseConnectionPool.getHbaseConnection();
+            indexTable = hBaseConn.getTable(TableName.valueOf(Static.INDEX_TABLE));
+            fileTable = hBaseConn.getTable(TableName.valueOf(Static.FILE_TABLE));
+            //根据gid查询每个组的文件
+            logger.info("根据udserid来获得当前分组列中的所以版本");
+            Get get = new Get(Bytes.toBytes(userId));
+            get.setMaxVersions();
+            get.addColumn(Bytes.toBytes(Static.INDEX_TABLE_CF), Bytes.toBytes(gId));
+            Result result = indexTable.get(get);
+            logger.info("当前分组中我的文件查询成功，个数为" + result.size());
+            logger.info("开始封装查询结果");
+            List<FileInfoVO> fileVOList = new ArrayList<>();
+            for (Cell cell : result.rawCells()) {
+                if (Bytes.toString(CellUtil.cloneValue(cell)).length() != 0) {
+                    String fileId = Bytes.toString(CellUtil.cloneValue(cell));
+                    //根据fileId从file表中查询到文件信息
+                    Get fileGet = new Get(Bytes.toBytes(fileId));
+                    fileGet.addFamily(Bytes.toBytes(Static.FILE_TABLE_CF));
+                    Result fileRes = fileTable.get(fileGet);
+                    if (!fileRes.isEmpty()) {
+                        FileInfoVO fileInfoVO = packageCells(fileRes);
+                        assert fileInfoVO != null;
+                        fileInfoVO.setMyShare(true);
+                        fileVOList.add(fileInfoVO);
+                    }
+                }
+            }
+            logger.info("我的共享文件查询成功，正在返回");
+            TableModel tableModel = new TableModel();
+            tableModel.setData(fileVOList);
+            tableModel.setCode(0);
+            return tableModel;
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return TableModel.error("网络异常，请重试");
+        } finally {
+            try {
+                assert fileTable != null;
+                fileTable.close();
+                assert indexTable != null;
+                indexTable.close();
+                HbaseConnectionPool.releaseConnection(hBaseConn);
+            } catch (Exception e) {
+                logger.error(e.getMessage());
+            }
+        }
+    }
+
+    @Override
+    public TableModel deleteShare(String fileId, String gId, String username) {
+        if (CrudMethods.deleteFnHbase(fileId, gId, username)) {
+            return TableModel.success("删除成功");
+        } else return TableModel.error("网络异常，请重试");
+    }
+
 }

@@ -426,7 +426,7 @@ public class CrudMethods {
 
 
     //递归获取要删除的文件夹下面所有的文件id
-    private static void deleteCallBack(Table fileTable, List<String> fielIdList, String fileId, String uId, String gId) throws IOException {
+    public static void deleteCallBack(Table fileTable, List<String> fielIdList, String fileId, String uId, String gId) throws IOException {
         Scan scan = new Scan();
         FilterList filterList = new FilterList();
         Filter colFilter = new PrefixFilter(Bytes.toBytes(uId));

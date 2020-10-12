@@ -91,4 +91,38 @@ public class GroupController {
         shareToFileVO.setUId(username);
         return userService.shareTo(shareToFileVO);
     }
+
+
+    /**
+     * 获得分组中我的共享文件
+     *
+     * @param
+     * @throws IOException
+     */
+    @GetMapping("getMyShare")
+    public TableModel getMyShare(@RequestParam("gId") String gId, Authentication authentication) {
+
+        if (gId.isEmpty()) {
+            return TableModel.error("参数为空");
+        }
+        return userService.getMyShare(gId, username);
+    }
+
+
+    /**
+     * 删除共享组中的文件
+     *
+     * @param
+     * @throws IOException
+     */
+    @GetMapping("deleteShare")
+    public TableModel deleteShare(@RequestParam("fileId") String fileId, @RequestParam("gId") String gId, Authentication authentication) {
+
+        if (fileId.isEmpty() || gId.isEmpty()) {
+            return TableModel.error("参数为空");
+        }
+        return userService.deleteShare(fileId, gId, username);
+
+    }
+
 }

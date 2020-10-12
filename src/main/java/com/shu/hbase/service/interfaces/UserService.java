@@ -27,4 +27,8 @@ public interface UserService {
     TableModel deleteGroup(String gid, String username);
 
     TableModel shareTo(ShareToFileVO shareToFileVO);
+
+    TableModel getMyShare(String gId, String username);
+
+    TableModel deleteShare(String fileId, String gId, String username);
 }
