@@ -267,7 +267,7 @@
 
                                 <li class="list-inline-item">
                                     <div class="dropdown">
-                                        <button  class='btn btn-primary'><i
+                                        <button class='btn btn-primary'><i
                                                 class='mdi mdi-cloud-upload'></i>只显示我的文件
                                         </button>
                                     </div>
@@ -583,7 +583,8 @@
 </script>
 
 <script type="text/html" id="barDemo1">
-    <div class="job-box bg-white overflow-hidden border rounded  position-relative overflow-hidden" style="margin-top: 3px">
+    <div class="job-box bg-white overflow-hidden border rounded  position-relative overflow-hidden"
+         style="margin-top: 3px">
         <div class="lable text-center pt-2 pb-2">
             <ul class="list-unstyled best text-white mb-0 text-uppercase">
                 <li class="list-inline-item"><i class="mdi mdi-star"></i></li>
@@ -873,6 +874,21 @@
             });
         });
     })
+
+
+    //点击下载按钮的时候
+    function downLoad(fileId) {
+        //模拟表单提交
+        var formHtml =
+            "<form action='/downLoad' method='post' >";
+        formHtml +=
+            "<input type='hidden' name='fileId' value=" + fileId + " />";
+        formHtml += "<input type='hidden' name='gId' value='' />";
+        formHtml += "</form>";
+        var form = $(formHtml);
+        $(document.body).append(form);
+        form.submit();
+    }
 
 
     //查询分组文件的方法
