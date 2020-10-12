@@ -1,0 +1,947 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>我的文件</title>
+
+    <link rel='shortcut icon' href='../images/favicon.ico'>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="../js/layui/css/layui.css" media="all">
+    <!-- Custom  Css -->
+    <link rel='stylesheet' type='text/css' href='../css/style.css'/>
+
+    <link href="../assets/css/bootstrap.min.css" id="bootstrap-style" rel="stylesheet" type="text/css"/>
+    <!-- Icons Css -->
+    <link href="../assets/css/icons.min.css" rel="stylesheet" type="text/css"/>
+    <!-- App Css-->
+    <link href="../assets/css/app.min.css" id="app-style" rel="stylesheet" type="text/css"/>
+
+    <!-- javascript -->
+    <script src='../js/jquery.min.js'></script>
+    <script type="text/javascript" src="../js/bootstrap.bundle.min.js"></script>
+    <script src='../js/plugins.js'></script>
+    <!-- selectize js -->
+    <script src='../js/selectize.min.js'></script>
+    <script src='../js/jquery.nice-select.min.js'></script>
+
+    <script src='../js/layui/layui.js'></script>
+    <script src='../js/iconfont.js'></script>
+    <script src='../js/app.js'></script>
+    <script src='../js/PicPeak.js'></script>
+    <script src="../assets/libs/simplebar/simplebar.min.js"></script>
+    <!-- Magnific Popup-->
+    <script src="../assets/libs/magnific-popup/jquery.magnific-popup.min.js"></script>
+    <!-- owl.carousel js -->
+    <script src="../assets/libs/owl.carousel/owl.carousel.min.js"></script>
+    <!-- page init -->
+    <script src="../assets/js/pages/index.init.js"></script>
+    <style type="text/css">
+        .layui-table-cell {
+            height: 100%;
+            max-width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+
+
+<!-- Loader -->
+<div id='preloader'>
+    <div id='status'>
+        <div class='spinner'>
+            <div class='double-bounce1'></div>
+            <div class='double-bounce2'></div>
+        </div>
+    </div>
+</div>
+<!-- Loader -->
+
+<!-- Navigation Bar-->
+<header id='topnav' class='defaultscroll scroll-active'>
+    <!-- Tagline STart -->
+    <div class='tagline'>
+        <div class='container'>
+            <div class='float-left'>
+                <div class='phone'>
+                    <i class='mdi mdi-phone-classic'></i> 17750905812
+                </div>
+                <div class='email'>
+                    <a href='#'>
+                        <i class='mdi mdi-email'></i> 2500941316@qq.com
+                    </a>
+                </div>
+            </div>
+            <div class='float-right'>
+                <ul class='topbar-list list-unstyled d-flex' style='margin: 11px 0px;'>
+                    <li class='list-inline-item'><a href='javascript:void(0);'><i class='mdi mdi-account mr-2'></i>19721631</a>
+                    </li>
+                    <li class='list-inline-item'><a href='/logout'><i class='mdi mdi-account mr-2'></i>注销</a></li>
+                </ul>
+            </div>
+            <div class='clearfix'></div>
+        </div>
+    </div>
+    <!-- Tagline End -->
+
+    <!-- Menu Start -->
+    <div class='container'>
+        <!-- Logo container-->
+        <div>
+            <a href='index2.html' class='logo'></a>
+        </div>
+        <div class='buy-button'>
+            <button href='#' data-toggle="modal" data-target="#addgroup-exampleModal" class='btn btn-primary'>
+                新建分组
+            </button>
+        </div><!--end login button-->
+        <!-- End Logo container-->
+        <div class='menu-extras'>
+            <div class='menu-item'>
+                <!-- Mobile menu toggle-->
+                <a class='navbar-toggle'>
+                    <div class='lines'>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </a>
+                <!-- End mobile menu toggle-->
+            </div>
+        </div>
+
+        <div id='navigation'>
+            <!-- Navigation Menu-->
+            <ul class='navigation-menu' style='margin-left: 120px'>
+                <li><a href='../index.html'>主页</a></li>
+                <li class='has-submenu'>
+                    <a href='./myFile.html'>我的文件</a>
+                </li>
+                <li class='has-submenu'>
+                    <a href='./group.html'>共享文件</a>
+                </li>
+            </ul><!--end navigation menu-->
+        </div><!--end navigation-->
+    </div><!--end container-->
+    <!--end end-->
+</header><!--end header-->
+<!-- Navbar End -->
+
+<!-- Start Home -->
+
+<section class='bg-home'>
+    <div class='bg-overlay'></div>
+    <div class='home-center'>
+        <div class='home-desc-center'>
+            <div class='container'>
+                <div class='row justify-content-center'>
+                    <div class='col-lg-12'>
+                        <div class='title-heading text-center text-white'>
+
+                            <h1 style="color: white" class='heading font-weight-bold mb-4'>上海大学资源共享平台</h1>
+                            <h6 class='small-title text-uppercase text-light mb-3'>Shanghai University Resource Sharing
+                                Platform</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- end home -->
+
+<div class="layout-wrapper d-lg-flex">
+    <!-- start chat-leftsidebar -->
+    <div class="chat-leftsidebar mr-lg-1">
+
+        <!-- Start groups tab-pane -->
+        <div class="tab-pane" id="pills-groups" role="tabpanel" aria-labelledby="pills-groups-tab">
+            <!-- Start Groups content -->
+            <div>
+                <div class="p-4">
+                    <div class="user-chat-nav float-right">
+                        <div data-toggle="tooltip" data-placement="bottom" title="Create group">
+                            <!-- Button trigger modal -->
+                            <button type="button"
+                                    class="btn btn-link text-decoration-none text-muted font-size-18 py-0"
+                                    data-toggle="modal" data-target="#addgroup-exampleModal">
+                                <i class="ri-group-line mr-1"></i>
+                            </button>
+                        </div>
+
+                    </div>
+                    <h4 class="mb-4">分组列表</h4>
+
+                    <!-- Start add group Modal -->
+                    <div class="modal fade" id="addgroup-exampleModal" tabindex="-1" role="dialog"
+                         aria-labelledby="addgroup-exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title font-size-16" id="addgroup-exampleModalLabel">新建分组</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body p-4" style="margin-top: -15px">
+
+                                    <div class="form-group mb-4">
+                                        <input type="text" class="form-control" id="addgroupname-input"
+                                               placeholder="分组名称">
+                                    </div>
+                                    <div class="form-group mb-4" style="margin-top: -10px;margin-bottom: 0px">
+                                        <div class="mb-3">
+                                            <label>
+                                                <input style="width: 353px" type="text" class="form-control"
+                                                       id="addgroupname"
+                                                       placeholder="分组成员">
+                                            </label>
+                                            <button onclick="addMember()" class="btn btn-light btn-sm" type="button">
+                                                添加成员
+                                            </button>
+                                        </div>
+                                        <div class="collapse" id="groupmembercollapse">
+                                            <table class="layui-hide" id="test" lay-filter="test"></table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-link" id="close" data-dismiss="modal">关闭
+                                    </button>
+                                    <button type="button" onclick="buildGroup()" class="btn btn-primary">创建</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End add group Modal -->
+                </div>
+                <hr style="margin-top: -5px">
+                <!-- Start chat-group-list -->
+                <div style="margin-top: -3px" class="p-4 chat-message-list chat-group-list" data-simplebar>
+                    <ul class="list-unstyled chat-list">
+                        <div id="groupsName"></div>
+                    </ul>
+                </div>
+                <!-- End chat-group-list -->
+            </div>
+            <!-- End Groups content -->
+        </div>
+        <!-- End groups tab-pane -->
+        <!-- end tab content -->
+    </div>
+    <!-- end chat-leftsidebar -->
+
+
+    <!-- Start User chat -->
+    <div class="user-chat w-100">
+        <div class="d-lg-flex">
+
+            <!-- start chat conversation section -->
+            <div class="w-100">
+                <div class="p-3 p-lg-4 border-bottom">
+                    <div class="row align-items-center">
+                        <div class="col-sm-4 col-8">
+                            <div class="media align-items-center">
+                                <div class="d-block d-lg-none mr-2">
+                                    <a href="javascript: void(0);" class="user-chat-remove text-muted font-size-16 p-2"><i
+                                            class="ri-arrow-left-s-line"></i></a>
+                                </div>
+                                <div class="mr-3">
+                                    <img src="../assets/images/users/avatar-4.jpg" class="rounded-circle avatar-xs" alt="">
+                                </div>
+                                <div class="media-body overflow-hidden">
+                                    <h5 class="font-size-16 mb-0 text-truncate">
+                                        <a id="curGroup" href="#" class="text-reset user-profile-show"></a>
+                                        <i class="ri-record-circle-fill font-size-10 text-success d-inline-block ml-1"></i>
+                                    </h5>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="col-sm-8 col-4">
+                            <ul class="list-inline user-chat-nav text-right mb-0">
+                                <li class="list-inline-item">
+                                    <div class="dropdown">
+                                        <button onclick="showMyFile()" class='btn btn-primary'>只显示我的文件
+                                        </button>
+                                    </div>
+                                </li>
+                                <li class="list-inline-item">
+                                    <div class="dropdown">
+                                        <button onclick="openFile()" class='btn btn-primary'><i
+                                                class='mdi mdi-cloud-upload'></i>共享文件
+                                        </button>
+                                    </div>
+                                </li>
+                                <li class="list-inline-item">
+                                    <div class="dropdown">
+                                        <button class="btn nav-btn dropdown-toggle" type="button" data-toggle="dropdown"
+                                                aria-haspopup="true" aria-expanded="false">
+                                            <i class="ri-search-line"></i>
+                                        </button>
+                                        <div class="dropdown-menu p-0 dropdown-menu-right dropdown-menu-md">
+                                            <div class="search-box p-2">
+                                                <input type="text" class="form-control bg-light border-0"
+                                                       placeholder="Search..">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="list-inline-item d-none d-lg-inline-block">
+                                    <button onclick="deleteGroup()" type="button" class="btn nav-btn user-profile-show">
+                                        <i class="ri-delete-bin-line float-right text-muted"></i>
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <!-- end chat user head -->
+                <div style="margin-top: -10px">
+                    <table class="layui-hide" id="file" lay-filter="groupFile"></table>
+                </div>
+            </div>
+            <!-- end chat conversation section -->
+
+
+            <!-- start User profile detail sidebar -->
+            <div class="user-profile-sidebar">
+                <div class="text-center p-4 border-bottom">
+                    <div class="mb-4">
+                        <img src="../assets/images/users/avatar-4.jpg" class="rounded-circle avatar-lg img-thumbnail"
+                             alt="">
+                    </div>
+
+                    <a id="curGroup2" class="font-size-16 mb-1 text-truncate"></a>
+                    <p class="text-muted text-truncate mb-1"><i
+                            class="ri-record-circle-fill font-size-10 text-success mr-1"></i> Active</p>
+                </div>
+                <!-- End profile user -->
+
+                <!-- Start user-profile-desc -->
+                <div class="p-4 user-profile-desc" data-simplebar>
+                    <div id="profile-user-accordion" class="custom-accordion">
+                        <!-- End About card -->
+                        <div class="card mb-1 shadow-none border">
+                            <a href="#collapseTwo" class="text-dark collapsed" data-toggle="collapse"
+                               aria-expanded="false"
+                               aria-controls="collapseTwo">
+                                <div class="card-header" id="headingTwo">
+                                    <h5 class="font-size-14 m-0">
+                                        <i class="ri-attachment-line mr-2 align-middle d-inline-block"></i>
+                                        分组成员列表
+                                    </h5>
+                                </div>
+                            </a>
+                            <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo"
+                                 data-parent="#profile-user-accordion">
+                                <div class="card-body">
+                                    <div id="groupMember"></div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End Attached Files card -->
+                    </div>
+                    <!-- end profile-user-accordion -->
+                </div>
+                <!-- end user-profile-desc -->
+            </div>
+            <!-- end User profile detail sidebar -->
+
+
+        </div>
+    </div>
+    <!-- End User chat -->
+</div>
+<!-- end  layout wrapper -->
+
+<div id="openProductBox" style="display: none;margin-top: -10px">
+    <!--layui表格-->
+    <table class="layui-hide" id="myFile" lay-filter="myFile"></table>
+</div>
+
+<script src="../js/foot.js"></script>
+
+<!--删除按钮模块-->
+<script type="text/html" id="barDemoDelete">
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+
+<!--共享按钮模块-->
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">共享</a>
+</script>
+
+<!--创建分组弹出表格的图标模块-->
+<script type="text/html" id="icons">
+    <svg style="width: 70%;height: 30px">
+        <use xlink:href={{d.type}}></use>
+    </svg>
+</script>
+
+<!--表格中的文件主体模块-->
+<script type="text/html" id="groupFile">
+    <div class="job-box bg-white overflow-hidden border rounded  position-relative overflow-hidden"
+         style="margin-top: 3px">
+        <div class="lable text-center pt-2 pb-2">
+            <ul class="list-unstyled best text-white mb-0 text-uppercase">
+                <li class="list-inline-item"><i class="mdi mdi-star"></i></li>
+            </ul>
+        </div>
+        <div style="padding:0.7rem!important">
+            <div class="row align-items-center">
+                <div class="col-md-2">
+                    <div class="mo-mb-2">
+                        <svg style="width: 35%;height: 50px;margin-left: 25px">
+                            <use xlink:href={{d.type}}></use>
+                        </svg>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div>
+                        <h6 class="f-18"><a href="#" class="text-dark">{{d.name}}</a></h6>
+                    </div>
+                </div>
+                <div class="col-md-1">
+                    <div>
+                        <p class="text-muted mb-0 mo-mb-2"><span
+                                class="text-primary">{{d.size}}</span>
+                    </div>
+                </div>
+                <div class="col-md-2" style="text-align: center">
+                    <div>
+                        <p class="text-muted mb-0">{{d.time}}</p>
+                    </div>
+                </div>
+                <div class="col-md-1" style="text-align: center">
+                    <div>
+                        <a lay-even="downLoad" class="text-primary">{{ d.dir == true ? '进入' : '下载' }} <i
+                                class="mdi mdi-chevron-double-right"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--一个文件端结束-->
+</script>
+
+
+<script>
+    const groupMembers = [];
+    var groupNames = [];
+    const currentGroupName = "";
+    const currentGroupId = "";
+
+    //只显示我的文件按钮
+    function showMyFile() {
+        var cols = [[
+            {title: '文件', event: 'setSign2', toolbar: '#groupFile'},
+            , {fixed: 'right', align: 'center', toolbar: '#barDemoDelete', width: 45}
+        ]];
+        initTable("/getMyShare", localStorage.getItem("gId"), cols);
+    }
+
+
+    //删除分组的方法
+    function deleteGroup() {
+        let gid = localStorage.getItem("gId");
+        if (gid != null && gid.length !== 0) {
+            $.get("/deleteGroup", {gid: gid},
+                function (data) {
+                    getGroupList();
+                });
+        }
+    }
+
+    //获得分组中所有成员的方法
+    function getMembers() {
+        $.get("/getMembersBygid", {gid: localStorage.getItem("gId")},
+            function (data) {
+                var res = data.data;
+                console.log(res)
+                const $active = $("#groupMember");
+                $active.html("");
+                $.each(res, function (i, obj) {
+                    const $children = $('     <div class="card p-2 border mb-2">\n' +
+                        '                                        <div class="media align-items-center">\n' +
+                        '                                            <div class="avatar-sm mr-3">\n' +
+                        '                                                <div class="avatar-title bg-soft-primary text-primary rounded font-size-20">\n' +
+                        '                                                    <i class=\'mdi mdi-account \'></i>\n' +
+                        '                                                </div>\n' +
+                        '                                            </div>\n' +
+                        '                                            <div class="media-body">\n' +
+                        '                                                <div class="text-left">\n' +
+                        '                                                    <h5 class="font-size-14 mb-1">' + obj.uid + '</h5>\n' +
+                        '                                                </div>\n' +
+                        '                                            </div>\n' +
+                        '\n' +
+                        '                                            <div class="ml-4">\n' +
+                        '                                                <ul class="list-inline mb-0 font-size-18">\n' +
+                        '                                                    <li class="list-inline-item">\n' +
+                        '                                                        <a href="#" class="text-muted px-1">\n' +
+                        '                                                            <i class="ri-delete-bin-line float-right text-muted"></i>\n' +
+                        '                                                        </a>\n' +
+                        '                                                    </li>\n' +
+                        '                                                    <li class="list-inline-item dropdown">\n' +
+                        '                                                        <a class="dropdown-toggle text-muted px-1" href="#"\n' +
+                        '                                                           role="button" data-toggle="dropdown" aria-haspopup="true"\n' +
+                        '                                                           aria-expanded="false">\n' +
+                        '                                                            <i class="ri-more-fill"></i>\n' +
+                        '                                                        </a>\n' +
+                        '                                                        <div class="dropdown-menu dropdown-menu-right">\n' +
+                        '                                                            <a class="dropdown-item" href="#">Delete</a>\n' +
+                        '                                                        </div>\n' +
+                        '                                                    </li>\n' +
+                        '                                                </ul>\n' +
+                        '                                            </div>\n' +
+                        '                                        </div>\n' +
+                        '                                    </div>');
+
+                    $active.append($children);
+
+                });
+            }
+        )
+    }
+
+
+    //点击创建分组的按钮
+    function buildGroup() {
+        //获得分组名称
+        const groupName = $("#addgroupname-input").val();
+        if (groupName.length === 0 || groupMembers.length < 2) return;
+        //检测当前分组列表中有没有相同名称的分组
+        for (let i = 0; i < groupNames.length; i++) {
+            if (groupName === groupNames[i]) {
+                return;
+            }
+        }
+        //将分组的成员放入一个list中
+        const member = [];
+        for (let i = 0; i < groupMembers.length; i++) {
+            member.push(groupMembers[i].id)
+        }
+        var data = {
+            'uId': localStorage.getItem("userid"),
+            'groupName': groupName,
+            'member': member
+        };
+        //发起ajax的post请求
+        $.ajax({
+            url: '/buildGroup',
+            type: 'post',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data: JSON.stringify(data),
+            success: function (res) {
+                document.getElementById("close").click();
+                if (res.code === 200) {
+                    getGroupList();
+                }
+            }
+        })
+    }
+
+
+    //创建分组时点击添加成员按钮
+    function addMember() {
+        const table = layui.table;
+        const newName = $("#addgroupname").val();
+        if (newName != null) {
+            //检测添加的id是否是8位
+            if (newName.length !== 8) {
+                return;
+            }
+            //检测是否含有重复的id
+            for (let i = 0; i < groupMembers.length; i++) {
+                if (groupMembers[i].id === newName) {
+                    $("#addgroupname").val("");
+                    return;
+                }
+            }
+            //向data中添加对象
+            groupMembers.push({
+                "id": newName
+            })
+            //向数组中添加对象,重载表格
+            table.reload('test', {
+                data: groupMembers,
+            })
+        }
+    }
+
+
+    //获取全部分组的信息
+    $(function () {
+        var cols = [[{title: '文件', event: "setSign2", toolbar: '#groupFile'}]];
+        initTable("/getGroupFile", "00000", cols);
+        getGroupList();
+    });
+
+    //文件大小转换
+    function bytesToSize(bytes) {
+        if (bytes === null || bytes === "") return "-";
+        if (bytes === 0) return "0 B";
+        var k = 1024;
+        var sizes = ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+        var i = Math.floor(Math.log(bytes) / Math.log(k));
+        return (bytes / Math.pow(k, i)).toPrecision(3) + " " + sizes[i];
+    }
+
+    //时间戳转换
+    function getDate(number) {
+        var now = new Date(number),
+            y = now.getFullYear(),
+            m = now.getMonth() + 1,
+            d = now.getDate();
+        return (
+            y +
+            "-" +
+            (m < 10 ? "0" + m : m) +
+            "-" +
+            (d < 10 ? "0" + d : d) +
+            " " +
+            now.toTimeString().substr(0, 5)
+        );
+    }
+
+
+    //获得全部分组列表
+    function getGroupList() {
+        //ajax创建逻辑
+        $.get("/getShares",
+            function (res) {
+                if (res.code === 200) {
+                    doData(res.data);
+                    if (res.data[0] != null) {
+                        getGroupFiles(res.data[0].gid, res.data[0].name);
+                    } else {
+                        localStorage.removeItem("gId")
+                    }
+                }
+            });
+    }
+
+
+    ///根据ajax数据进行渲染
+    function doData(arrParO) {
+        const $active = $("#groupsName");
+        $active.html("");
+        $.each(arrParO, function (i, obj) {
+            const $children = $(' <li id="gid-' + i + '">\n' +
+                '                                <a href="#">\n' +
+                '                                    <div class="media align-items-center">\n' +
+                '                                        <div class="chat-user-img mr-3">\n' +
+                '                                            <div class="avatar-xs">\n' +
+                '                                                        <span class="avatar-title rounded-circle bg-soft-primary text-primary">\n' +
+                '                                                            B\n' +
+                '                                                        </span>\n' +
+                '                                            </div>\n' +
+                '                                        </div>\n' +
+                '                                        <div class="media-body overflow-hidden">\n' +
+                '                                            <h5 class="text-truncate font-size-14 mb-0">#' + obj.name + '</h5>\n' +
+                '                                        </div>\n' +
+                '                                    </div>\n' +
+                '                                </a>\n' +
+                '                            </li>');
+
+            $active.append($children);
+            var btn = document.getElementById("gid-" + i);
+            btn.onclick = function () {
+                getGroupFiles(obj.gid, obj.name);
+            }
+        });
+    }
+
+
+    //新建分组时进行查询的表格
+    layui.use('table', function () {
+        var table = layui.table;
+        table.render({
+            elem: '#test'
+            , height: 250
+            , data: groupMembers
+            , cols: [[
+                {field: 'id', align: 'center', width: 360, title: '分组成员'}
+                , {fixed: 'right', title: '操作', align: 'center', toolbar: '#barDemoDelete', width: 86}
+            ]]
+        });
+        //监听行工具事件
+        table.on('tool(test)', function (obj) {
+
+            if (obj.event === 'del') {
+                layer.confirm('确认删除吗', function (index) {
+                    obj.del();
+                    layer.close(group);
+                    groupMembers.splice(jQuery.inArray(obj.id, groupMembers), 1);
+                });
+            }
+        });
+    });
+
+
+    //重载分组共享文件表格
+    function selectGroupFile(detSrc, type) {
+        var table = layui.table;
+        table.reload('file', {
+            url: '/selectFile',
+            where: {
+                detSrc: detSrc,
+                type: type,
+                gId: ""
+            },
+            page: {
+                curr: 1
+            },
+        })
+    }
+
+
+    //点击下载按钮的时候
+    function downLoad(fileId) {
+        //模拟表单提交
+        var formHtml =
+            "<form action='/downLoad' method='post' >";
+        formHtml +=
+            "<input type='hidden' name='fileId' value=" + fileId + " />";
+        formHtml += "<input type='hidden' name='gId' value='' />";
+        formHtml += "</form>";
+        var form = $(formHtml);
+        $(document.body).append(form);
+        form.submit();
+    }
+
+
+    //查询分组文件的方法
+    function getGroupFiles(gId, name) {
+        if (gId.length !== 0) {
+            //表格初始化值
+            //查询框查询文件名的方法
+            var cols = [[{title: '文件', event: "setSign2", toolbar: '#groupFile'}]];
+            initTable("/getGroupFile", gId, cols);
+            document.getElementById("curGroup").innerText = name;
+            document.getElementById("curGroup2").innerText = name;
+            getMembers();
+            //更新缓存中的gid
+            localStorage.setItem("gId", gId);
+            localStorage.setItem("gName", name);
+        }
+    }
+
+    //查询重载选择我的共享文件
+    function selectFile(detSrc, type) {
+        var table = layui.table;
+        table.reload('myFile', {
+            url: '/selectFile',
+            where: {
+                detSrc: detSrc,
+                type: type,
+                gId: ""
+            },
+            page: {
+                curr: 1
+            },
+        })
+    }
+
+
+    //点击了共享文件的按钮
+    function openFile() {
+        layui.use(['table', 'form'], function () {
+            const table2 = layui.table;
+            layer.open({
+                type: 1,
+                title: '共享文件窗口',
+                area: ['800px', '600px'], //宽高
+                content: $('#openProductBox'),
+                success: function () {
+                    table2.render({
+                        elem: '#myFile'
+                        , url: "/selectFile"
+                        , where: {
+                            detSrc: "19721631",
+                            type: "1",
+                            gId: ""
+                        }
+                        , limit: 8
+                        , page: {
+                            layout: ['count', 'prev', 'page', 'next', 'skip'] //自定义分页布局
+                            , groups: 3 //只显示 1 个连续页码
+                            , first: false //不显示首页
+                            , last: false //不显示尾页
+                        }
+                        , parseData: function (res) { //将原始数据解析成 table 组件所规定的数据，res为从url中get到的数据
+                            var result;
+                            if (res.data !== null) {
+                                //将文件夹放在最前面
+                                if (res.data.length !== 0) {
+                                    let left = 0;
+                                    let right = res.data.length - 1;
+                                    while (left <= right) {
+                                        if (res.data[left].dir === true) {
+                                            left++;
+                                        } else if (res.data[right].dir === false) {
+                                            right--;
+                                        } else {
+                                            const temp = res.data[left];
+                                            res.data[left] = res.data[right];
+                                            res.data[right] = temp;
+                                        }
+                                    }
+                                }
+                                if (this.page.curr) {
+                                    result = res.data.slice(this.limit * (this.page.curr - 1), this.limit * this.page.curr);
+                                } else {
+                                    result = res.data.slice(0, this.limit);
+                                }
+
+                                //处理result的时间格式
+                                for (var i = 0; i < result.length; i++) {
+                                    result[i].time = getDate(result[i].time);
+                                    result[i].type = peakPic(result[i].type);
+                                    result[i].size = bytesToSize(result[i].size);
+                                }
+
+                                return {
+                                    "code": res.code, //解析接口状态
+                                    "msg": res.msg, //解析提示文本
+                                    "count": res.count, //解析数据长度
+                                    "data": result //解析数据列表
+                                };
+                            }
+                        }
+                        , cols: [[
+                            {toolbar: '#icons', width: 80, event: 'setSign', title: '类型'}
+                            , {field: 'name', event: 'setSign', title: '用户名'}
+                            , {field: 'size', width: 110, event: 'setSign', title: '大小'}
+                            , {field: 'time', width: 170, event: 'setSign', title: '时间'}
+                            , {toolbar: '#barDemo', width: 80, title: '共享'}
+                        ]]
+                    });
+
+                    //监听行工具事件
+                    table2.on('tool(myFile)', function (obj) {
+                        var data = obj.data;
+                        if (obj.event === 'del') {
+                            layer.confirm('共享文件？  ' + data.name, function (index) {
+                                var req = {
+                                    "groupId": localStorage.getItem("gId"),
+                                    "uId": localStorage.getItem("userid"),
+                                    "fileList":
+                                        [data.fileId]
+                                };
+                                //ajax共享逻辑
+                                $.ajax({
+                                    url: '/shareTo',
+                                    type: 'post',
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    },
+                                    data: JSON.stringify(req),
+                                    success: function (res) {
+                                        if (res.code === 200) {
+                                            getGroupFiles(localStorage.getItem("gId"), localStorage.getItem("gName"));
+
+                                        }
+                                    }
+                                })
+                                layer.closeAll();
+
+                            });
+                        } else {
+                            //如果是文件夹，就进入
+                            if (data.dir) {
+                                selectFile(data.fileId, "1");
+                            }
+                        }
+                    });
+                }
+            });
+        });
+    }
+
+
+    //提取的渲染表格的方法
+    function initTable(api, gId, cols) {
+        layui.use('table', function () {
+            var table = layui.table;
+            table.render({
+                elem: '#file'
+                , url: api
+                , limit: 8
+                , where: {
+                    gId: gId
+                }
+                , page: {
+                    layout: ['count', 'prev', 'page', 'next', 'skip'] //自定义分页布局
+                    , groups: 3 //只显示 1 个连续页码
+                    , first: false //不显示首页
+                    , last: false //不显示尾页
+                }
+                , parseData: function (res) { //将原始数据解析成 table 组件所规定的数据，res为从url中get到的数据
+                    var result;
+                    if (this.page.curr) {
+                        result = res.data.slice(this.limit * (this.page.curr - 1), this.limit * this.page.curr);
+                    } else {
+                        result = res.data.slice(0, this.limit);
+                    }
+
+                    //处理result的时间格式
+                    for (var i = 0; i < result.length; i++) {
+                        result[i].time = getDate(result[i].time);
+                        result[i].size = bytesToSize(result[i].size);
+                        result[i].type = peakPic(result[i].type);
+                    }
+                    return {
+                        "code": res.code, //解析接口状态
+                        "msg": res.msg, //解析提示文本
+                        "count": res.count, //解析数据长度
+                        "data": result //解析数据列表
+                    };
+                }
+                , cols: cols
+            });
+
+            //监听行工具事件
+            table.on('tool(groupFile)', function (obj) {
+                var data = obj.data;
+                if (obj.event === 'del') {
+                    layer.confirm('确认删除？  ' + data.name, function (index) {
+                        //ajax创建逻辑
+                        $.get("/deleteShare", {fileId: data.fileId, gId: localStorage.getItem("gId")},
+                            function (res) {
+                                if (res.code === 200) {
+                                    obj.del();
+                                }
+                            });
+                        layer.close(group);
+                    });
+                } else if (obj.event === 'setSign2') {
+                    layui.use('layer', function () {
+                        //如果不是文件夹，就下载
+                        if (!data.dir) {
+                            layer.confirm('确认下载 ： ' + data.name, {
+                                btn: ['确定', '取消']//按钮
+                            }, function () {
+                                downLoad(data.fileId);
+                                layer.closeAll();
+                            });
+                        } else { //如果是文件夹就重载表格
+                            selectGroupFile(data.fileId, "1");
+                        }
+                    });
+                }
+            });
+        });
+    }
+
+
+</script>
+
+</body>
+</html>
