@@ -263,7 +263,6 @@
                         </div>
                         <div class="col-sm-8 col-4">
                             <ul class="list-inline user-chat-nav text-right mb-0">
-
                                 <li class="list-inline-item">
                                     <div class="dropdown">
                                         <button onclick="showMyFile()" class='btn btn-primary'>只显示我的文件
@@ -289,16 +288,13 @@
                                                        placeholder="Search..">
                                             </div>
                                         </div>
-
                                     </div>
                                 </li>
-
                                 <li class="list-inline-item d-none d-lg-inline-block">
                                     <button onclick="deleteGroup()" type="button" class="btn nav-btn user-profile-show">
                                         <i class="ri-delete-bin-line float-right text-muted"></i>
                                     </button>
                                 </li>
-
                             </ul>
                         </div>
                     </div>
@@ -309,6 +305,7 @@
                 </div>
             </div>
             <!-- end chat conversation section -->
+
 
             <!-- start User profile detail sidebar -->
             <div class="user-profile-sidebar">
@@ -556,6 +553,8 @@
                 <!-- end user-profile-desc -->
             </div>
             <!-- end User profile detail sidebar -->
+
+
         </div>
     </div>
     <!-- End User chat -->
@@ -643,7 +642,7 @@
     function showMyFile() {
         var cols = [[
             {title: '文件', event: 'setSign2', toolbar: '#groupFile'},
-            , {fixed: 'right', title: '操作', align: 'center', toolbar: '#barDemoDelete', width: 45}
+            , {fixed: 'right',  align: 'center', toolbar: '#barDemoDelete', width: 45}
         ]];
         initTable("/getMyShare", localStorage.getItem("gId"), cols);
     }
