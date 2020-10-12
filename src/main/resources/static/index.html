@@ -821,6 +821,22 @@
         });
     });
 
+    //重载分组共享文件表格
+    function selectGroupFile(detSrc, type) {
+        var table = layui.table;
+        table.reload('file', {
+            url: '/selectFile',
+            where: {
+                detSrc: detSrc,
+                type: type,
+                gId: ""
+            },
+            page: {
+                curr: 1
+            },
+        })
+    }
+
 
     //初始化文件表格
     layui.use('table', function () {
@@ -980,21 +996,7 @@
         })
     }
 
-    //重载分组共享文件表格
-    function selectGroupFile(detSrc, type) {
-        var table = layui.table;
-        table.reload('file', {
-            url: '/selectFile',
-            where: {
-                detSrc: detSrc,
-                type: type,
-                gId: ""
-            },
-            page: {
-                curr: 1
-            },
-        })
-    }
+
 
 
 
