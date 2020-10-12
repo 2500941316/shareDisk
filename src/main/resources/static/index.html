@@ -849,6 +849,7 @@
                 //处理result的时间格式
                 for (var i = 0; i < result.length; i++) {
                     result[i].time = getDate(result[i].time);
+                    result[i].size = bytesToSize(result[i].size);
                     result[i].type = peakPic(result[i].type);
                 }
                 return {
@@ -864,6 +865,7 @@
         });
 
         table.on('row(test)', function (obj) {
+            alert("111")
             var data = obj.data;
             layui.use('layer', function () {
                 alert(data.dir)
