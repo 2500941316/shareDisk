@@ -615,9 +615,9 @@
                         <p class="text-muted mb-0">{{d.time}}</p>
                     </div>
                 </div>
-                <div class="col-md-1">
+                <div class="col-md-1" style="text-align: center">
                     <div>
-                        <a lay-even="downLoad" class="text-primary">下载 <i
+                        <a lay-even="downLoad" class="text-primary">{{ d.dir == true ? '进入' : '下载' }} <i
                                 class="mdi mdi-chevron-double-right"></i></a>
                     </div>
                 </div>
@@ -864,13 +864,16 @@
         table.on('row(test)', function (obj) {
             var data = obj.data;
             layui.use('layer', function () {
-
-                layer.confirm('确认下载 ： ' + data.name, {
-                    btn: ['确定', '取消']//按钮
-                }, function () {
-                    downLoad(data.fileId);
-                    layer.closeAll();
-                });
+                if (!data.dir) {
+                    layer.confirm('确认下载 ： ' + data.name, {
+                        btn: ['确定', '取消']//按钮
+                    }, function () {
+                        downLoad(data.fileId);
+                        layer.closeAll();
+                    });
+                } else { //如果是文件夹就重载表格
+                    selectFile(data.fileId, "1");
+                }
             });
         });
     })
@@ -940,12 +943,16 @@
                 table.on('row(test)', function (obj) {
                     var data = obj.data;
                     layui.use('layer', function () {
-                        layer.confirm('确认下载 ： ' + data.name, {
-                            btn: ['确定', '取消']//按钮
-                        }, function () {
-                            downLoad(data.fileId);
-                            layer.closeAll();
-                        });
+                        if (!data.dir) {
+                            layer.confirm('确认下载 ： ' + data.name, {
+                                btn: ['确定', '取消']//按钮
+                            }, function () {
+                                downLoad(data.fileId);
+                                layer.closeAll();
+                            });
+                        } else { //如果是文件夹就重载表格
+                            selectFile(data.fileId, "1");
+                        }
                     });
                 });
             });
