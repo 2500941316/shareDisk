@@ -250,7 +250,8 @@
                                             class="ri-arrow-left-s-line"></i></a>
                                 </div>
                                 <div class="mr-3">
-                                    <img src="../assets/images/users/avatar-4.jpg" class="rounded-circle avatar-xs" alt="">
+                                    <img src="../assets/images/users/avatar-4.jpg" class="rounded-circle avatar-xs"
+                                         alt="">
                                 </div>
                                 <div class="media-body overflow-hidden">
                                     <h5 class="font-size-16 mb-0 text-truncate">
@@ -883,6 +884,23 @@
                 }
                 , parseData: function (res) { //将原始数据解析成 table 组件所规定的数据，res为从url中get到的数据
                     var result;
+
+                    //将文件夹放在最前面
+                    if (res.data.length !== 0) {
+                        let left = 0;
+                        let right = res.data.length - 1;
+                        while (left <= right) {
+                            if (res.data[left].dir === true) {
+                                left++;
+                            } else if (res.data[right].dir === false) {
+                                right--;
+                            } else {
+                                const temp = res.data[left];
+                                res.data[left] = res.data[right];
+                                res.data[right] = temp;
+                            }
+                        }
+                    }
                     if (this.page.curr) {
                         result = res.data.slice(this.limit * (this.page.curr - 1), this.limit * this.page.curr);
                     } else {
@@ -917,7 +935,7 @@
                                     obj.del();
                                 }
                             });
-                        layer.close(group);
+                        layer.closeAll();
                     });
                 } else if (obj.event === 'setSign2') {
                     layui.use('layer', function () {
