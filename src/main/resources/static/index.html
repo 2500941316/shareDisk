@@ -614,8 +614,8 @@
     //获取全部分组的信息
     $(function () {
         var cols = [[{title: '文件', event: "setSign2", toolbar: '#groupFile'}]];
-        initTable("/getGroupFile", "000111", cols);
-
+        initTable("/getGroupFile", "00000", cols);
+        getGroupList();
     });
 
     //文件大小转换
@@ -920,7 +920,6 @@
                 }
                 , parseData: function (res) { //将原始数据解析成 table 组件所规定的数据，res为从url中get到的数据
                     var result;
-
                     if (this.page.curr) {
                         result = res.data.slice(this.limit * (this.page.curr - 1), this.limit * this.page.curr);
                     } else {
@@ -958,7 +957,6 @@
                         layer.close(index);
                     });
                 } else if (obj.event === 'setSign2') {
-
                     layui.use('layer', function () {
                         //如果不是文件夹，就下载
                         if (!data.dir) {
