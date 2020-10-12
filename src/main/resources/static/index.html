@@ -641,52 +641,11 @@
 
     //只显示我的文件按钮
     function showMyFile() {
-        layui.use('table', function () {
-            var table = layui.table;
-            table.render({
-                elem: '#file'
-                , url: "/getMyShare"
-                , limit: 8
-                , where: {
-                    gId: localStorage.getItem("gId")
-                }
-                , page: {
-                    layout: ['count', 'prev', 'page', 'next', 'skip'] //自定义分页布局
-                    , groups: 3 //只显示 1 个连续页码
-                    , first: false //不显示首页
-                    , last: false //不显示尾页
-                }
-                , parseData: function (res) { //将原始数据解析成 table 组件所规定的数据，res为从url中get到的数据
-                    var result;
-
-                    if (this.page.curr) {
-                        result = res.data.slice(this.limit * (this.page.curr - 1), this.limit * this.page.curr);
-                    } else {
-                        result = res.data.slice(0, this.limit);
-                    }
-
-                    //处理result的时间格式
-                    for (var i = 0; i < result.length; i++) {
-                        result[i].time = getDate(result[i].time);
-                        result[i].size = bytesToSize(result[i].size);
-                        result[i].type = peakPic(result[i].type);
-                    }
-                    return {
-                        "code": res.code, //解析接口状态
-                        "msg": res.msg, //解析提示文本
-                        "count": res.count, //解析数据长度
-                        "data": result //解析数据列表
-                    };
-                }
-                , cols: [[
-                    {title: '文件', event: 'setSign2', toolbar: '#groupFile'},
-                    , {fixed: 'right', title: '操作', align: 'center', toolbar: '#barDemoDelete', width: 200}
-                ]]
-            });
-
-
-        });
-
+        var cols = [[
+            {title: '文件', event: 'setSign2', toolbar: '#groupFile'},
+            , {fixed: 'right', title: '操作', align: 'center', toolbar: '#barDemoDelete', width: 200}
+        ]];
+        initTable("/getMyShare", localStorage.getItem("gId"), cols);
     }
 
 
@@ -771,7 +730,7 @@
     //获取全部分组的信息
     $(function () {
         var cols = [[{title: '文件', event: "setSign2", toolbar: '#groupFile'}]];
-        initTable("getGroupFile", "000111", cols);
+        initTable("/getGroupFile", "000111", cols);
         getGroupList();
     });
 
