@@ -569,25 +569,23 @@
 
 <script src="js/foot.js"></script>
 
-<script type="text/html" id="barDemoMyFileDelete">
-    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
-</script>
-
+<!--删除按钮模块-->
 <script type="text/html" id="barDemoDelete">
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
 </script>
 
+<!--共享按钮模块-->
 <script type="text/html" id="barDemo">
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">共享</a>
 </script>
 
-<script type="text/html" id="barDemo9">
-    <svg style="width: 70%;height: 30px">
-        <use xlink:href={{d.type}}></use>
-    </svg>
+<!--创建分组弹出表格的图标模块-->
+<script type="text/html" id="icons">
+    <svg style="width: 70%;height: 30px"><use xlink:href={{d.type}}></use></svg>
 </script>
 
-<script type="text/html" id="barDemo1">
+<!--表格中的文件主体模块-->
+<script type="text/html" id="groupFile">
     <div class="job-box bg-white overflow-hidden border rounded  position-relative overflow-hidden"
          style="margin-top: 3px">
         <div class="lable text-center pt-2 pb-2">
@@ -679,8 +677,8 @@
                     };
                 }
                 , cols: [[
-                    {title: '文件', event: 'setSign2', toolbar: '#barDemo1'},
-                    , {fixed: 'right', title: '操作', align: 'center', toolbar: '#barDemoMyFileDelete', width: 120}
+                    {title: '文件', event: 'setSign2', toolbar: '#groupFile'},
+                    , {fixed: 'right', title: '操作', align: 'center', toolbar: '#barDemoDelete', width: 120}
                 ]]
             });
 
@@ -913,7 +911,7 @@
                 };
             }
             , cols: [[
-                {title: '文件', event: "setSign2", toolbar: '#barDemo1'}
+                {title: '文件', event: "setSign2", toolbar: '#groupFile'}
             ]]
         });
 
@@ -1015,6 +1013,7 @@
                         //处理result的时间格式
                         for (var i = 0; i < result.length; i++) {
                             result[i].time = getDate(result[i].time);
+                            result[i].size = bytesToSize(result[i].size);
                             result[i].type = peakPic(result[i].type);
                         }
                         return {
@@ -1025,7 +1024,7 @@
                         };
                     }
                     , cols: [[
-                        {title: '文件', event: 'setSign2', toolbar: '#barDemo1'}
+                        {title: '文件', event: 'setSign2', toolbar: '#groupFile'}
                     ]]
                 });
 
@@ -1151,7 +1150,7 @@
                             }
                         }
                         , cols: [[
-                            {toolbar: '#barDemo9', width: 80, event: 'setSign', title: '类型'}
+                            {toolbar: '#icons', width: 80, event: 'setSign', title: '类型'}
                             , {field: 'name', event: 'setSign', title: '用户名'}
                             , {field: 'size', width: 110, event: 'setSign', title: '大小'}
                             , {field: 'time', width: 170, event: 'setSign', title: '时间'}

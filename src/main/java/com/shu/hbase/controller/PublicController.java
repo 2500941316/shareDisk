@@ -3,6 +3,7 @@ package com.shu.hbase.controller;
 import com.shu.hbase.service.interfaces.PublicService;
 import com.shu.hbase.service.interfaces.UserService;
 import com.shu.hbase.tools.TableModel;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
@@ -33,6 +34,7 @@ public class PublicController {
      * @param principal
      * @return
      */
+    @ApiOperation(value="查询公共共享文件")
     @GetMapping("getPublicFiles")
     public TableModel getPublicFiles(Principal principal) {
         if (principal != null) {
@@ -48,6 +50,7 @@ public class PublicController {
      * @param
      * @throws IOException
      */
+    @ApiOperation(value="web下载接口")
     @PostMapping("downLoad")
     public void downLoad(@RequestParam String fileId, String gId, HttpServletResponse response, HttpServletRequest request, Principal principal) {
         if (principal != null) {
@@ -63,6 +66,7 @@ public class PublicController {
      * @param
      * @throws IOException
      */
+    @ApiOperation(value="根据关键字搜索文件")
     @GetMapping("searchFile")
     public TableModel searchFile(@RequestParam String value, @RequestParam String type, Authentication authentication) {
 
@@ -82,6 +86,7 @@ public class PublicController {
      * @param
      * @throws IOException
      */
+    @ApiOperation(value="查询一个文件夹中的文件")
     @GetMapping("selectFile")
     public TableModel selectFile(@Validated @Size(min = 8) @RequestParam("detSrc") String detSrc, @RequestParam("type") String type,
                                  @RequestParam("gId") String gId, Authentication authentication) {
@@ -99,6 +104,7 @@ public class PublicController {
      * @param
      * @throws IOException
      */
+    @ApiOperation(value="根据类型查找文件")
     @GetMapping("getFilesByType")
     public TableModel getFilesByType(@RequestParam String type, Authentication authentication) {
         if (type.isEmpty()) {
@@ -116,6 +122,7 @@ public class PublicController {
      * @param chunks
      * @param request
      */
+    @ApiOperation(value="上传文件到后端服务器")
     @PostMapping("uploadToBacken")
     public TableModel uploadTomvc(@RequestParam MultipartFile file, Integer chunk, Integer chunks, String backId, HttpServletRequest request, Authentication authentication) {
         if (file.isEmpty()) {
@@ -130,6 +137,7 @@ public class PublicController {
      *
      * @param
      */
+    @ApiOperation(value="新建文件夹")
     @GetMapping("buildDirect")
     public TableModel buildDirect(@RequestParam("backId") String backId, @RequestParam("dirName") String dirName, Authentication authentication) {
 
@@ -146,6 +154,7 @@ public class PublicController {
      * @param
      * @throws IOException
      */
+    @ApiOperation(value="删除一个文件")
     @GetMapping("deleteFile")
     public TableModel deleteFile(@RequestParam("fileId") String fileId, HttpServletRequest request, Authentication authentication) {
 

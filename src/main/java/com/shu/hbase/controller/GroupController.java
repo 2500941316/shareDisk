@@ -4,6 +4,7 @@ import com.shu.hbase.pojo.NewGroupInfoVO;
 import com.shu.hbase.pojo.ShareToFileVO;
 import com.shu.hbase.service.interfaces.UserService;
 import com.shu.hbase.tools.TableModel;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +26,7 @@ public class GroupController {
      * @param
      * @throws IOException
      */
+    @ApiOperation(value="查询当前用户的共享分组")
     @GetMapping("getShares")
     public TableModel getShares(Authentication authentication) {
 
@@ -38,6 +40,7 @@ public class GroupController {
      * @param
      * @throws IOException
      */
+    @ApiOperation(value="创建一个分组")
     @PostMapping("buildGroup")
     public TableModel buildGroup(@RequestBody NewGroupInfoVO newGroupInfoVO, Authentication authentication) {
 
@@ -54,6 +57,7 @@ public class GroupController {
      * @param
      * @throws IOException
      */
+    @ApiOperation(value="获得某个分组的文件")
     @GetMapping("getGroupFile")
     public TableModel getGroupFile(@RequestParam("gId") String gId) {
 
@@ -70,6 +74,7 @@ public class GroupController {
      * @param
      * @throws IOException
      */
+    @ApiOperation(value="删除一个分组")
     @GetMapping("deleteGroup")
     public TableModel deleteGroup(@RequestParam("gid") String gid, Authentication authentication) {
 
@@ -87,6 +92,7 @@ public class GroupController {
      * @throws IOException
      */
     @PostMapping("shareTo")
+    @ApiOperation(value="当前用户向一个分组中共享文件")
     public TableModel shareTo(@RequestBody ShareToFileVO shareToFileVO, Authentication authentication) {
         shareToFileVO.setUId(username);
         return userService.shareTo(shareToFileVO);
@@ -100,6 +106,7 @@ public class GroupController {
      * @throws IOException
      */
     @GetMapping("getMyShare")
+    @ApiOperation(value="查询某个分组中只属于当前用户的文件")
     public TableModel getMyShare(@RequestParam("gId") String gId, Authentication authentication) {
 
         if (gId.isEmpty()) {
@@ -115,6 +122,7 @@ public class GroupController {
      * @param
      * @throws IOException
      */
+    @ApiOperation(value="在分组中删除我的共享文件")
     @GetMapping("deleteShare")
     public TableModel deleteShare(@RequestParam("fileId") String fileId, @RequestParam("gId") String gId, Authentication authentication) {
 
