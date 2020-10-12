@@ -872,7 +872,7 @@
                         layer.closeAll();
                     });
                 } else { //如果是文件夹就重载表格
-                    selectFile(data.fileId, "1");
+                    selectGroupFile(data.fileId, "1");
                 }
             });
         });
@@ -951,7 +951,7 @@
                                 layer.closeAll();
                             });
                         } else { //如果是文件夹就重载表格
-                            alert(data.fileId)
+
                             selectFile(data.fileId, "1");
                         }
                     });
@@ -964,7 +964,7 @@
         }
     }
 
-    //查询文件夹
+    //查询重载选择我的共享文件
     function selectFile(detSrc, type) {
         var table = layui.table;
         table.reload('myFile', {
@@ -979,6 +979,23 @@
             },
         })
     }
+
+    //重载分组共享文件表格
+    function selectGroupFile(detSrc, type) {
+        var table = layui.table;
+        table.reload('file', {
+            url: '/selectFile',
+            where: {
+                detSrc: detSrc,
+                type: type,
+                gId: ""
+            },
+            page: {
+                curr: 1
+            },
+        })
+    }
+
 
 
     //点击了共享文件的按钮
