@@ -307,7 +307,7 @@
                 </div>
                 <!-- end chat user head -->
                 <div style="margin-top: -10px">
-                    <table class="layui-hide" id="file" lay-filter="test"></table>
+                    <table class="layui-hide" id="file" lay-filter="groupFile"></table>
                 </div>
             </div>
             <!-- end chat conversation section -->
@@ -864,12 +864,9 @@
             ]]
         });
 
-        table.on('row(test)', function (obj) {
-            alert("111")
+        table.on('row(groupFile)', function (obj) {
             var data = obj.data;
             layui.use('layer', function () {
-                alert(data.dir)
-                alert(!data.dir)
                 if (!data.dir) {
                     layer.confirm('确认下载 ： ' + data.name, {
                         btn: ['确定', '取消']//按钮
@@ -878,7 +875,6 @@
                         layer.closeAll();
                     });
                 } else { //如果是文件夹就重载表格
-                    alert(data.fileId)
                     selectGroupFile(data.fileId, "1");
                 }
             });
