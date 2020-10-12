@@ -645,10 +645,7 @@
             var table = layui.table;
             table.render({
                 elem: '#file'
-                //, url: "/getMyShare"
-                ,data: [{
-                    name: "112"
-                }]
+                , url: "/getMyShare"
                 , limit: 8
                 , where: {
                     gId: localStorage.getItem("gId")
@@ -683,7 +680,7 @@
                 }
                 , cols: [[
                     {title: '文件', event: 'setSign2', toolbar: '#barDemo1'},
-                    , {fixed: 'right', title: '操作', align: 'center', toolbar: '#barDemoMyFileDelete',width: 120}
+                    , {fixed: 'right', title: '操作', align: 'center', toolbar: '#barDemoMyFileDelete', width: 120}
                 ]]
             });
 
@@ -916,26 +913,9 @@
                 };
             }
             , cols: [[
-                {title: '文件', toolbar: '#barDemo1'}
+                {title: '文件', event: "setSign2", toolbar: '#barDemo1'}
             ]]
         });
-
-        // table.on('row(groupFile)', function (obj) {
-        //     var data = obj.data;
-        //     layui.use('layer', function () {
-        //         if (!data.dir) {
-        //             layer.confirm('确认下载 ： ' + data.name, {
-        //                 btn: ['确定', '取消']//按钮
-        //             }, function () {
-        //                 downLoad(data.fileId);
-        //                 layer.closeAll();
-        //             });
-        //         } else { //如果是文件夹就重载表格
-         //            selectGroupFile(data.fileId, "1");
-        //         }
-        //     });
-        // });
-
 
         //监听行工具事件
         table.on('tool(groupFile)', function (obj) {
