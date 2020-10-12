@@ -562,14 +562,17 @@
 </div>
 <!-- end  layout wrapper -->
 
-
 <div id="openProductBox" style="display: none;margin-top: -10px">
     <!--layui表格-->
     <table class="layui-hide" id="myFile" lay-filter="myFile"></table>
 </div>
 
-
 <script src="js/foot.js"></script>
+
+<script type="text/html" id="barDemoMyFileDelete">
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+
 <script type="text/html" id="barDemoDelete">
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
 </script>
@@ -642,7 +645,10 @@
             var table = layui.table;
             table.render({
                 elem: '#file'
-                , url: "/getMyShare"
+                //, url: "/getMyShare"
+                ,data: [{
+                    name: "112"
+                }]
                 , limit: 8
                 , where: {
                     gId: localStorage.getItem("gId")
@@ -676,42 +682,12 @@
                     };
                 }
                 , cols: [[
-                    {title: '文件', event: 'setSign', toolbar: '#barDemo1'},
-                    , {fixed: 'right', title: '操作',event: 'del', align: 'center', toolbar: '#barDemoDelete',width: 120}
+                    {title: '文件', event: 'setSign2', toolbar: '#barDemo1'},
+                    , {fixed: 'right', title: '操作', align: 'center', toolbar: '#barDemoMyFileDelete',width: 120}
                 ]]
             });
 
-            //监听行工具事件
-            table.on('tool(groupFile)', function (obj) {
-                var data = obj.data;
-                if (obj.event === 'del') {
-                    layer.confirm('确认删除？  ' + data.name, function (index) {
-                        //ajax创建逻辑
-                        $.get("/deleteShare", {fileId: data.fileId, gId: localStorage.getItem("gId")},
-                            function (res) {
-                                if (res.code === 200) {
-                                    obj.del();
-                                }
-                            });
-                        layer.close(index);
-                    });
-                } else if (obj.event === 'setSign') {
 
-                    layui.use('layer', function () {
-                        //如果不是文件夹，就下载
-                        if (!data.dir) {
-                            layer.confirm('确认下载 ： ' + data.name, {
-                                btn: ['确定', '取消']//按钮
-                            }, function () {
-                                downLoad(data.fileId);
-                                layer.closeAll();
-                            });
-                        } else { //如果是文件夹就重载表格
-                            selectFile(data.fileId, "1");
-                        }
-                    });
-                }
-            });
         });
 
     }
@@ -944,21 +920,55 @@
             ]]
         });
 
-        table.on('row(groupFile)', function (obj) {
+        // table.on('row(groupFile)', function (obj) {
+        //     var data = obj.data;
+        //     layui.use('layer', function () {
+        //         if (!data.dir) {
+        //             layer.confirm('确认下载 ： ' + data.name, {
+        //                 btn: ['确定', '取消']//按钮
+        //             }, function () {
+        //                 downLoad(data.fileId);
+        //                 layer.closeAll();
+        //             });
+        //         } else { //如果是文件夹就重载表格
+         //            selectGroupFile(data.fileId, "1");
+        //         }
+        //     });
+        // });
+
+
+        //监听行工具事件
+        table.on('tool(groupFile)', function (obj) {
             var data = obj.data;
-            layui.use('layer', function () {
-                if (!data.dir) {
-                    layer.confirm('确认下载 ： ' + data.name, {
-                        btn: ['确定', '取消']//按钮
-                    }, function () {
-                        downLoad(data.fileId);
-                        layer.closeAll();
-                    });
-                } else { //如果是文件夹就重载表格
-                    selectGroupFile(data.fileId, "1");
-                }
-            });
+            if (obj.event === 'del') {
+                layer.confirm('确认删除？  ' + data.name, function (index) {
+                    //ajax创建逻辑
+                    $.get("/deleteShare", {fileId: data.fileId, gId: localStorage.getItem("gId")},
+                        function (res) {
+                            if (res.code === 200) {
+                                obj.del();
+                            }
+                        });
+                    layer.close(index);
+                });
+            } else if (obj.event === 'setSign2') {
+
+                layui.use('layer', function () {
+                    //如果不是文件夹，就下载
+                    if (!data.dir) {
+                        layer.confirm('确认下载 ： ' + data.name, {
+                            btn: ['确定', '取消']//按钮
+                        }, function () {
+                            downLoad(data.fileId);
+                            layer.closeAll();
+                        });
+                    } else { //如果是文件夹就重载表格
+                        selectGroupFile(data.fileId, "1");
+                    }
+                });
+            }
         });
+
     })
 
     //重载分组共享文件表格
