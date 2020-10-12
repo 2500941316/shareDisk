@@ -832,4 +832,41 @@ public class UserServiceImpl implements UserService {
         } else return TableModel.error("网络异常，请重试");
     }
 
+
+
+    //获得分组成员列表
+    @Override
+    public TableModel getMembersBygid(String gid, String username) {
+        Connection hBaseConn = null;
+        Table groupTable = null;
+        try {
+            hBaseConn = HbaseConnectionPool.getHbaseConnection();
+            groupTable = hBaseConn.getTable(TableName.valueOf(Static.GROUP_TABLE));
+
+            List<GroupMember> members = new ArrayList<>();
+            logger.info("开始根据gid查询分组成员");
+            Get get = new Get(Bytes.toBytes(gid));
+            get.setMaxVersions();
+            get.addColumn(Bytes.toBytes(Static.GROUP_TABLE_CF), Bytes.toBytes(Static.GROUP_TABLE_MEMBER));
+            Result result = groupTable.get(get);
+            for (Cell cell : result.rawCells()) {
+                if (Bytes.toString(CellUtil.cloneQualifier(cell)).equals(Static.GROUP_TABLE_MEMBER)) {
+                    GroupMember membersInfo = new GroupMember();
+                    membersInfo.setUid(Bytes.toString(CellUtil.cloneValue(cell)));
+                    members.add(membersInfo);
+                }
+            }
+            logger.info("分组成员查询成功，数量为"+members.size());
+            TableModel tableModel = new TableModel();
+            tableModel.setData(members);
+            tableModel.setCode(200);
+            return tableModel;
+        } catch (Exception e) {
+           logger.error(e.getMessage());
+            return TableModel.error("error");
+        } finally {
+            HbaseConnectionPool.releaseConnection(hBaseConn);
+        }
+    }
+
 }

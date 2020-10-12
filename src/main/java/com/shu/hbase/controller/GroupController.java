@@ -133,4 +133,22 @@ public class GroupController {
 
     }
 
+
+    /**
+     * 获得分组成员
+     *
+     * @param
+     * @throws IOException
+     */
+    @ApiOperation(value="获得分组成员列表")
+    @GetMapping("getMembersBygid")
+    public TableModel getMembersBygid(@RequestParam("gid") String gid, Authentication authentication) {
+
+        if (gid.isEmpty()) {
+            return TableModel.error("参数为空");
+        }
+        return userService.getMembersBygid(gid, username);
+    }
+
+
 }

@@ -31,4 +31,6 @@ public interface UserService {
     TableModel getMyShare(String gId, String username);
 
     TableModel deleteShare(String fileId, String gId, String username);
+
+    TableModel getMembersBygid(String gid, String username);
 }
