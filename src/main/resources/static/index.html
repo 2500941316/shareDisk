@@ -866,6 +866,8 @@
         table.on('row(test)', function (obj) {
             var data = obj.data;
             layui.use('layer', function () {
+                alert(data.dir)
+                alert(!data.dir)
                 if (!data.dir) {
                     layer.confirm('确认下载 ： ' + data.name, {
                         btn: ['确定', '取消']//按钮
