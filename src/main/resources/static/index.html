@@ -1025,25 +1025,40 @@
                         };
                     }
                     , cols: [[
-                        {title: '文件', toolbar: '#barDemo1'}
+                        {title: '文件', event: 'setSign2', toolbar: '#barDemo1'}
                     ]]
                 });
 
-                table.on('row(test)', function (obj) {
+                //监听行工具事件
+                table.on('tool(groupFile)', function (obj) {
                     var data = obj.data;
-                    layui.use('layer', function () {
-                        if (!data.dir) {
-                            layer.confirm('确认下载 ： ' + data.name, {
-                                btn: ['确定', '取消']//按钮
-                            }, function () {
-                                downLoad(data.fileId);
-                                layer.closeAll();
-                            });
-                        } else { //如果是文件夹就重载表格
+                    if (obj.event === 'del') {
+                        layer.confirm('确认删除？  ' + data.name, function (index) {
+                            //ajax创建逻辑
+                            $.get("/deleteShare", {fileId: data.fileId, gId: localStorage.getItem("gId")},
+                                function (res) {
+                                    if (res.code === 200) {
+                                        obj.del();
+                                    }
+                                });
+                            layer.close(index);
+                        });
+                    } else if (obj.event === 'setSign2') {
 
-                            selectFile(data.fileId, "1");
-                        }
-                    });
+                        layui.use('layer', function () {
+                            //如果不是文件夹，就下载
+                            if (!data.dir) {
+                                layer.confirm('确认下载 ： ' + data.name, {
+                                    btn: ['确定', '取消']//按钮
+                                }, function () {
+                                    downLoad(data.fileId);
+                                    layer.closeAll();
+                                });
+                            } else { //如果是文件夹就重载表格
+                                selectGroupFile(data.fileId, "1");
+                            }
+                        });
+                    }
                 });
             });
             document.getElementById("curGroup").innerText = name;
