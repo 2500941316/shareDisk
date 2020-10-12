@@ -94,8 +94,7 @@
             <a href='index2.html' class='logo'></a>
         </div>
         <div class='buy-button'>
-            <button href='#' data-toggle="modal" data-target="#addgroup-exampleModal" class='btn btn-primary'><i
-                    class='mdi mdi-cloud-upload'></i>
+            <button href='#' data-toggle="modal" data-target="#addgroup-exampleModal" class='btn btn-primary'>
                 新建分组
             </button>
         </div><!--end login button-->
@@ -267,8 +266,7 @@
 
                                 <li class="list-inline-item">
                                     <div class="dropdown">
-                                        <button class='btn btn-primary'><i
-                                                class='mdi mdi-cloud-upload'></i>只显示我的文件
+                                        <button onclick="showMyFile()" class='btn btn-primary'>只显示我的文件
                                         </button>
                                     </div>
                                 </li>
@@ -572,6 +570,10 @@
 
 
 <script src="js/foot.js"></script>
+<script type="text/html" id="barDemoDelete">
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+
 <script type="text/html" id="barDemo">
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">共享</a>
 </script>
@@ -633,6 +635,85 @@
     var groupNames = [];
     const currentGroupName = "";
     const currentGroupId = "";
+
+    //只显示我的文件按钮
+    function showMyFile() {
+        layui.use('table', function () {
+            var table = layui.table;
+            table.render({
+                elem: '#file'
+                , url: "/getGroupFile"
+                , limit: 8
+                , where: {
+                    gId: localStorage.getItem("gId")
+                }
+                , page: {
+                    layout: ['count', 'prev', 'page', 'next', 'skip'] //自定义分页布局
+                    , groups: 3 //只显示 1 个连续页码
+                    , first: false //不显示首页
+                    , last: false //不显示尾页
+                }
+                , parseData: function (res) { //将原始数据解析成 table 组件所规定的数据，res为从url中get到的数据
+                    var result;
+
+                    if (this.page.curr) {
+                        result = res.data.slice(this.limit * (this.page.curr - 1), this.limit * this.page.curr);
+                    } else {
+                        result = res.data.slice(0, this.limit);
+                    }
+
+                    //处理result的时间格式
+                    for (var i = 0; i < result.length; i++) {
+                        result[i].time = getDate(result[i].time);
+                        result[i].type = peakPic(result[i].type);
+                    }
+                    return {
+                        "code": res.code, //解析接口状态
+                        "msg": res.msg, //解析提示文本
+                        "count": res.count, //解析数据长度
+                        "data": result //解析数据列表
+                    };
+                }
+                , cols: [[
+                    {title: '文件',event: 'setSign', toolbar: '#barDemo1'},
+                    , {fixed: 'right', title: '操作', align: 'center', toolbar: '#barDemoDelete', width: 86}
+                ]]
+            });
+
+            //监听行工具事件
+            table.on('tool(test)', function (obj) {
+                var data = obj.data;
+                if (obj.event === 'del') {
+                    layer.confirm('确认删除？  '+ data.name, function (index) {
+                        //ajax创建逻辑
+                        // $.get("/deleteFile", {fileId: data.fileId},
+                        //     function (res) {
+                        //         if (res.code === 200) {
+                        //             obj.del();
+                        //         }
+                        //     });
+                        layer.close(index);
+                    });
+                } else if (obj.event === 'setSign') {
+
+                    layui.use('layer', function () {
+                        //如果不是文件夹，就下载
+                        if (!data.dir) {
+                            layer.confirm('确认下载 ： ' + data.name, {
+                                btn: ['确定', '取消']//按钮
+                            }, function () {
+                                downLoad(data.fileId);
+                                layer.closeAll();
+                            });
+                        } else { //如果是文件夹就重载表格
+                            selectFile(data.fileId, "1");
+                        }
+                    });
+                }
+            });
+        });
+
+    }
 
 
     //删除分组的方法
@@ -804,7 +885,7 @@
             , data: groupMembers
             , cols: [[
                 {field: 'id', align: 'center', width: 360, title: '分组成员'}
-                , {fixed: 'right', title: '操作', align: 'center', toolbar: '#barDemo', width: 86}
+                , {fixed: 'right', title: '操作', align: 'center', toolbar: '#barDemoDelete', width: 86}
             ]]
         });
 
@@ -820,8 +901,6 @@
             }
         });
     });
-
-
 
 
     //初始化文件表格
@@ -883,7 +962,6 @@
 
     //重载分组共享文件表格
     function selectGroupFile(detSrc, type) {
-        alert(detSrc)
         var table = layui.table;
         table.reload('file', {
             url: '/selectFile',
@@ -999,9 +1077,6 @@
             },
         })
     }
-
-
-
 
 
     //点击了共享文件的按钮
