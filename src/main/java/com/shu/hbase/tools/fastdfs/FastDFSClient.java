@@ -19,9 +19,9 @@ public class FastDFSClient {
     static {
         try {
             logger.info("获取配置文件");
-            String filePath = new ClassPathResource("fdfs_client.conf").getFile().getAbsolutePath();
+           // String filePath = new ClassPathResource("fdfs_client.conf").getFile().getAbsolutePath();
             logger.info("开始初始化");
-            ClientGlobal.init(filePath);
+            ClientGlobal.init("/usr/local/springboot/fdfs_client.conf");
             logger.info("初始化成功！");
             trackerClient = new TrackerClient();
             logger.info("获取连接！");
@@ -35,4 +35,5 @@ public class FastDFSClient {
     public static void test() {
         System.out.println("111");
     }
+
 }
