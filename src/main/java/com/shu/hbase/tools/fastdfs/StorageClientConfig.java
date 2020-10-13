@@ -15,12 +15,8 @@ import java.io.IOException;
 public class StorageClientConfig {
     private static final Logger logger = LoggerFactory.getLogger(StorageClientConfig.class);
 
-    @Autowired
     private FastDFSConfig fastDFSConfig;
 
-
-
-    @Bean
     public StorageClient storageClient() throws IOException, MyException {
         logger.info("开始初始化");
         this.initClientGlobal();
