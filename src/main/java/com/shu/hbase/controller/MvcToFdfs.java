@@ -21,7 +21,7 @@ public class MvcToFdfs {
 
     @GetMapping("testFdfs")
     public static String testFdfs() throws FileNotFoundException {
-        InputStream inputStream = new FileInputStream("C:\\Users\\Administrator\\Desktop\\test.txt");
+        InputStream inputStream = new FileInputStream("/etc/fdfs/test.jpg");
         logger.info("开始执行上传逻辑");
         String fileID = FastDFSClient.uploadFile(inputStream, "test.jpg");
         System.out.println(fileID);
