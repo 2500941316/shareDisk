@@ -28,9 +28,7 @@ public class MvcToFdfs {
         return fileID;
     }
 
-    public static void main(String[] args) throws FileNotFoundException {
-        testFdfs();
-    }
+
 
 
 }
