@@ -20,8 +20,9 @@ public class FastDFSClient {
             // 获取配置文件
             logger.info("获取配置文件根路径");
             ClassPathResource classPathResource = new ClassPathResource("conf/fdfs_client.conf");
+            String CONF_FILENAME = classPathResource.getPath();
             System.out.println(classPathResource.getPath());
-            String CONF_FILENAME = new File(FastDFSClient.class.getResource("/").getFile()).getCanonicalPath();
+            //String CONF_FILENAME = new File(FastDFSClient.class.getResource("/").getFile()).getCanonicalPath();
             System.out.println(CONF_FILENAME);
             logger.info("拼接配置文件路径");
            // String CONF_FILENAME = classPath + File.separator + "conf" + File.separator + "fdfs_client.conf";
