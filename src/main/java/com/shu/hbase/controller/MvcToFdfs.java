@@ -20,12 +20,16 @@ public class MvcToFdfs {
     private static Logger logger = LoggerFactory.getLogger(MvcToFdfs.class);
 
     @GetMapping("testFdfs")
-    public String testFdfs() throws FileNotFoundException {
-        InputStream inputStream = new FileInputStream("/etc/fdfs/test.jpg");
+    public static String testFdfs() throws FileNotFoundException {
+        InputStream inputStream = new FileInputStream("C:\\Users\\Administrator\\Desktop\\test.txt");
         logger.info("开始执行上传逻辑");
         String fileID = FastDFSClient.uploadFile(inputStream, "test.jpg");
         System.out.println(fileID);
         return fileID;
+    }
+
+    public static void main(String[] args) throws FileNotFoundException {
+        testFdfs();
     }
 
 
