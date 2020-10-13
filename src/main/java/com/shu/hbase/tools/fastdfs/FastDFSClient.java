@@ -17,7 +17,7 @@ public class FastDFSClient {
         try {
             String filePath = new ClassPathResource("fdfs_client.conf").getFile().getAbsolutePath();
 
-            ClientGlobal.init(filePath);
+            ClientGlobal.init("/usr/local/springboot/fdfs_client.conf");
         } catch (Exception e) {
             logger.error("FastDFS Client Init Fail!", e);
         }
