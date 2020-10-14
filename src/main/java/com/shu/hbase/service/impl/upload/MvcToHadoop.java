@@ -41,7 +41,7 @@ public class MvcToHadoop {
         String hdfsPath = null;
         File localPath = null;
         try {
-            logger.info("开始将文件写入hdfs");
+            logger.info("开始将文件持久化写入");
             fs = HdfsConnectionPool.getHdfsConnection();
             hBaseConn = HbaseConnectionPool.getHbaseConnection();
             userTable = hBaseConn.getTable(TableName.valueOf(Static.USER_TABLE));
@@ -88,11 +88,12 @@ public class MvcToHadoop {
                 IOUtils.copyBytes(in, out, 4096, true);
                 logger.info("文件上传到hdfs成功");
             }
-
+            logger.info("将文件插入到hbase表格中");
             CrudMethods.insertToFiles(localPath, fileType, hdfsPath, backId, uId, fileId);
+            logger.info("方法返回");
             return TableModel.success("上传成功");
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.info(e.getMessage());
             return TableModel.error("上传失败");
         } finally {
             assert out != null;
