@@ -13,7 +13,7 @@ public class FdfsController {
 
     @GetMapping("testFastdfs")
     public void testFastdfs() throws FileNotFoundException {
-       FastDFSClient.uploadFile(new FileInputStream("/usr/local/springboot/test.txt"), "test.txt");
-        // FastDFSClient.uploadFile(new FileInputStream("C:\\Users\\Administrator\\Desktop\\test.txt"), "test.txt");
+        String string = FastDFSClient.uploadFile(new FileInputStream("/usr/local/springboot/test.txt"), "test.txt");
+        System.out.println(string);
     }
 }
