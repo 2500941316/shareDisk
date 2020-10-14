@@ -68,7 +68,7 @@ public class PublicServiceImpl implements PublicService {
             ResultScanner scanner = fileTable.getScanner(scan);
 
             if (scanner.next() == null) {
-                userService.buildDirect(uid,  "/我的文档", uid);
+                userService.buildDirect(uid, "/我的文档", uid);
             }
             logger.info("用户检测成功，存在默认文件夹");
 
@@ -183,14 +183,21 @@ public class PublicServiceImpl implements PublicService {
             }
             logger.info("用户下载权限校验成功");
             Get get = new Get(Bytes.toBytes(fileId));
-            get.addColumn(Bytes.toBytes(Static.FILE_TABLE_CF), Bytes.toBytes(Static.FILE_TABLE_PATH));
+            get.addFamily(Bytes.toBytes(Static.FILE_TABLE_CF));
             Result result = fileTable.get(get);
+            String fileName = "";
+            String path = "";
             logger.info("开始根据文件id查询文件存储路径");
             if (!result.isEmpty()) {
-                Cell cell = result.rawCells()[0];
-                String path = Bytes.toString(CellUtil.cloneValue(cell));
-                logger.info("调用下载方法");
-                DownLoad.downloadFromHDFSinOffset(fs, response, path, request);
+                for (Cell cell : result.rawCells()) {
+                    if (Bytes.toString(CellUtil.cloneQualifier(cell)).equals(Static.FILE_TABLE_NAME)) {
+                        fileName = Bytes.toString(CellUtil.cloneValue(cell));
+                    } else if (Bytes.toString(CellUtil.cloneQualifier(cell)).equals(Static.FILE_TABLE_NAME)) {
+                        path = Bytes.toString(CellUtil.cloneValue(cell));
+                    }
+                }
+                logger.info("调用下载方法,下载文件："+fileName);
+                DownLoad.downloadFromHDFSinOffset(fs, response, path, fileName, request);
             }
         } catch (Exception e) {
             logger.info(e.getMessage());
