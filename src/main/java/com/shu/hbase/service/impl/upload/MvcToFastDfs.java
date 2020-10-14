@@ -1,30 +1,29 @@
-package com.shu.hbase.test.fastdfs;
+package com.shu.hbase.service.impl.upload;
 
 import org.apache.commons.lang3.StringUtils;
 import org.csource.common.NameValuePair;
 import org.csource.fastdfs.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class FastDFSClient {
-    private static StorageClient1 storageClient1 = null;
+public class MvcToFastDfs {
+    private static Logger logger = LoggerFactory.getLogger(MvcToFastDfs.class);
+    private static StorageClient1 storageClient = null;
 
     static {
         try {
-            // 获取配置文件
-//            String classPath = new File(FastDFSClient.class.getResource("/").getFile()).getCanonicalPath();
-//            String CONF_FILENAME = classPath + File.separator + "conf" + File.separator + "fdfs_client.conf";
-//            ClientGlobal.init(CONF_FILENAME);
             // 获取触发器
             TrackerClient trackerClient = new TrackerClient(ClientGlobal.g_tracker_group);
             TrackerServer trackerServer = trackerClient.getConnection();
             // 获取存储服务器
             StorageServer storageServer = trackerClient.getStoreStorage(trackerServer);
-            storageClient1 = new StorageClient1(trackerServer, storageServer);
+            storageClient = new StorageClient1(trackerServer, storageServer);
+            logger.info("获取storage客户端成功");
         } catch (Exception e) {
-            System.out.println(e);
+            logger.error(e.getMessage());
         }
     }
 
@@ -35,8 +34,8 @@ public class FastDFSClient {
      */
     public static String uploadFile(InputStream fis, String fileName) {
         try {
+            logger.info("开始执行上传逻辑");
             NameValuePair[] meta_list = null;
-
             //将输入流写入file_buff数组
             byte[] file_buff = null;
             if (fis != null) {
@@ -44,16 +43,17 @@ public class FastDFSClient {
                 file_buff = new byte[len];
                 fis.read(file_buff);
             }
-            String fileid = storageClient1.upload_file1(file_buff, getFileExt(fileName), meta_list);
-            return fileid;
+            logger.info("开始上传");
+            return storageClient.upload_file1(file_buff, getFileExt(fileName), meta_list);
         } catch (Exception ex) {
+            logger.error(ex.getMessage());
             return null;
         } finally {
             if (fis != null) {
                 try {
                     fis.close();
                 } catch (IOException e) {
-                    System.out.println(e);
+                    logger.error(e.getMessage());
                 }
             }
         }

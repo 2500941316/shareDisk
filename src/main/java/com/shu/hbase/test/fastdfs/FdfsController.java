@@ -1,5 +1,6 @@
 package com.shu.hbase.test.fastdfs;
 
+import com.shu.hbase.service.impl.upload.MvcToFastDfs;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,7 +14,7 @@ public class FdfsController {
 
     @GetMapping("testFastdfs")
     public void testFastdfs() throws FileNotFoundException {
-        String string = FastDFSClient.uploadFile(new FileInputStream("/usr/local/springboot/test.txt"), "test.txt");
+        String string = MvcToFastDfs.uploadFile(new FileInputStream("/usr/local/springboot/test.txt"), "test.txt");
         System.out.println(string);
     }
 }

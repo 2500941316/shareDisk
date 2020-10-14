@@ -74,7 +74,7 @@ public class TestController {
                 public void run() {
                     logger.info("新的线程启动了" + Thread.currentThread().getName());
                     final String url = "http://localhost:8080/buildDirect";
-                    String string = Get.sendGet(url, "backId=19721631&dirName=testDir" + Thread.currentThread().getName()+System.currentTimeMillis(), "");
+                    String string = Get.sendGet(url, "backId=19721631&dirName=testDir" + Thread.currentThread().getName() + System.currentTimeMillis(), "");
                     System.out.println(string);
                 }
             }).start();
@@ -185,7 +185,7 @@ public class TestController {
      */
     @GetMapping("deleteUserTable")
     public void deleteUserTable() throws Exception {
-       deleteTable("shuwebfs:user");
+        deleteTable("shuwebfs:user");
     }
 
     /**
@@ -196,7 +196,7 @@ public class TestController {
      */
     @GetMapping("buildUserTable")
     public void buildUserTable() throws Exception {
-       buildTable(Static.USER_TABLE, new String[]{Static.USER_TABLE_CF});
+        buildTable(Static.USER_TABLE, new String[]{Static.USER_TABLE_CF});
     }
 
 
@@ -276,30 +276,29 @@ public class TestController {
         Table table2 = connection.getTable(TableName.valueOf(Static.GROUP_TABLE));
         Table table3 = connection.getTable(TableName.valueOf(Static.INDEX_TABLE));
         Table table4 = connection.getTable(TableName.valueOf(Static.USER_TABLE));
-        Scan scan=new Scan();
+        Scan scan = new Scan();
 
         Iterator<Result> iterator1 = table1.getScanner(scan).iterator();
-        listDeleteRow(iterator1,table1);
+        listDeleteRow(iterator1, table1);
         Iterator<Result> iterator2 = table2.getScanner(scan).iterator();
-        listDeleteRow(iterator2,table2);
+        listDeleteRow(iterator2, table2);
         Iterator<Result> iterator3 = table3.getScanner(scan).iterator();
-        listDeleteRow(iterator3,table3);
+        listDeleteRow(iterator3, table3);
         Iterator<Result> iterator4 = table4.getScanner(scan).iterator();
-        listDeleteRow(iterator4,table4);
+        listDeleteRow(iterator4, table4);
         HbaseConnectionPool.releaseConnection(connection);
     }
 
-    public static void listDeleteRow(Iterator<Result> iterator,Table table) throws Exception {
-        List<Delete> deleteList=new ArrayList<>();
-        while (iterator.hasNext())
-        {
+    public static void listDeleteRow(Iterator<Result> iterator, Table table) throws Exception {
+        List<Delete> deleteList = new ArrayList<>();
+        while (iterator.hasNext()) {
             Result result = iterator.next();
 
-            Delete delete=new Delete(result.getRow());
+            Delete delete = new Delete(result.getRow());
             deleteList.add(delete);
         }
         table.delete(deleteList);
-        System.out.println(table.getName().toString()+"删除了数据数量为："+deleteList.size());
+        System.out.println(table.getName().toString() + "删除了数据数量为：" + deleteList.size());
     }
 
 
@@ -334,6 +333,27 @@ public class TestController {
             System.out.println("table \"" + tableName + "\" is not exist!");
         }
         HbaseConnectionPool.releaseConnection(connection);
+    }
+
+    /**
+     * 测试fastdfs的多线程上传
+     *
+     * @param
+     * @throws IOException
+     */
+    @GetMapping("testFastDfs")
+    public void testFastDfs() {
+        for (int i = 0; i < 10; i++) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    logger.info("新的线程启动了" + Thread.currentThread().getName());
+                    final String url = "http://localhost:8080/testFastdfs";
+                    String string = Get.sendGet(url, "", "");
+                    System.out.println(string);
+                }
+            }).start();
+        }
     }
 
 

@@ -49,10 +49,6 @@
             <version>1.27-SNAPSHOT</version>
         </dependency>
 
-
-
-
-
         <!-- https://mvnrepository.com/artifact/org.apache.hbase/hbase-client -->
         <dependency>
             <groupId>org.apache.hbase</groupId>
