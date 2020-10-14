@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class DownLoad {
-    public static void downloadFromHDFSinOffset(FileSystem fs, HttpServletResponse response, String encryptfilename, String fileName, HttpServletRequest request) throws IOException {
+    public static void downloadFromHDFSinOffset(FileSystem fs, HttpServletResponse response, String encryptfilename, HttpServletRequest request) throws IOException {
 
         if (response == null || encryptfilename == null || encryptfilename.equals(""))
             return;
@@ -21,7 +21,6 @@ public class DownLoad {
         } else {
             finalFileName = encryptfilename.substring(encryptfilename.lastIndexOf("/") + 1);
         }
-        System.out.println(finalFileName);
         response.setContentType("application/x-msdownload");
         response.addHeader("Content-Disposition", "attachment;filename=" + finalFileName);
         ServletOutputStream sos = response.getOutputStream();

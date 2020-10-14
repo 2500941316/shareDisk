@@ -198,7 +198,7 @@ public class PublicServiceImpl implements PublicService {
                     }
                 }
                 logger.info("调用下载方法,下载文件"+fileName);
-                DownLoad.downloadFromHDFSinOffset(fs, response, path, fileName, request);
+                DownLoad.downloadFromHDFSinOffset(fs, response, path, request);
             }
         } catch (Exception e) {
             logger.info(e.getMessage());
