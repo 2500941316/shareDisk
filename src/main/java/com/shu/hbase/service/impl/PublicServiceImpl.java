@@ -193,11 +193,11 @@ public class PublicServiceImpl implements PublicService {
                 for (Cell cell : result.rawCells()) {
                     if (CellUtil.cloneQualifier(cell).equals(Static.FILE_TABLE_NAME)) {
                         fileName = Bytes.toString(CellUtil.cloneValue(cell));
-                    } else {
+                    } else if (CellUtil.cloneQualifier(cell).equals(Static.FILE_TABLE_PATH)){
                         path = Bytes.toString(CellUtil.cloneValue(cell));
                     }
                 }
-                logger.info("调用下载方法");
+                logger.info("调用下载方法,下载文件"+fileName);
                 DownLoad.downloadFromHDFSinOffset(fs, response, path, fileName, request);
             }
         } catch (Exception e) {
