@@ -2,8 +2,8 @@ package com.shu.hbase.pojo;
 
 public class Static {
 
-     public static final String keytab="/usr/local/springboot/krb/shuwebfs.service.keytab";
-     public static final String kerberosConf="/usr/local/springboot/krb/krb5.conf";
+    public static final String keytab = "/usr/local/springboot/krb/shuwebfs.service.keytab";
+    public static final String kerberosConf = "/usr/local/springboot/krb/krb5.conf";
 
     public static final String NAMESPACE = "shuwebfs";
 
@@ -34,6 +34,9 @@ public class Static {
     public static final String FILE_TABLE_PATH = "path";
     public static final String FILE_TABLE_BACK = "back";
     public static final String FILE_TABLE_TYPE = "type";
+
+    //fastdfs文件下载的地址
+    public static final String FASTDFSADDR = "http://10.10.0.92/";
 
 
 }
