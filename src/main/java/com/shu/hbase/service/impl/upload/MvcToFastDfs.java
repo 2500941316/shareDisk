@@ -12,8 +12,8 @@ import java.io.InputStream;
 
 @Component
 public class MvcToFastDfs {
-    private  Logger logger = LoggerFactory.getLogger(MvcToFastDfs.class);
-    private  StorageClient1 storageClient = null;
+    private Logger logger = LoggerFactory.getLogger(MvcToFastDfs.class);
+
 
     /**
      * @param fis      文件输入流
@@ -22,6 +22,7 @@ public class MvcToFastDfs {
      */
     public String uploadFile(InputStream fis, String fileName) {
         try {
+            StorageClient1 storageClient = null;
             // 获取触发器
             TrackerClient trackerClient = new TrackerClient(ClientGlobal.g_tracker_group);
             TrackerServer trackerServer = trackerClient.getConnection();
@@ -55,7 +56,7 @@ public class MvcToFastDfs {
     }
 
 
-    private  String getFileExt(String fileName) {
+    private String getFileExt(String fileName) {
         if (StringUtils.isBlank(fileName) || !fileName.contains(".")) {
             return "";
         } else {
