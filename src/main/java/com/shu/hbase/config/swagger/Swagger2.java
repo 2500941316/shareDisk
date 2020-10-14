@@ -16,18 +16,21 @@ public class Swagger2 {
 
     @Bean
     public Docket createRestApi() {
-        return new Docket(DocumentationType.SWAGGER_2).apiInfo(this.apiInfo())
-            .select()
-            .apis(RequestHandlerSelectors.basePackage("com.shu.hbase.controller"))
-            .paths(PathSelectors.any())
-            .build();
+        return new Docket(DocumentationType.SWAGGER_2)
+                .apiInfo(this.apiInfo())
+                .select()
+                .apis(RequestHandlerSelectors.basePackage("com.shu.hbase"))
+                .paths(PathSelectors.any())
+                .build();
     }
 
     private ApiInfo apiInfo() {
-        return new ApiInfoBuilder().title("上海大学资源共享平台项目")
-            .description("后端api交付")
-            .version("1.0")
-            .build();
+        return new ApiInfoBuilder()
+                .title("上海大学资源共享平台项目")
+                .description("后端api交付")
+                .termsOfServiceUrl("https://github.com/cicadasmile")
+                .version("1.0")
+                .build();
     }
 
 }
