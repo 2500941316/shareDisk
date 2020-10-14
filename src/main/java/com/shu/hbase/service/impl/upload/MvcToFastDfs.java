@@ -5,15 +5,22 @@ import org.csource.common.NameValuePair;
 import org.csource.fastdfs.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.io.InputStream;
 
+@Component
 public class MvcToFastDfs {
-    private static Logger logger = LoggerFactory.getLogger(MvcToFastDfs.class);
-    private static StorageClient1 storageClient = null;
+    private  Logger logger = LoggerFactory.getLogger(MvcToFastDfs.class);
+    private  StorageClient1 storageClient = null;
 
-    static {
+    /**
+     * @param fis      文件输入流
+     * @param fileName 文件名称
+     * @return
+     */
+    public String uploadFile(InputStream fis, String fileName) {
         try {
             // 获取触发器
             TrackerClient trackerClient = new TrackerClient(ClientGlobal.g_tracker_group);
@@ -22,18 +29,6 @@ public class MvcToFastDfs {
             StorageServer storageServer = trackerClient.getStoreStorage(trackerServer);
             storageClient = new StorageClient1(trackerServer, storageServer);
             logger.info("获取storage客户端成功");
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-        }
-    }
-
-    /**
-     * @param fis      文件输入流
-     * @param fileName 文件名称
-     * @return
-     */
-    public static String uploadFile(InputStream fis, String fileName) {
-        try {
             logger.info("开始执行上传逻辑");
             NameValuePair[] meta_list = null;
             //将输入流写入file_buff数组
@@ -60,7 +55,7 @@ public class MvcToFastDfs {
     }
 
 
-    private static String getFileExt(String fileName) {
+    private  String getFileExt(String fileName) {
         if (StringUtils.isBlank(fileName) || !fileName.contains(".")) {
             return "";
         } else {
