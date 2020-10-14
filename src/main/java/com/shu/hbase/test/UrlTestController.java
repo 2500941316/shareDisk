@@ -23,6 +23,7 @@ public class UrlTestController {
     @GetMapping("testUrl")
     public void testUrl() {
         try {
+            logger.info("注册fdfs");
             URL.setURLStreamHandlerFactory(new FsUrlStreamHandlerFactory());//注册hdfs的URL
             logger.info("开始获得文件输入流");
             InputStream inputStream = new URL("hdfs://bdg-proto-nameservice/shuwebfs/00000000/上海大学奖学金评选申请0.docx").openStream();//获取文件输入流
