@@ -140,7 +140,6 @@ public class PublicController {
     @ApiOperation(value="新建文件夹")
     @GetMapping("buildDirect")
     public TableModel buildDirect(@RequestParam("backId") String backId, @RequestParam("dirName") String dirName, Authentication authentication) {
-
         if (backId.isEmpty()) {
             return TableModel.error("参数为空");
         }

@@ -1,6 +1,7 @@
 package com.shu.hbase.service.impl;
 
 import com.shu.hbase.pojo.*;
+import com.shu.hbase.service.impl.upload.MvcToFastDfs;
 import com.shu.hbase.service.impl.upload.MvcToHadoop;
 import com.shu.hbase.service.interfaces.UserService;
 import com.shu.hbase.tools.TableModel;
@@ -17,6 +18,7 @@ import org.apache.hadoop.hbase.filter.*;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -29,6 +31,10 @@ import static com.shu.hbase.service.impl.CrudMethods.*;
 
 @Service
 public class UserServiceImpl implements UserService {
+
+    @Autowired
+    MvcToHadoop mvcToHadoop;
+
     private static Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
     private static AtomicLong uniqueseed = new AtomicLong(System.currentTimeMillis());
 
@@ -180,7 +186,7 @@ public class UserServiceImpl implements UserService {
             if (chunk == null && chunks == null) {//没有分片 直接保存
                 logger.info("文件没有分片，直接保存");
                 file.transferTo(video);
-                return MvcToHadoop.createFile(realpath + "final" + uid + "/" + file.getOriginalFilename(), backId, fileId, uid);
+                return mvcToHadoop.createFile(realpath + "final" + uid + "/" + file.getOriginalFilename(), backId, fileId, uid);
             } else {
                 logger.info("文件分片，新建临时保存文件夹");
                 //根据guid 创建一个临时的文件夹
@@ -209,7 +215,7 @@ public class UserServiceImpl implements UserService {
                     BufferedOutputStream bufferedOutputStream = null;
                     BufferedInputStream inputStream = null;
                     try {
-                        logger.info("开始进行写入hdfs的准备工作");
+                        logger.info("开始进行文件写入的准备工作");
                         //创建流
                         fileOutputStream = new FileOutputStream(video, true);
                         //创建文件输入缓冲流
@@ -239,7 +245,7 @@ public class UserServiceImpl implements UserService {
                         bufferedOutputStream.close();
                         logger.info("分片文件合成成功！");
                         logger.info("开始写入hdfs");
-                        return MvcToHadoop.createFile(realpath + "final" + uid + "/" + file.getOriginalFilename(), backId, fileId, uid);
+                        return mvcToHadoop.createFile(realpath + "final" + uid + "/" + file.getOriginalFilename(), backId, fileId, uid);
                     } catch (Exception e) {
                         logger.error(e.getMessage());
                         return TableModel.error("上传失败");
@@ -833,7 +839,6 @@ public class UserServiceImpl implements UserService {
     }
 
 
-
     //获得分组成员列表
     @Override
     public TableModel getMembersBygid(String gid, String username) {
@@ -856,13 +861,13 @@ public class UserServiceImpl implements UserService {
                     members.add(membersInfo);
                 }
             }
-            logger.info("分组成员查询成功，数量为"+members.size());
+            logger.info("分组成员查询成功，数量为" + members.size());
             TableModel tableModel = new TableModel();
             tableModel.setData(members);
             tableModel.setCode(200);
             return tableModel;
         } catch (Exception e) {
-           logger.error(e.getMessage());
+            logger.error(e.getMessage());
             return TableModel.error("error");
         } finally {
             HbaseConnectionPool.releaseConnection(hBaseConn);

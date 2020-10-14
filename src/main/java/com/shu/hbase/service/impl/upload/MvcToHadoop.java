@@ -16,18 +16,26 @@ import org.apache.hadoop.hbase.client.Table;
 import org.apache.hadoop.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 
+@Component
 public class MvcToHadoop {
+
+    @Autowired
+    public MvcToFastDfs mvcToFastDfs;
+
     private static Logger logger = LoggerFactory.getLogger(MvcToHadoop.class);
 
-    public static TableModel createFile(String mvcPath, String backId, String fileId, String uId) throws Exception {
+    public TableModel createFile(String mvcPath, String backId, String fileId, String uId) throws Exception {
         FileSystem fs = null;
         Connection hBaseConn = null;
         Table userTable = null;
+        FSDataOutputStream out = null;
         InputStream typeIn = null;
         InputStream in = null;
         String hdfsPath = null;
@@ -46,40 +54,49 @@ public class MvcToHadoop {
             if (!CrudMethods.insertOrUpdateUser(userTable, localPath.length() + "", uId, "upload")) {
                 return TableModel.error("文件超出存储容量");
             }
-
             in = new FileInputStream(localPath);
             typeIn = new FileInputStream(localPath);
             FileType type = FileTypeJudge.getType(typeIn);
             String fileType = FileTypeJudge.isFileType(type);
             //做二次判断，如果还是"其他",则对文件后缀再次判断
             String[] videoTypes = new String[]{"avi", "ram", "rm", "mpg", "mov", "asf", "mp4", "flv", "mid"};
-            String[] audioTypes = new String[]{"wav", "mp3"};
             if (fileType.equals("other")) {
                 int i = localPath.getName().lastIndexOf(".");
-
                 for (String videoType : videoTypes) {
                     if (videoType.equals(localPath.getName().substring(i + 1))) {
                         fileType = "video";
-                    } else if (audioTypes.equals(localPath.getName().substring(i + 1))) {
-                        fileType = "audio";
                     }
                 }
             }
-            //查询hdfs的路径
-            hdfsPath = CrudMethods.findUploadPath(backId);
-            if (hdfsPath != null) {
-                hdfsPath = hdfsPath + "/" + localPath.getName();
+
+            /**
+             * 如果文件的大小小于128M,则存入fastdfs中
+             */
+            if (localPath.length() < 128 * 1024 * 1024) {
+                logger.info("文件大小小于128M,存入fastdfs");
+                hdfsPath = mvcToFastDfs.uploadFile(in, localPath.getName());
+                logger.info("文件上传到fastdfs成功");
+
+            } else {
+                //查询hdfs的路径
+                logger.info("查找并拼接hdfs的物理地址");
+                hdfsPath = CrudMethods.findUploadPath(backId);
+                if (hdfsPath != null) {
+                    hdfsPath = hdfsPath + "/" + localPath.getName();
+                }
+                out = fs.create(new Path(hdfsPath));
+                IOUtils.copyBytes(in, out, 4096, true);
+                logger.info("文件上传到hdfs成功");
             }
+
             CrudMethods.insertToFiles(localPath, fileType, hdfsPath, backId, uId, fileId);
-            FSDataOutputStream out = fs.create(new Path(hdfsPath));
-            IOUtils.copyBytes(in, out, 4096, true);
-            out.close();
-            logger.info("文件上传成功");
             return TableModel.success("上传成功");
         } catch (Exception e) {
             e.printStackTrace();
             return TableModel.error("上传失败");
         } finally {
+            assert out != null;
+            out.close();
             localPath.delete();
             userTable.close();
             HbaseConnectionPool.releaseConnection(hBaseConn);
