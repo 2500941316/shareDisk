@@ -192,7 +192,7 @@ public class PublicServiceImpl implements PublicService {
                 for (Cell cell : result.rawCells()) {
                     if (Bytes.toString(CellUtil.cloneQualifier(cell)).equals(Static.FILE_TABLE_NAME)) {
                         fileName = Bytes.toString(CellUtil.cloneValue(cell));
-                    } else if (Bytes.toString(CellUtil.cloneQualifier(cell)).equals(Static.FILE_TABLE_NAME)) {
+                    } else if (Bytes.toString(CellUtil.cloneQualifier(cell)).equals(Static.FILE_TABLE_PATH)) {
                         path = Bytes.toString(CellUtil.cloneValue(cell));
                     }
                 }
