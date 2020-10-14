@@ -247,6 +247,7 @@ public class UserServiceImpl implements UserService {
                         logger.info("开始写入hdfs");
                         return mvcToHadoop.createFile(realpath + "final" + uid + "/" + file.getOriginalFilename(), backId, fileId, uid);
                     } catch (Exception e) {
+                        e.printStackTrace();
                         logger.error(e.getMessage());
                         return TableModel.error("上传失败");
                     } finally {
@@ -262,6 +263,7 @@ public class UserServiceImpl implements UserService {
                 }
             }
         } catch (Exception e) {
+            e.printStackTrace();
             logger.error(e.getMessage());
         }
         return TableModel.error("网络异常");
@@ -314,7 +316,6 @@ public class UserServiceImpl implements UserService {
                 if (fs != null)
                     HdfsConnectionPool.releaseConnection(fs);
             } catch (Exception e) {
-                e.printStackTrace();
                 logger.error(e.getMessage());
             }
         }
