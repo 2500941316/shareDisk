@@ -1,98 +1,135 @@
 package com.shu.hbase.test.fastdfs;
 
-import org.apache.commons.lang3.StringUtils;
 import org.csource.common.MyException;
 import org.csource.common.NameValuePair;
-import org.csource.fastdfs.*;
+import org.csource.fastdfs.FileInfo;
+import org.csource.fastdfs.StorageClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
+@Component
 public class FastDFSClient {
-    private static Logger logger = LoggerFactory.getLogger(FastDFSClient.class);
-    private static StorageClient1 storageClient1 = null;
+    private static final Logger logger = LoggerFactory.getLogger(FastDFSClient.class);
 
-    private static FastDFSConfig fastDFSConfig = new FastDFSConfig();
+    @Autowired
+    private StorageClient storageClient;
 
-    static {
+    public String[] upload(File file, FastDFSFileMeta meta) {
+        logger.debug("文件上传[fileMeta={}]", meta);
+
+        // 文件属性
+        NameValuePair[] metas = new NameValuePair[1];
+        metas[0] = new NameValuePair("author", meta.getAuthor());
+
+        String[] results = null;
         try {
-            // 获取配置文件
-            //String classPath = new File(FastDFSClient.class.getResource("/").getFile()).getCanonicalPath();
-            // String CONF_FILENAME = classPath + File.separator + "conf" + File.separator + "fdfs_client.conf";
-            //ClientGlobal.init(CONF_FILENAME);
-            logger.info("初始化开始");
-            initClientGlobal();
-            logger.info("初始化成功");
-            // 获取触发器
-            TrackerClient trackerClient = new TrackerClient(ClientGlobal.g_tracker_group);
-            TrackerServer trackerServer = trackerClient.getConnection();
-            // 获取存储服务器
-            StorageServer storageServer = trackerClient.getStoreStorage(trackerServer);
-            storageClient1 = new StorageClient1(trackerServer, storageServer);
+            results = storageClient.upload_file(file.getPath(), meta.getExt(), metas);
+
+        } catch (IOException e) {
+            logger.error("文件上传错误file={}", meta.getName(), e);
         } catch (Exception e) {
-            System.out.println(e);
+            logger.error("文件上传错误file={}", meta.getName(), e);
         }
+
+        if (results==null || results.length!=2) {
+            logger.error("文件上传错误[error code={}]", storageClient.getErrorCode());
+            return null;
+        }
+
+        logger.debug("文件上传成功[group_name={}, remoteFileName={}]", results[0], results[1]);
+        return results;
     }
-
-    private static void initClientGlobal() throws IOException, MyException {
-        ClientGlobal.initByTrackers(fastDFSConfig.getTrackerServer());
-
-        if (fastDFSConfig.getTrackerHttpPort() != null && fastDFSConfig.getTrackerHttpPort().intValue() != 0) {
-            ClientGlobal.setG_tracker_http_port(fastDFSConfig.getTrackerHttpPort());
-        }
-
-        if (fastDFSConfig.getConnectTimeout() != null && fastDFSConfig.getConnectTimeout().intValue() != 0) {
-            ClientGlobal.setG_connect_timeout(fastDFSConfig.getConnectTimeout());
-        }
-        if (fastDFSConfig.getNetworkTimeout() != null && fastDFSConfig.getNetworkTimeout().intValue() != 0) {
-            ClientGlobal.setG_network_timeout(fastDFSConfig.getNetworkTimeout());
-        }
-    }
-
 
     /**
-     * @param fis      文件输入流
-     * @param fileName 文件名称
+     * 文件上传
+     * @param meta
      * @return
      */
-    public static String uploadFile(InputStream fis, String fileName) {
-        try {
-            NameValuePair[] meta_list = null;
+    public String[] upload(FastDFSFileMeta meta) {
+        logger.debug("文件上传[fileMeta={}]", meta);
 
-            //将输入流写入file_buff数组
-            byte[] file_buff = null;
-            if (fis != null) {
-                int len = fis.available();
-                file_buff = new byte[len];
-                fis.read(file_buff);
-            }
-            String fileid = storageClient1.upload_file1(file_buff, getFileExt(fileName), meta_list);
-            return fileid;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return null;
-        } finally {
-            if (fis != null) {
-                try {
-                    fis.close();
-                } catch (IOException e) {
-                    System.out.println(e);
-                }
-            }
+        // 文件属性
+        NameValuePair[] metas = new NameValuePair[1];
+        metas[0] = new NameValuePair("author", meta.getAuthor());
+
+        String[] results = null;
+        try {
+            results = storageClient.upload_file(meta.getContent(), meta.getExt(), metas);
+
+        } catch (IOException e) {
+            logger.error("文件上传错误file={}", meta.getName(), e);
+        } catch (Exception e) {
+            logger.error("文件上传错误file={}", meta.getName(), e);
         }
+
+        if (results==null || results.length!=2) {
+            logger.error("文件上传错误[error code={}]", storageClient.getErrorCode());
+            return null;
+        }
+
+        logger.debug("文件上传成功[group_name={}, remoteFileName={}]", results[0], results[1]);
+        return results;
     }
 
+    /**
+     * 读取文件元数据
+     * @param groupName
+     * @param remoteFileName
+     * @return
+     */
+    public FileInfo fileMeta(String groupName, String remoteFileName) {
+        try {
+            logger.debug("读取文件元数据[groupName={}, remoteFileName={}]", groupName, remoteFileName);
 
-    private static String getFileExt(String fileName) {
-        if (StringUtils.isBlank(fileName) || !fileName.contains(".")) {
-            return "";
-        } else {
-            return fileName.substring(fileName.lastIndexOf(".") + 1);
+            return storageClient.get_file_info(groupName, remoteFileName);
+
+        } catch (IOException e) {
+            logger.error("读取文件元数据错误", e);
+        } catch (Exception e) {
+            logger.error("读取文件元数据错误", e);
         }
+        return null;
+    }
+
+    /**
+     * 文件下载
+     * @param groupName
+     * @param remoteFileName
+     * @return
+     */
+    public InputStream download(String groupName, String remoteFileName) {
+        try {
+            logger.debug("文件下载[groupName={}, remoteFileName={}]", groupName, remoteFileName);
+
+            byte[] fileByte = storageClient.download_file(groupName, remoteFileName);
+            InputStream ins = new ByteArrayInputStream(fileByte);
+            return ins;
+
+        } catch (IOException e) {
+            logger.error("文件下载错误", e);
+        } catch (Exception e) {
+            logger.error("文件下载错误", e);
+        }
+        return null;
+    }
+
+    /**
+     * 文件删除
+     * @param groupName
+     * @param remoteFileName
+     * @return
+     * @throws IOException
+     * @throws MyException
+     */
+    public int delete(String groupName, String remoteFileName) throws IOException, MyException {
+        logger.debug("文件删除[groupName={}, remoteFileName={}]", groupName, remoteFileName);
+        return storageClient.delete_file(groupName, remoteFileName);
     }
 }
-
