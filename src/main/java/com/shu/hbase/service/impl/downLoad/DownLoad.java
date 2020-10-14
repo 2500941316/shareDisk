@@ -15,9 +15,15 @@ public class DownLoad {
             return;
         final String userAgent = request.getHeader("USER-AGENT");
         //判断浏览器代理并分别设置响应给浏览器的编码格式
-
+        String finalFileName = null;
+        if (StringUtils.contains(userAgent, "Mozilla")) {//google,火狐浏览器
+            finalFileName = new String(encryptfilename.substring(encryptfilename.lastIndexOf("/") + 1).getBytes(), "ISO8859-1");
+        } else {
+            finalFileName = encryptfilename.substring(encryptfilename.lastIndexOf("/") + 1);
+        }
+        System.out.println(finalFileName);
         response.setContentType("application/x-msdownload");
-        response.addHeader("Content-Disposition", "attachment;filename=" + fileName);
+        response.addHeader("Content-Disposition", "attachment;filename=" + finalFileName);
         ServletOutputStream sos = response.getOutputStream();
 
         DownloadInOffset dfb = null;
