@@ -86,6 +86,7 @@ public class MvcToHadoop {
                 }
                 out = fs.create(new Path(hdfsPath));
                 IOUtils.copyBytes(in, out, 4096, true);
+                out.close();
                 logger.info("文件上传到hdfs成功");
             }
             logger.info("将文件插入到hbase表格中");
@@ -96,8 +97,6 @@ public class MvcToHadoop {
             logger.info(e.getMessage());
             return TableModel.error("上传失败");
         } finally {
-            assert out != null;
-            out.close();
             localPath.delete();
             userTable.close();
             HbaseConnectionPool.releaseConnection(hBaseConn);
